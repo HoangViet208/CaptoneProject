@@ -1,15 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import BadgeIcon from '@mui/icons-material/Badge'
-import ContactMailIcon from '@mui/icons-material/ContactMail'
-import EventAvailableIcon from '@mui/icons-material/EventAvailable'
-import DashboardIcon from '@mui/icons-material/Dashboard'
-import ReportIcon from '@mui/icons-material/Report'
 import AssessmentIcon from '@mui/icons-material/Assessment'
 import LogoutIcon from '@mui/icons-material/Logout'
 import InsertChartOutlinedIcon from '@mui/icons-material/InsertChartOutlined'
 import AddToPhotosIcon from '@mui/icons-material/AddToPhotos'
 import { Avatar, Menu, MenuItem, ListItemIcon, Divider, IconButton, Tooltip } from '@mui/material'
 import Settings from '@mui/icons-material/Settings'
+import EventAvailableIcon from '@mui/icons-material/EventAvailable'
 import { Link, NavLink } from 'react-router-dom'
 import LocationSearchingIcon from '@mui/icons-material/LocationSearching'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
@@ -127,24 +123,6 @@ export default function NavbarHR() {
                     <ul className="space-y-2 font-medium cursor-pointer">
                         <li className="cursor-pointer p-2">
                             <Link
-                                to="/Hr/ManageLeave"
-                                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
-                            >
-                                <AssessmentIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
-                                <span className="flex-1 ml-3 whitespace-nowrap">Manage Leave</span>
-                            </Link>
-                        </li>
-                        <li className="cursor-pointer p-2">
-                            <Link
-                                to="/Hr/ManageLeave"
-                                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
-                            >
-                                <AssessmentIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
-                                <span className="flex-1 ml-3 whitespace-nowrap">Work Slot</span>
-                            </Link>
-                        </li>
-                        <li className="cursor-pointer p-2">
-                            <Link
                                 to="/Hr/ManageOvertime"
                                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
                             >
@@ -177,6 +155,15 @@ export default function NavbarHR() {
                             >
                                 <EventNoteIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
                                 <span className="flex-1 ml-3 whitespace-nowrap">Work Slot</span>
+                            </Link>
+                        </li>
+                        <li className="cursor-pointer p-2">
+                            <Link
+                                to="/Hr/Timesheet"
+                                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
+                            >
+                                <EventAvailableIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                <span className="flex-1 ml-3 whitespace-nowrap">Time Sheet</span>
                             </Link>
                         </li>
                         <li className="cursor-pointer p-2">
@@ -393,6 +380,7 @@ export default function NavbarHR() {
                                 <span className="ml-3">Manage Holiday</span>
                             </NavLink>
                         </li>
+
                         <li className="cursor-pointer text-center mx-auto justify-center items-center">
                             <NavLink
                                 to="/Hr/Workslot"
@@ -403,6 +391,18 @@ export default function NavbarHR() {
                             >
                                 <EventNoteIcon className="ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
                                 <span className="ml-3">Work Slot</span>
+                            </NavLink>
+                        </li>
+                        <li className="cursor-pointer text-center mx-auto justify-center items-center">
+                            <NavLink
+                                to="/Hr/TimeSheet"
+                                className="flex items-center gap-2 p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
+                                activeStyle={{
+                                    background: '#dbeafe',
+                                }}
+                            >
+                                <EventAvailableIcon className="ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                <span className="ml-3">Time Sheet</span>
                             </NavLink>
                         </li>
                     </ul>

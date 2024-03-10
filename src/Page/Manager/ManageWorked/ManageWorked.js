@@ -502,9 +502,28 @@ export default function ManageWorked() {
             ),
         },
     ]
+    const [userRole, setUserRole] = useState(() => {
+        const userString = localStorage.getItem('role')
+        const userObject = JSON.parse(userString)
+        return userObject || 'defaultRole' // Provide a default role if undefined
+    })
+    useEffect(() => {
+        // Update the userRole state whenever 'role' is changed in localStorage
+        const handleStorageChange = () => {
+            const userString = localStorage.getItem('role')
+            const userObject = JSON.parse(userString)
+            setUserRole(userObject || 'defaultRole')
+        }
+
+        window.addEventListener('storage', handleStorageChange)
+
+        return () => {
+            window.removeEventListener('storage', handleStorageChange)
+        }
+    }, [])
     return (
         <div>
-            <NavbarHR />
+             {userRole === 'Manager' ? <Navbar /> : <NavbarHR />}
             <PopupConfirm open={open} clickOpenFalse={clickOpenFalse} />
             <div className="sm:ml-64 pt-20 h-screen bg-gray-50">
                 <div className="px-12 py-6">

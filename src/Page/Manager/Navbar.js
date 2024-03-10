@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react'
 import BadgeIcon from '@mui/icons-material/Badge'
 import ContactMailIcon from '@mui/icons-material/ContactMail'
 import EventAvailableIcon from '@mui/icons-material/EventAvailable'
-import DashboardIcon from '@mui/icons-material/Dashboard'
-import ReportIcon from '@mui/icons-material/Report'
 import AssessmentIcon from '@mui/icons-material/Assessment'
 import LogoutIcon from '@mui/icons-material/Logout'
 import InsertChartOutlinedIcon from '@mui/icons-material/InsertChartOutlined'
@@ -170,10 +168,28 @@ export default function NavbarManager() {
                                 <span className="flex-1 ml-3 whitespace-nowrap">Report List</span>
                             </Link>
                         </li> */}
-
                         <li className="cursor-pointer p-2">
                             <Link
-                                to="/Manager/"
+                                to="/Manager/ManageOvertime"
+                                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
+                            >
+                                <InsertChartOutlinedIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                <span className="flex-1 ml-3 whitespace-nowrap">Manage Overtime</span>
+                            </Link>
+                        </li>
+                        <li className="cursor-pointer p-2">
+                            <Link
+                                to="/Manager/ManageWorked"
+                                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
+                            >
+                                <AddToPhotosIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                <span className="flex-1 ml-3 whitespace-nowrap">Manage Worked</span>
+                            </Link>
+                        </li>
+                      
+                        <li className="cursor-pointer p-2">
+                            <Link
+                                to="/"
                                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
                             >
                                 <LogoutIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
@@ -362,6 +378,43 @@ export default function NavbarManager() {
                                 <span className="ml-3">Risk Employee</span>
                             </NavLink>
                         </li>
+                        <li className="cursor-pointer text-center mx-auto justify-center items-center">
+                            <NavLink
+                                to="/Manager/ManageLeave"
+                                className="flex items-center gap-2 p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
+                                activeStyle={{
+                                    background: '#dbeafe',
+                                }}
+                            >
+                                <AssessmentIcon className="ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                <span className="ml-3">Manage Leave</span>
+                            </NavLink>
+                        </li>
+                        <li className="cursor-pointer text-center mx-auto justify-center items-center">
+                            <NavLink
+                                to="/Manager/ManageOvertime"
+                                className="flex items-center gap-2 p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
+                                activeStyle={{
+                                    background: '#dbeafe',
+                                }}
+                            >
+                                <InsertChartOutlinedIcon className="ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                <span className="ml-3">Manage Overtime</span>
+                            </NavLink>
+                        </li>
+                        <li className="cursor-pointer text-center mx-auto justify-center items-center">
+                            <NavLink
+                                to="/Manager/ManageWorked"
+                                className="flex items-center gap-2 p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
+                                activeStyle={{
+                                    background: '#dbeafe',
+                                }}
+                            >
+                                <AddToPhotosIcon className="ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                <span className="ml-3">Manage Worked</span>
+                            </NavLink>
+                        </li>
+                       
                         <li className="cursor-pointer text-center mx-auto justify-center items-center">
                             <NavLink
                                 to="/Manager/TimeSheet"

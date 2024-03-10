@@ -137,7 +137,7 @@ export default function NavbarAdmin() {
                                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
                             >
                                 <GroupOutlinedIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
-                                <span className="flex-1 ml-3 whitespace-nowrap">Department</span>
+                                <span className="flex-1 ml-3 whitespace-nowrap">Team</span>
                             </Link>
                         </li>
                         <li className="cursor-pointer p-2">
@@ -360,7 +360,7 @@ export default function NavbarAdmin() {
                                 }}
                             >
                                 <GroupOutlinedIcon className="ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
-                                <span className="ml-3">Department</span>
+                                <span className="ml-3">Team</span>
                             </NavLink>
                         </li>
                         <li className="cursor-pointer text-center mx-auto justify-center items-center">

@@ -135,9 +135,7 @@ export default function WorkSlot() {
         return () => {}
     }, [])
     useEffect(() => {
-        {
             Department &&
-                dispatch(getDepartmentAsyncApi()).then((res) => {
                     dispatch(
                         GetWorkedSlotAsyncApi({
                             id: Department,
@@ -145,9 +143,7 @@ export default function WorkSlot() {
                         })
                     )
                     setDepartment(Department)
-                })
-        }
-
+                
         return () => {}
     }, [currentMonth, Department])
 
@@ -162,68 +158,6 @@ export default function WorkSlot() {
     const [carStatusId, setCarStatusId] = useState(0)
     const [carId, setCarId] = useState(0)
 
-    // const resources = Carschedule.map((schedule) => ({
-    //     id: schedule.carLicensePlates,
-    //     title: `${schedule.carLicensePlates}`,
-    //     carLicensePlates: schedule.carLicensePlates,
-    // }))
-
-    // const handleEventClick = (info) => {
-    //     const {
-    //         extendedProps: { id1: id, carid1: carId, title1: carStatusId },
-    //     } = info.event
-    //     handleClickOpenUpdate(info.event, id, carId, carStatusId, {})
-    // }
-    // const events = Carschedule.map((schedule) => {
-    //     let color = ''
-    //     switch (schedule.carStatusId) {
-    //         case 1:
-    //             color = 'yellow'
-    //             break
-    //         case 2:
-    //             color = 'green'
-    //             break
-    //         case 3:
-    //             color = 'red'
-    //             break
-    //         case 4:
-    //             color = 'blue'
-    //             break
-    //         case 5:
-    //             color = 'purple'
-    //             break
-    //         case 6:
-    //             color = 'pink'
-    //             break
-    //         case 7:
-    //             color = 'gray'
-    //             break
-    //         case 8:
-    //             color = 'orange'
-    //             break
-    //         case 9:
-    //             color = 'teal'
-    //             break
-    //         case 10:
-    //             color = 'indigo'
-    //             break
-    //         default:
-    //             color = 'green'
-    //             break
-    //     }
-    //     const start = schedule.dateStart ? moment(schedule.dateStart).toDate() : null
-    //     const end = schedule.dateEnd ? moment(schedule.dateEnd).toDate() : null
-    //     return {
-    //         title: schedule.carStatusName,
-    //         title1: schedule.carStatusId,
-    //         carid1: schedule.carId,
-    //         id1: schedule.id,
-    //         resourceId: schedule.carLicensePlates,
-    //         start,
-    //         end,
-    //         color,
-    //     }
-    // })
     const handleDateRangeChange = (ranges) => {
         setSelectedDateRange(ranges.selection)
     }
@@ -400,7 +334,7 @@ export default function WorkSlot() {
                         <div className="sm:ml-[220px]">
                             <FormControl sx={{ width: 300, marginBottom: 4 }}>
                                 <InputLabel size="small" id="demo-simple-select-label">
-                                    Department
+                                Team
                                 </InputLabel>
                                 <Select
                                     size="small"
@@ -408,7 +342,7 @@ export default function WorkSlot() {
                                     labelId="demo-simple-select-label"
                                     id="demo-simple-select"
                                     value={Department}
-                                    label="Department"
+                                    label="Team"
                                     onChange={handleChangeDepartment}
                                 >
                                     {DepartmentList.map((item, index) => {

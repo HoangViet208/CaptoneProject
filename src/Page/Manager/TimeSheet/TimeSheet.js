@@ -6,7 +6,10 @@ import 'react-date-range/dist/styles.css'
 import 'react-date-range/dist/theme/default.css'
 import dayjs from 'dayjs'
 //mui
-import { Button, Stack, Avatar, Autocomplete, TextField } from '@mui/material'
+import { Button, Stack, Avatar, Autocomplete, TextField,  Select,
+    MenuItem,
+    FormControl, InputLabel,
+     } from '@mui/material'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker'
@@ -33,6 +36,8 @@ import {
 import { getEmployeeAsyncApi, getEmployeeByIdAsyncApi } from '../../../Redux/Employee/employeeSlice'
 import { formatDate } from '@fullcalendar/core'
 import axios from 'axios'
+import NavbarHR from '../NavbarHR'
+import { getDepartmentAsyncApi } from '../../../Redux/Department/DepartmentSlice'
 
 const breadcrumbIcons = () => {
     const data = [
@@ -76,20 +81,48 @@ export default function TimeSheet() {
         endDate: new Date(),
         key: 'selection',
     })
+    const [Department, setDepartment] = useState('')
+    //setting redux
+    const { DepartmentList } = useSelector((state) => state.department)
+    const [userRole, setUserRole] = useState(() => {
+        const userString = localStorage.getItem('role')
+        const userObject = JSON.parse(userString)
+        return userObject || 'defaultRole' 
+    })
 
+    useEffect(() => {
+        const handleStorageChange = () => {
+            const userString = localStorage.getItem('role')
+            const userObject = JSON.parse(userString)
+            setUserRole(userObject || 'defaultRole')
+        }
+
+        window.addEventListener('storage', handleStorageChange)
+
+        return () => {
+            window.removeEventListener('storage', handleStorageChange)
+        }
+    }, [])
     const [selectedDate, setSelectedDate] = useState(dayjs())
     //setting redux
     const { WorkSlotByDepartment, loading } = useSelector((state) => state.WorkSlotEmployee)
     const { EmployeeList } = useSelector((state) => state.employee)
     const dispatch = useDispatch()
     useEffect(() => {
+        dispatch(getDepartmentAsyncApi()).then((res) => {    
+            setDepartment(res.payload[0].id)
+        })
+        return () => {}
+    }, [])
+    useEffect(() => {
         const { format, parse } = require('date-fns')
         const userStringEmployeeName = localStorage.getItem('employeeId')
         const employeeId = JSON.parse(userStringEmployeeName)
-        dispatch(getEmployeeByIdAsyncApi(employeeId)).then((response) => {
+   
+        
+         userRole === 'Manager' ? Department && dispatch(getEmployeeByIdAsyncApi(employeeId)).then((response) => {
             if (response.meta.requestStatus == 'fulfilled') {
                 console.log('effect', response)
-                // dispatch(getEmployeeAsyncApi({ roleId: '', departmentId: response.payload.departmentId, name: '' }))
                 dispatch(
                     GetWorkedSlotByIdDepartmentAsyncApi({
                         id: response.payload.departmentId,
@@ -99,10 +132,22 @@ export default function TimeSheet() {
                     })
                 )
             }
-        })
-
+        })  : 
+        Department && dispatch(
+            GetWorkedSlotByIdDepartmentAsyncApi({
+                id: Department,
+                //  id: '4752ec79-a7e7-427e-9eb4-c8e96744278f',
+                startTime: format(selectedDateRange.startDate, 'yyyy/MM/dd'),
+                endTime: format(selectedDateRange.endDate, 'yyyy/MM/dd'),
+            })
+        )
+        
         return () => {}
-    }, [selectedDateRange])
+    }, [selectedDateRange, Department])
+    
+    const handleChangeDepartment = (event) => {
+        setDepartment(event.target.value)
+    }
     const handleDateRangeChange = (ranges) => {
         setSelectedDateRange(ranges.selection)
     }
@@ -173,7 +218,8 @@ export default function TimeSheet() {
             Save changes
         </Button>
     )
-    console.log('selectedDateRange', selectedDateRange)
+    console.log('de', Department)
+
     return (
         <div>
             <PopupData
@@ -183,7 +229,7 @@ export default function TimeSheet() {
                 viewContent={viewModalContent}
                 viewAction={viewModalAction}
             />
-            <Navbar />
+            {userRole === 'Manager' ? <Navbar /> : <NavbarHR />}
             <div className="sm:ml-64 h-screen pt-20 bg-gray-50">
                 <div className="px-12 py-6">
                     <h2 className="font-bold text-3xl mb-4">Time Sheet List </h2>
@@ -225,7 +271,33 @@ export default function TimeSheet() {
                                 </Button>
                                 <FilterListIcon className="" />
                             </div>
+                            
                         </div>
+                        { userRole === 'Manager' ? `` :  userRole === 'HR' ?  <div className="">
+                            <FormControl sx={{ width: 300, marginBottom: 4 }}>
+                                <InputLabel size="small" id="demo-simple-select-label">
+                                    Team
+                                </InputLabel>
+                                <Select
+                                    size="small"
+                                    className="bg-white"
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    value={Department}
+                                    label="Team"
+                                    onChange={handleChangeDepartment}
+                                >
+                                    {DepartmentList.map((item, index) => {
+                                        return (
+                                            <MenuItem key={index} value={item.id}>
+                                                {item.name}
+                                            </MenuItem>
+                                        )
+                                    })}
+                                </Select>
+                            </FormControl>
+                        </div> : ``}
+                       
                         {/* <div className="my-4 flex gap-5">
                             <Autocomplete
                                 disablePortal
@@ -268,7 +340,7 @@ export default function TimeSheet() {
                                                             alt={item.name}
                                                             sx={{ width: 40, height: 40 }}
                                                         />
-                                                        <p className="">{item.name}</p>
+                                                        <p className="">{item.name}({item.id})</p>
                                                     </div>
                                                 </td>
                                                 <td id="scroll" className="py-5 px-2 border-r-2">
@@ -330,6 +402,17 @@ export default function TimeSheet() {
                                                                                     className="uppercase text-xs text-gray-400 ml-auto"
                                                                                 >
                                                                                     OverTime
+                                                                                </div>
+                                                                            </div>
+                                                                            <div className="flex items-center">
+                                                                                <div className="text-gray-400 font-medium">
+                                                                                    {working.overTime}
+                                                                                </div>
+                                                                                <div
+                                                                                    id="Coefficients"
+                                                                                    className="uppercase text-xs text-gray-400 ml-auto"
+                                                                                >
+                                                                                    Coefficients
                                                                                 </div>
                                                                             </div>
                                                                         </div>

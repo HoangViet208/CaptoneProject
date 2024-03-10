@@ -17,7 +17,10 @@
   color: blueviolet; /* For example, change the text color to red */
   font-weight: bold; /* You can add other styles as well */
 }
-
+#cha:hover #Coefficients {
+  color: orange; /* For example, change the text color to red */
+  font-weight: bold; /* You can add other styles as well */
+}
 /* styles.css */
 #total:hover #out {
   color: green; /* For example, change the text color to red */

@@ -111,7 +111,25 @@ export default function ManageOvertime() {
     const handleChangePage = (newPage) => {
         setPage(newPage)
     }
+ const [userRole, setUserRole] = useState(() => {
+        const userString = localStorage.getItem('role')
+        const userObject = JSON.parse(userString)
+        return userObject || 'defaultRole' // Provide a default role if undefined
+    })
+    useEffect(() => {
+        // Update the userRole state whenever 'role' is changed in localStorage
+        const handleStorageChange = () => {
+            const userString = localStorage.getItem('role')
+            const userObject = JSON.parse(userString)
+            setUserRole(userObject || 'defaultRole')
+        }
 
+        window.addEventListener('storage', handleStorageChange)
+
+        return () => {
+            window.removeEventListener('storage', handleStorageChange)
+        }
+    }, [])
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(+event.target.value)
         setPage(0)
@@ -221,123 +239,7 @@ export default function ManageOvertime() {
             })
     }
     const createRows = () => {
-        const data = [
-            {
-                id: '1',
-                email: 'VietDH16022000@gmail.com',
-                name: 'Đặng Hoàng Việt',
-                Time: '17:00 ~ 20:00',
-                timeInMonth: '0',
-                timeInYear: '0',
-                Date: '2022/07/26',
-                timeInMonth: '0',
-                timeInYear: '0',
-                days: '14',
-                files: 'aaaa',
-                applied: '2022/07/09',
-                reason: 'kaksdkaskdaskdaskdkasdkasdksakdaskdasd',
-                aprrovedBy: 'Đạt',
-                avatar: 'https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien-600x600.jpg',
-                status: 'True',
-                rejectReason: 'bla bla bla bla',
-                rejectBy: 'Đạt',
-            },
-
-            {
-                id: '3',
-                email: 'VietDH16022000@gmail.com',
-                name: 'Đặng Hoàng Việt',
-                Time: '17:00 ~ 20:00',
-                timeInMonth: '0',
-                timeInYear: '0',
-                Date: '2022/07/26',
-                days: '14',
-                files: 'aaaa',
-                applied: '2022/07/09',
-                reason: 'kaksdkaskdaskdaskdkasdkasdksakdaskdasd',
-                aprrovedBy: 'Đạt',
-                avatar: 'https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien-600x600.jpg',
-                status: 'False',
-                rejectReason: 'bla bla bla bla',
-                rejectBy: 'Đạt',
-            },
-
-            {
-                id: '5',
-                email: 'VietDH16022000@gmail.com',
-                name: 'Đặng Hoàng Việt',
-                Time: '17:00 ~ 20:00',
-                timeInMonth: '0',
-                timeInYear: '0',
-                Date: '2022/07/26',
-                days: '14',
-                files: 'aaaa',
-                applied: '2022/07/09',
-                reason: 'kaksdkaskdaskdaskdkasdkasdksakdaskdasd',
-                aprrovedBy: 'Đạt',
-                avatar: 'https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien-600x600.jpg',
-                status: 'Pending',
-                rejectReason: 'bla bla bla bla',
-                rejectBy: 'Đạt',
-            },
-
-            {
-                id: '7',
-                email: 'VietDH16022000@gmail.com',
-                name: 'Đặng Hoàng Việt',
-                Time: '17:00 ~ 20:00',
-                timeInMonth: '0',
-                timeInYear: '0',
-                Date: '2022/07/26',
-                days: '14',
-                files: 'aaaa',
-                applied: '2022/07/09',
-                reason: 'kaksdkaskdaskdaskdkasdkasdksakdaskdasd',
-                aprrovedBy: 'Đạt',
-                avatar: 'https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien-600x600.jpg',
-                status: 'Pending',
-                rejectReason: 'bla bla bla bla',
-                rejectBy: 'Đạt',
-            },
-
-            {
-                id: '9',
-                email: 'VietDH16022000@gmail.com',
-                name: 'Đặng Hoàng Việt',
-                Time: '17:00 ~ 20:00',
-                timeInMonth: '0',
-                timeInYear: '0',
-                Date: '2022/07/26',
-                days: '14',
-                files: 'aaaa',
-                applied: '2022/07/09',
-                reason: 'kaksdkaskdaskdaskdkasdkasdksakdaskdasd',
-                aprrovedBy: 'Đạt',
-                avatar: 'https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien-600x600.jpg',
-                status: 'Pending',
-                rejectReason: 'bla bla bla bla',
-                rejectBy: 'Đạt',
-            },
-
-            {
-                id: '11',
-                email: 'VietDH16022000@gmail.com',
-                name: 'Đặng Hoàng Việt',
-                Time: '17:00 ~ 20:00',
-                timeInMonth: '0',
-                timeInYear: '0',
-                Date: '2022/07/26',
-                days: '14',
-                files: 'aaaa',
-                applied: '2022/07/09',
-                reason: 'kaksdkaskdaskdaskdkasdkasdksakdaskdasd',
-                aprrovedBy: 'Đạt',
-                avatar: 'https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien-600x600.jpg',
-                status: 'Pending',
-                rejectReason: 'bla bla bla bla',
-                rejectBy: 'Đạt',
-            },
-        ]
+  
 
         return OvertimeList.map((item, index) => ({
             ...item,
@@ -363,7 +265,7 @@ export default function ManageOvertime() {
                 </div>
             ),
             number: index + 1,
-            action: (
+            action: userRole === 'Manager' ? (
                 <div className="flex gap-2">
                     <div className="border-[1px] border-green-500 text-green-500 px-4 py-1 rounded-3xl hover:bg-green-500 hover:text-white">
                         <LoadingButton
@@ -400,7 +302,7 @@ export default function ManageOvertime() {
                         </LoadingButton>
                     </div>
                 </div>
-            ),
+            ) : '',
             actionAll: (
                 <Tooltip title="Delete">
                     <div onClick={handleClickOpen}>
@@ -410,19 +312,22 @@ export default function ManageOvertime() {
                     </div>
                 </Tooltip>
             ),
-            status:
-                item.status == 'Approved' ? (
-                    <p className="text-green-500">{item.status}</p>
-                ) : item.status == 'Rejected' ? (
-                    <p className="text-red-500">{item.status}</p>
-                ) : (
-                    <p className="text-yellow-500">{item.status}</p>
-                ),
+           
+            status:   item.status == 'Approved' ? (
+                <p className="text-green-500">{item.status}</p>
+            ) : item.status == 'Rejected' ? (
+                <p className="text-red-500">{item.status}</p>
+            ) : (
+                <p className="text-yellow-500">{item.status}</p>
+            ) ,
+               
         }))
     }
 
     const rows = createRows()
-
+    const filteredColumnsPending = userRole === 'HR'
+    ? columnsPending.filter(column => column.id !== 'action')
+    : columnsPending;
     const tabsData = [
         {
             label: 'Pending Overtime',
@@ -433,7 +338,7 @@ export default function ManageOvertime() {
                     <TableData
                         tableHeight={480}
                         rows={rows}
-                        columns={columnsPending}
+                        columns={filteredColumnsPending}
                         page={page}
                         rowsPerPage={rowsPerPage}
                         handleChangePage={handleChangePage}
@@ -497,9 +402,10 @@ export default function ManageOvertime() {
             ),
         },
     ]
+   
     return (
         <div>
-            <NavbarHR />
+            {userRole === 'Manager' ? <Navbar /> : <NavbarHR />}
             <PopupConfirm open={open} clickOpenFalse={clickOpenFalse} />
             <div className="sm:ml-64 pt-20 h-screen bg-gray-50">
                 <div className="px-12 py-6">

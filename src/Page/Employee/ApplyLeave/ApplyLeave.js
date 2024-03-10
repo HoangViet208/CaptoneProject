@@ -397,7 +397,10 @@ export default function ApplyLeave() {
             if (RuleDay > 2 && RuleDay < 5 && daysToAdd > 3) {
                 setLeaveErorr('đăng ký trước 2 ngày với đơn nghỉ dưới 3 ngày')
             }
-            if (RuleDay > 5 && RuleDay < 10 && daysToAdd > 7) {
+            if (RuleDay > 3 && RuleDay < 7 && daysToAdd > 7) {
+                setLeaveErorr('trước 5 ngày vs đơn từ 3-7 ngày')
+            }
+            if (RuleDay < 10 && daysToAdd > 7) {
                 setLeaveErorr('trước 5 ngày vs đơn từ 3-7 ngày')
             } else {
                 for (let i = 0; i < daysToAdd; i++) {
@@ -525,7 +528,7 @@ export default function ApplyLeave() {
     const viewModalContent = (
         <Fragment>
             <form onSubmit={formik.handleSubmit}>
-                <div className="grid md:grid-cols-2 gap-5 py-4 px-8 mb-5 lg:my-0">
+                <div className="grida md:grid-cols-2 gap-5 py-4 px-8 mb-5 lg:my-0">
                     <div>
                         <div className="my-2">
                             <div className="mb-1">
@@ -606,7 +609,119 @@ export default function ApplyLeave() {
                                     </Popover>
                                 )}
                             </div>
+                        </div>
+                        <div className="my-2 text-xs text-gray-400 ">
+                            <h2>leave regulations</h2>
+                            <p>-Register 2 working days in advance if the leave application is less than 3 days</p>
+                            <p>-Register 5 working days in advance if the leave application is from 3 to 7 days</p>
+                            <p>-Register 10 working days in advance if the leave application is 7 days or more</p>
+                        </div>
+                        <div className="bg-blue-100 relative">
+                            <h2 className="font-medium m-4 text-lg text-gray-500">Your Leave Details</h2>
+                            <div className="h-[280px]  px-4  overflow-auto">
+                                {leaveErorr ? (
+                                    <div className="text-red-500 text-center">{leaveErorr}</div>
+                                ) : leaveDaysDate.length < 1 ? (
+                                    <div className="text-center  text-gray-400">Yet to select dates</div>
+                                ) : (
+                                    leaveDaysDate.map((item, index) => {
+                                        return (
+                                            <div key={index} className="flex mb-5  items-center">
+                                                <div className="font-bold">
+                                                    {item.title}{' '}
+                                                    <strong className="font-semibold text-gray-500">
+                                                        ({getDayOfWeek(item.title)}){' '}
+                                                    </strong>
+                                                </div>
+                                                <div className="flex gap-3 text-blue-400 font-bold ml-auto">
+                                                    {item.type == 'nonWorkingDay' ? (
+                                                        <strong className="font-semibold text-gray-500">
+                                                            Non Working days
+                                                        </strong>
+                                                    ) : (
+                                                        <CustomSelect
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            className="outline-none text-blue-400"
+                                                            variant="standard"
+                                                            value={item.type}
+                                                            onChange={(e) => {
+                                                                const updatedDataList = [...leaveDaysDate]
+                                                                updatedDataList[index].type = e.target.value
+                                                                setLeaveDaysDate(updatedDataList)
+                                                            }}
+                                                        >
+                                                            <MenuItem value={'Full Day'}>Full Day</MenuItem>
+                                                            <MenuItem value={'Morning'}>Morning</MenuItem>
+                                                            <MenuItem value={'Afternoon'}>Afternoon</MenuItem>
+                                                        </CustomSelect>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        )
+                                    })
+                                )}
+                            </div>
+                        </div>
 
+                            {/* <div className="absolute font-medium text-gray-500 bottom-0 p-4 text-lg  w-full flex ">
+                            <div>Total Leave</div>
+                            <div className="ml-auto">{leaveDays}</div>
+                        </div> */}
+                            {isAction == 2 ? (
+                                <div className="my-2">
+                                    <div className="mb-1">
+                                        <strong className=" text-gray-500">Manager Approve</strong>{' '}
+                                    </div>
+                                    <FormControl fullWidth>
+                                        <TextField
+                                            multiline
+                                            id="outlined-basic"
+                                            size="small"
+                                            disabled
+                                            className="bg-gray-300 text-black"
+                                            value={'Đặng Hoàng Việt'}
+                                            name="Manager Approve"
+                                            variant="outlined"
+                                            InputProps={{
+                                                style: { color: 'black' },
+                                            }}
+                                        />
+                                    </FormControl>
+                                    {formik.errors.leaveReason && formik.touched.leaveReason && (
+                                        <div className="text mt-1 text-red-600 font-semibold">
+                                            {formik.errors.leaveReason}
+                                        </div>
+                                    )}
+                                </div>
+                            ) : (
+                                ''
+                            )}
+                            <div className="my-2">
+                                <div className="mb-1">
+                                    <strong className=" text-gray-500">Total Leave</strong>{' '}
+                                </div>
+                                <FormControl fullWidth>
+                                    <TextField
+                                        multiline
+                                        id="outlined-basic"
+                                        size="small"
+                                        disabled
+                                        className="bg-gray-300 text-black"
+                                        value={leaveDays}
+                                        name="leaveReason"
+                                        variant="outlined"
+                                        InputProps={{
+                                            style: { color: 'black' },
+                                        }}
+                                    />
+                                </FormControl>
+                                {formik.errors.leaveReason && formik.touched.leaveReason && (
+                                    <div className="text mt-1 text-red-600 font-semibold">
+                                        {formik.errors.leaveReason}
+                                    </div>
+                                )}
+                            </div>
                             <div className="my-2">
                                 <div className="mb-1">
                                     <strong className=" text-gray-500">Leave Reason</strong>{' '}
@@ -674,58 +789,6 @@ export default function ApplyLeave() {
                                     )}
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div className="bg-blue-100 relative">
-                        <h2 className="font-medium m-4 text-lg text-gray-500">Your Leave Details</h2>
-                        <div className="h-[280px]  px-4  overflow-auto">
-                            {leaveErorr ? (
-                                <div className="text-red-500 text-center">{leaveErorr}</div>
-                            ) : leaveDaysDate.length < 1 ? (
-                                <div className="text-center  text-gray-400">Yet to select dates</div>
-                            ) : (
-                                leaveDaysDate.map((item, index) => {
-                                    return (
-                                        <div key={index} className="flex mb-5  items-center">
-                                            <div className="font-bold">
-                                                {item.title}{' '}
-                                                <strong className="font-semibold text-gray-500">
-                                                    ({getDayOfWeek(item.title)}){' '}
-                                                </strong>
-                                            </div>
-                                            <div className="flex gap-3 text-blue-400 font-bold ml-auto">
-                                                {item.type == 'nonWorkingDay' ? (
-                                                    <strong className="font-semibold text-gray-500">
-                                                        Non Working days
-                                                    </strong>
-                                                ) : (
-                                                    <CustomSelect
-                                                        labelId="demo-simple-select-label"
-                                                        id="demo-simple-select"
-                                                        className="outline-none text-blue-400"
-                                                        variant="standard"
-                                                        value={item.type}
-                                                        onChange={(e) => {
-                                                            const updatedDataList = [...leaveDaysDate]
-                                                            updatedDataList[index].type = e.target.value
-                                                            setLeaveDaysDate(updatedDataList)
-                                                        }}
-                                                    >
-                                                        <MenuItem value={'Full Day'}>Full Day</MenuItem>
-                                                        <MenuItem value={'Morning'}>Morning</MenuItem>
-                                                        <MenuItem value={'Afternoon'}>Afternoon</MenuItem>
-                                                    </CustomSelect>
-                                                )}
-                                            </div>
-                                        </div>
-                                    )
-                                })
-                            )}
-                        </div>
-                        <div className="absolute font-medium text-gray-500 bottom-0 p-4 text-lg  w-full flex ">
-                            <div>Total Leave</div>
-                            <div className="ml-auto">{leaveDays}</div>
-                        </div>
                     </div>
                 </div>
 

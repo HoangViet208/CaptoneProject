@@ -47,12 +47,17 @@ function App() {
                 <Route path="/Manager/RiskEmployee" exact component={RiskEmployee} />
                 <Route path="/Manager/TimeSheet" exact component={TimeSheet} />
                 <Route path="/Manager/Report" exact component={Report} />
+                <Route path="/Manager/ManageLeave" exact component={ManageLeave} />
+                <Route path="/Manager/ManageHoliday" exact component={Holiday} />
+                <Route path="/Manager/ManageOvertime" exact component={ManageOvertime} />
+                <Route path="/Manager/ManageWorked" exact component={ManageWorked} />
                 {/*HR*/}
                 <Route path="/Hr/Workslot" exact component={WorkSlot} />
                 <Route path="/Hr/ManageLeave" exact component={ManageLeave} />
                 <Route path="/Hr/ManageHoliday" exact component={Holiday} />
                 <Route path="/Hr/ManageOvertime" exact component={ManageOvertime} />
                 <Route path="/Hr/ManageWorked" exact component={ManageWorked} />
+                <Route path="/Hr/TimeSheet" exact component={TimeSheet} />
                 {/*Employee*/}
 
                 <Route path="/Employee/Dashboard" exact component={DashboardEmployee} />

@@ -71,7 +71,7 @@ const columnsModal = [
 const breadcrumbIcons = () => {
     const data = [
         { title: 'Dashboard', icon: <DashboardIcon />, url: '/', status: true },
-        { title: 'Department', icon: <BadgeIcon />, url: '/team', status: false },
+        { title: 'Team', icon: <BadgeIcon />, url: '/team', status: false },
     ]
     return data
 }
@@ -422,13 +422,13 @@ export default function Team() {
             <PopupData
                 open={open}
                 clickOpenFalse={clickOpenFalse}
-                viewTitle={isAction == 1 ? 'Add Department' : isAction == 2 ? 'Update Department' : ''}
+                viewTitle={isAction == 1 ? 'Add Team' : isAction == 2 ? 'Update Team' : ''}
                 viewContent={viewModalContent}
             />
 
             <div className="sm:ml-64 pt-20 h-screen bg-gray-50">
                 <div className="px-12 py-6">
-                    <h2 className="font-bold text-3xl mb-4"> Department List </h2>
+                    <h2 className="font-bold text-3xl mb-4"> Team List </h2>
                     <div className="w-full mb-8 flex font-semibold items-center">
                         <IconBreadcrumbs data={dataBreadcrumbs} />
                         <div className="ml-auto flex gap-5 uppercase">
@@ -439,7 +439,7 @@ export default function Team() {
                                 color="primary"
                                 className=""
                             >
-                                Add New Department
+                                Add New Team
                             </Button>
                         </div>
                     </div>
