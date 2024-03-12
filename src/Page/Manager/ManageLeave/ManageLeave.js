@@ -652,7 +652,7 @@ export default function ManageLeave() {
                                     <i className="text-red-500">*</i>
                                 </div>
 
-                                <a className="mt-2 text-blue-400 underline" href={chosenFileName} target="_blank">
+                                <a className="mt-2 2 text-blue-400 underline" href={chosenFileName} target="_blank">
                                     Link
                                 </a>
                             </div>
