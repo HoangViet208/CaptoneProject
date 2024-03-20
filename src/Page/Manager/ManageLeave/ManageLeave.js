@@ -30,6 +30,9 @@ import FilterListIcon from '@mui/icons-material/FilterList'
 import DeleteIcon from '@mui/icons-material/Delete'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import EventNoteIcon from '@mui/icons-material/EventNote'
+import PersonIcon from '@mui/icons-material/Person'
+import AddIcon from '@mui/icons-material/Add'
+import DoneIcon from '@mui/icons-material/Done'
 //Component
 import Search from '../../../Components/Search'
 import TableData from '../../../Components/Table'
@@ -175,25 +178,25 @@ export default function ManageLeave() {
         },
     ])
     const [userRole, setUserRole] = useState(() => {
-        const userString = localStorage.getItem('role');
-        const userObject = JSON.parse(userString);
-        return userObject || 'defaultRole'; // Provide a default role if undefined
-      });
-    
-      useEffect(() => {
+        const userString = localStorage.getItem('role')
+        const userObject = JSON.parse(userString)
+        return userObject || 'defaultRole' // Provide a default role if undefined
+    })
+
+    useEffect(() => {
         // Update the userRole state whenever 'role' is changed in localStorage
         const handleStorageChange = () => {
-          const userString = localStorage.getItem('role');
-          const userObject = JSON.parse(userString);
-          setUserRole(userObject || 'defaultRole');
-        };
-    
-        window.addEventListener('storage', handleStorageChange);
-    
+            const userString = localStorage.getItem('role')
+            const userObject = JSON.parse(userString)
+            setUserRole(userObject || 'defaultRole')
+        }
+
+        window.addEventListener('storage', handleStorageChange)
+
         return () => {
-          window.removeEventListener('storage', handleStorageChange);
-        };
-      }, []);
+            window.removeEventListener('storage', handleStorageChange)
+        }
+    }, [])
     const [isLoading, setIsLoading] = useState(false)
     const [leaveDays, setLeaveDays] = useState(0)
     const [leaveDaysDate, setLeaveDaysDate] = useState([])
@@ -326,8 +329,6 @@ export default function ManageLeave() {
             })
     }
     const createRows = () => {
-      
-
         return ApplyLeaveList.map((item, index) => ({
             ...item,
             reason: (
@@ -472,10 +473,11 @@ export default function ManageLeave() {
                                     size="small"
                                     type="date"
                                     error={formik.touched.leaveType && formik.errors.leaveType ? true : undefined}
-                                    className="mt-2 w-full"
+                                    className="mt-2 w-full text-black"
                                     value={formik.values.leaveType}
                                     name="leaveType"
                                     variant="outlined"
+                                    readOnly
                                 >
                                     {ApplyLeaveTypeList.map((item, index) => {
                                         return (
@@ -515,115 +517,155 @@ export default function ManageLeave() {
                                 />
                             </div>
 
-                       
-                   
-                    <div className="my-2 text-xs text-gray-400 ">
-                            <h2>leave regulations</h2>
-                            <p>-Register 2 working days in advance if the leave application is less than 3 days</p>
-                            <p>-Register 5 working days in advance if the leave application is from 3 to 7 days</p>
-                            <p>-Register 10 working days in advance if the leave application is 7 days or more</p>
-                        </div>
-                        <div className="bg-blue-100 relative">
-                            <h2 className="font-medium m-4 text-lg text-gray-500">Your Leave Details</h2>
-                            <div className="h-[280px]  px-4  overflow-auto">
-                                {  leaveDaysDate.length < 1 ? (
-                                    <div className="text-center  text-gray-400">Yet to select dates</div>
-                                ) : (
-                                    leaveDaysDate.map((item, index) => {
-                                        return (
-                                            <div key={index} className="flex mb-5  items-center">
-                                                <div className="font-bold">
-                                                    {item.title}{' '}
-                                                    <strong className="font-semibold text-gray-500">
-                                                        ({getDayOfWeek(item.title)}){' '}
-                                                    </strong>
-                                                </div>
-                                                <div className="flex gap-3 text-blue-400 font-bold ml-auto">
-                                                    {item.type == 'nonWorkingDay' ? (
-                                                        <strong className="font-semibold text-gray-500">
-                                                            Non Working days
-                                                        </strong>
-                                                    ) : (
-                                                        <CustomSelect
-                                                            labelId="demo-simple-select-label"
-                                                            id="demo-simple-select"
-                                                            className="outline-none text-blue-400"
-                                                            variant="standard"
-                                                            value={item.type}
-                                                            onChange={(e) => {
-                                                                const updatedDataList = [...leaveDaysDate]
-                                                                updatedDataList[index].type = e.target.value
-                                                                setLeaveDaysDate(updatedDataList)
-                                                            }}
-                                                        >
-                                                            <MenuItem value={'Full Day'}>Full Day</MenuItem>
-                                                            <MenuItem value={'Morning'}>Morning</MenuItem>
-                                                            <MenuItem value={'Afternoon'}>Afternoon</MenuItem>
-                                                        </CustomSelect>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        )
-                                    })
-                                )}
+                            <div className="my-2 text-xs text-gray-400 ">
+                                <h2>Leave regulations</h2>
+                                <p>-Register 2 working days in advance if the leave application is less than 3 days</p>
+                                <p>-Register 5 working days in advance if the leave application is from 3 to 7 days</p>
+                                <p>-Register 10 working days in advance if the leave application is 7 days or more</p>
                             </div>
-                        </div>
+                            <div className="bg-blue-100 relative">
+                                <h2 className="font-medium m-4 text-lg text-gray-500">Your Leave Details</h2>
+                                <div className="h-[280px]  px-4  overflow-auto">
+                                    {leaveDaysDate.length < 1 ? (
+                                        <div className="text-center  text-gray-400">Yet to select dates</div>
+                                    ) : (
+                                        leaveDaysDate.map((item, index) => {
+                                            return (
+                                                <div key={index} className="flex mb-5  items-center">
+                                                    <div className="font-bold">
+                                                        {item.title}{' '}
+                                                        <strong className="font-semibold text-gray-500">
+                                                            ({getDayOfWeek(item.title)}){' '}
+                                                        </strong>
+                                                    </div>
+                                                    <div className="flex gap-3 text-blue-400 font-bold ml-auto">
+                                                        {item.type == 'nonWorkingDay' ? (
+                                                            <strong className="font-semibold text-gray-500">
+                                                                Non Working days
+                                                            </strong>
+                                                        ) : (
+                                                            <CustomSelect
+                                                                labelId="demo-simple-select-label"
+                                                                id="demo-simple-select"
+                                                                className="outline-none text-blue-400"
+                                                                variant="standard"
+                                                                value={item.type}
+                                                                onChange={(e) => {
+                                                                    const updatedDataList = [...leaveDaysDate]
+                                                                    updatedDataList[index].type = e.target.value
+                                                                    setLeaveDaysDate(updatedDataList)
+                                                                }}
+                                                            >
+                                                                <MenuItem value={'Full Day'}>Full Day</MenuItem>
+                                                                <MenuItem value={'Morning'}>Morning</MenuItem>
+                                                                <MenuItem value={'Afternoon'}>Afternoon</MenuItem>
+                                                            </CustomSelect>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            )
+                                        })
+                                    )}
+                                </div>
+                            </div>
 
                             {/* <div className="absolute font-medium text-gray-500 bottom-0 p-4 text-lg  w-full flex ">
                             <div>Total Leave</div>
                             <div className="ml-auto">{leaveDays}</div>
                         </div> */}
-                           
-                                <div className="my-2">
-                                    <div className="mb-1">
-                                        <strong className=" text-gray-500">Manager Approve</strong>{' '}
-                                    </div>
-                                    <FormControl fullWidth>
-                                        <TextField
-                                            multiline
-                                            id="outlined-basic"
-                                            size="small"
-                                            disabled
-                                            className="bg-gray-300 text-black"
-                                            value={'Đặng Hoàng Việt'}
-                                            name="Manager Approve"
-                                            variant="outlined"
-                                            InputProps={{
-                                                style: { color: 'black' },
-                                            }}
-                                        />
-                                    </FormControl>
-                                    {formik.errors.leaveReason && formik.touched.leaveReason && (
-                                        <div className="text mt-1 text-red-600 font-semibold">
-                                            {formik.errors.leaveReason}
-                                        </div>
-                                    )}
+
+                            <div className="my-2">
+                                <Button
+                                    startIcon={<AddIcon />}
+                                    type="submit"
+                                    loadingPosition="start"
+                                    variant="contained"
+                                    color="error"
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                        width: '100%',
+                                    }}
+                                >
+                                    <span>Manage Leave</span>
+                                    <span></span>
+                                </Button>
+                            </div>
+
+                            <div className="my-2">
+                                <div className="mb-1">
+                                    <strong className=" text-gray-500">Manager Approve</strong>{' '}
                                 </div>
-                           
+                                <FormControl fullWidth>
+                                    <Button
+                                        disabled
+                                        endIcon={<DoneIcon color="success" />}
+                                        variant="contained"
+                                        sx={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                            alignItems: 'center',
+                                            width: '100%',
+                                            textTransform: 'none',
+                                            height: '40px',
+                                            text: 'black',
+                                        }}
+                                    >
+                                        <span className="text-black">Manage Leave</span>
+                                        <span></span>
+                                    </Button>
+                                </FormControl>
+                            </div>
                             <div className="my-2">
                                 <div className="mb-1">
                                     <strong className=" text-gray-500">Total Leave</strong>{' '}
                                 </div>
                                 <FormControl fullWidth>
-                                    <TextField
-                                        multiline
+                                    <Button
+                                        disabled
+                                        endIcon={<DoneIcon color="success" />}
+                                        variant="contained"
+                                        sx={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                            alignItems: 'center',
+                                            width: '100%',
+                                            textTransform: 'none',
+                                            height: '40px',
+                                            text: 'black',
+                                        }}
+                                    >
+                                        <span className="text-black">{leaveDays}</span>
+                                        <span></span>
+                                    </Button>
+                                </FormControl>
+                            </div>
+
+                            <div className="my-2">
+                                <div className="mb-1">
+                                    <strong className=" text-gray-500">Substitute support staff</strong>{' '}
+                                </div>
+                                <FormControl fullWidth>
+                                    <Select
                                         id="outlined-basic"
                                         size="small"
-                                        disabled
-                                        className="bg-gray-300 text-black"
-                                        value={leaveDays}
-                                        name="leaveReason"
+                                        error={formik.touched.Substitute && formik.errors.Substitute ? true : undefined}
+                                        onChange={formik.handleChange}
+                                        className="mt-2 w-full"
+                                        value={formik.values.Substitute}
+                                        name="Substitute"
                                         variant="outlined"
-                                        InputProps={{
-                                            style: { color: 'black' },
-                                        }}
-                                    />
+                                        IconComponent={() => <PersonIcon className="mr-3" />}
+                                        readOnly
+                                    >
+                                        {ApplyLeaveTypeList.map((item, index) => (
+                                            <MenuItem key={index} value={item.id}>
+                                                {item.name}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
                                 </FormControl>
-                                {formik.errors.leaveReason && formik.touched.leaveReason && (
-                                    <div className="text mt-1 text-red-600 font-semibold">
-                                        {formik.errors.leaveReason}
-                                    </div>
-                                )}
                             </div>
                             <div className="my-2">
                                 <div className="mb-1">
@@ -665,41 +707,42 @@ export default function ManageLeave() {
                         <Button variant="contained" color="inherit" autoFocus onClick={clickOpenFalse}>
                             Cancel
                         </Button>
-                        {userRole === 'Manager' ?
-                        <Fragment>
-                             <LoadingButton
-                            onClick={handleClickReject}
-                            loading={loadingRJButton}
-                            variant="contained"
-                            color="error"
-                            sx={{
-                                textAlign: 'center',
-                            }}
-                            autoFocus
-                        >
-                            Reject
-                        </LoadingButton>
-                        <LoadingButton
-                            onClick={handleClickApprove}
-                            loading={loadingButton}
-                            variant="contained"
-                            color="primary"
-                            sx={{
-                                textAlign: 'center',
-                            }}
-                            autoFocus
-                        >
-                            Approve
-                        </LoadingButton>
-                        </Fragment>
-                        : ``}
-                       
+                        {userRole === 'Manager' ? (
+                            <Fragment>
+                                <LoadingButton
+                                    onClick={handleClickReject}
+                                    loading={loadingRJButton}
+                                    variant="contained"
+                                    color="error"
+                                    sx={{
+                                        textAlign: 'center',
+                                    }}
+                                    autoFocus
+                                >
+                                    Reject
+                                </LoadingButton>
+                                <LoadingButton
+                                    onClick={handleClickApprove}
+                                    loading={loadingButton}
+                                    variant="contained"
+                                    color="primary"
+                                    sx={{
+                                        textAlign: 'center',
+                                    }}
+                                    autoFocus
+                                >
+                                    Approve
+                                </LoadingButton>
+                            </Fragment>
+                        ) : (
+                            ``
+                        )}
                     </div>
                 </DialogActions>
             </form>
         </Fragment>
     )
-   
+
     return (
         <div>
             {userRole === 'Manager' ? <Navbar /> : <NavbarHR />}
@@ -711,7 +754,7 @@ export default function ManageLeave() {
                 size="md"
             />
             <PopupConfirm open={open} clickOpenFalse={clickOpenFalse} />
-            <div className="sm:ml-64 pt-20 h-screen bg-gray-50">
+            <div className="sm:ml-64 pt-12 h-screen bg-gray-50">
                 <div className="px-12 py-6">
                     <h2 className="font-bold text-3xl mb-4">Manage Leave List </h2>
                     <div className="mb-8 font-semibold">

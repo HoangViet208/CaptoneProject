@@ -40,7 +40,8 @@ import EmailIcon from '@mui/icons-material/Email'
 import AddIcon from '@mui/icons-material/Add'
 import EditIcon from '@mui/icons-material/Edit'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
-
+import DoneIcon from '@mui/icons-material/Done'
+import PersonIcon from '@mui/icons-material/Person'
 //Component
 import TableData from '../../../Components/Table'
 import IconBreadcrumbs from '../../../Components/Breadcrumbs'
@@ -169,6 +170,7 @@ export default function ApplyLeave() {
         leaveReason: '',
         leaveType: '',
         leaveDate: '',
+        Substitute: '',
     }
     const formik = useFormik({
         initialValues: initialValues,
@@ -611,7 +613,7 @@ export default function ApplyLeave() {
                             </div>
                         </div>
                         <div className="my-2 text-xs text-gray-400 ">
-                            <h2>leave regulations</h2>
+                            <h2>Leave regulations</h2>
                             <p>-Register 2 working days in advance if the leave application is less than 3 days</p>
                             <p>-Register 5 working days in advance if the leave application is from 3 to 7 days</p>
                             <p>-Register 10 working days in advance if the leave application is 7 days or more</p>
@@ -664,131 +666,167 @@ export default function ApplyLeave() {
                             </div>
                         </div>
 
-                            {/* <div className="absolute font-medium text-gray-500 bottom-0 p-4 text-lg  w-full flex ">
+                        {/* <div className="absolute font-medium text-gray-500 bottom-0 p-4 text-lg  w-full flex ">
                             <div>Total Leave</div>
                             <div className="ml-auto">{leaveDays}</div>
                         </div> */}
-                            {isAction == 2 ? (
-                                <div className="my-2">
-                                    <div className="mb-1">
-                                        <strong className=" text-gray-500">Manager Approve</strong>{' '}
-                                    </div>
-                                    <FormControl fullWidth>
-                                        <TextField
-                                            multiline
-                                            id="outlined-basic"
-                                            size="small"
-                                            disabled
-                                            className="bg-gray-300 text-black"
-                                            value={'Đặng Hoàng Việt'}
-                                            name="Manager Approve"
-                                            variant="outlined"
-                                            InputProps={{
-                                                style: { color: 'black' },
-                                            }}
-                                        />
-                                    </FormControl>
-                                    {formik.errors.leaveReason && formik.touched.leaveReason && (
-                                        <div className="text mt-1 text-red-600 font-semibold">
-                                            {formik.errors.leaveReason}
-                                        </div>
-                                    )}
-                                </div>
-                            ) : (
-                                ''
-                            )}
-                            <div className="my-2">
-                                <div className="mb-1">
-                                    <strong className=" text-gray-500">Total Leave</strong>{' '}
-                                </div>
-                                <FormControl fullWidth>
-                                    <TextField
-                                        multiline
-                                        id="outlined-basic"
-                                        size="small"
-                                        disabled
-                                        className="bg-gray-300 text-black"
-                                        value={leaveDays}
-                                        name="leaveReason"
-                                        variant="outlined"
-                                        InputProps={{
-                                            style: { color: 'black' },
-                                        }}
-                                    />
-                                </FormControl>
-                                {formik.errors.leaveReason && formik.touched.leaveReason && (
-                                    <div className="text mt-1 text-red-600 font-semibold">
-                                        {formik.errors.leaveReason}
-                                    </div>
-                                )}
+                        <div className="my-2">
+                            <Button
+                                startIcon={<AddIcon />}
+                                type="submit"
+                                loadingPosition="start"
+                                variant="contained"
+                                color="error"
+                                sx={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    width: '100%',
+                                }}
+                            >
+                                <span>Manage Leave</span>
+                                <span></span>
+                            </Button>
+                        </div>
+
+                        <div className="my-2">
+                            <div className="mb-1">
+                                <strong className=" text-gray-500">Manager Approve</strong>{' '}
                             </div>
-                            <div className="my-2">
-                                <div className="mb-1">
-                                    <strong className=" text-gray-500">Leave Reason</strong>{' '}
-                                    <i className="text-red-500">*</i>
-                                </div>
-                                <FormControl fullWidth>
-                                    <TextField
-                                        multiline
-                                        rows={6}
-                                        id="outlined-basic"
-                                        size="small"
-                                        error={
-                                            formik.touched.leaveReason && formik.errors.leaveReason ? true : undefined
-                                        }
-                                        onChange={formik.handleChange}
-                                        className="mt-2 w-full"
-                                        value={formik.values.leaveReason}
-                                        name="leaveReason"
-                                        variant="outlined"
-                                    />
-                                </FormControl>
-                                {formik.errors.leaveReason && formik.touched.leaveReason && (
-                                    <div className="text mt-1 text-red-600 font-semibold">
-                                        {formik.errors.leaveReason}
-                                    </div>
-                                )}
+                            <FormControl fullWidth>
+                                <Button
+                                    disabled
+                                    endIcon={<DoneIcon color="success" />}
+                                    variant="contained"
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                        width: '100%',
+                                        textTransform: 'none',
+                                        height: '40px',
+                                        text: 'black',
+                                    }}
+                                >
+                                    <span className="text-black">Manage Leave</span>
+                                    <span></span>
+                                </Button>
+                            </FormControl>
+                        </div>
+                        <div className="my-2">
+                            <div className="mb-1">
+                                <strong className=" text-gray-500">Total Leave</strong>{' '}
                             </div>
-                            <div className="my-2 relative">
-                                <div className="mb-1">
-                                    <strong className=" text-gray-500">Chosen File</strong>{' '}
-                                    <i className="text-red-500">*</i>
-                                </div>
-                                <input
-                                    className="hidden w-full" // Ẩn input mặc định
-                                    type="file"
-                                    ref={fileInputRef}
-                                    onChange={handleFileInputChange}
+                            <FormControl fullWidth>
+                                <Button
+                                    disabled
+                                    endIcon={<DoneIcon color="success" />}
+                                    variant="contained"
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                        width: '100%',
+                                        textTransform: 'none',
+                                        height: '40px',
+                                        text: 'black',
+                                    }}
+                                >
+                                    <span className="text-black">{leaveDays}</span>
+                                    <span></span>
+                                </Button>
+                            </FormControl>
+                        </div>
+
+                        <div className="my-2">
+                            <div className="mb-1">
+                                <strong className=" text-gray-500">Substitute support staff</strong>{' '}
+                            </div>
+                            <FormControl fullWidth>
+                                <Select
+                                    id="outlined-basic"
+                                    size="small"
+                                    error={formik.touched.Substitute && formik.errors.Substitute ? true : undefined}
+                                    onChange={formik.handleChange}
+                                    className="mt-2 w-full"
+                                    value={formik.values.Substitute}
+                                    name="Substitute"
+                                    variant="outlined"
+                                    IconComponent={() => (
+                                        <PersonIcon className='mr-3' />
+                                      )}
+                                >
+                                    {ApplyLeaveTypeList.map((item, index) => (
+                                        <MenuItem key={index} value={item.id}>
+                                            {item.name}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                        </div>
+                        <div className="my-2">
+                            <div className="mb-1">
+                                <strong className=" text-gray-500">Leave Reason</strong>{' '}
+                                <i className="text-red-500">*</i>
+                            </div>
+                            <FormControl fullWidth>
+                                <TextField
+                                    multiline
+                                    rows={6}
+                                    id="outlined-basic"
+                                    size="small"
+                                    error={formik.touched.leaveReason && formik.errors.leaveReason ? true : undefined}
+                                    onChange={formik.handleChange}
+                                    className="mt-2 w-full"
+                                    value={formik.values.leaveReason}
+                                    name="leaveReason"
+                                    variant="outlined"
                                 />
+                            </FormControl>
+                            {formik.errors.leaveReason && formik.touched.leaveReason && (
+                                <div className="text mt-1 text-red-600 font-semibold">{formik.errors.leaveReason}</div>
+                            )}
+                        </div>
+                        <div className="my-2 relative">
+                            <div className="mb-1">
+                                <strong className=" text-gray-500">Chosen File</strong>{' '}
+                                <i className="text-red-500">*</i>
+                            </div>
+                            <input
+                                className="hidden w-full" // Ẩn input mặc định
+                                type="file"
+                                ref={fileInputRef}
+                                onChange={handleFileInputChange}
+                            />
+                            <button
+                                onClick={(e) => handleBrowseButtonClick(e)}
+                                className="border-[1px] cursor-pointer rounded-md h-10 bg-gray-300 px-4 absolute "
+                            >
+                                Browse
+                            </button>
+                            <div>
                                 <button
                                     onClick={(e) => handleBrowseButtonClick(e)}
-                                    className="border-[1px] cursor-pointer rounded-md h-10 bg-gray-300 px-4 absolute "
+                                    className="cursor-pointer  block rounded-md h-10 text-left w-full pl-[90px] font-medium text-gray-600  border border-gray-300   bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                                    variant="contained"
                                 >
-                                    Browse
+                                    {chosenFileName.length > 16
+                                        ? chosenFileName.slice(0, 16).concat('...')
+                                        : chosenFileName}
                                 </button>
-                                <div>
-                                    <button
-                                        onClick={(e) => handleBrowseButtonClick(e)}
-                                        className="cursor-pointer  block rounded-md h-10 text-left w-full pl-[90px] font-medium text-gray-600  border border-gray-300   bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                                        variant="contained"
+                                {error && <div className="text-red-500 w-full">{error}</div>}
+                                {isAction == 2 && (
+                                    <a
+                                        className="mt-2 text-blue-400 underline"
+                                        href={chosenFileName}
+                                        target="_blank"
+                                        rel="noreferrer"
                                     >
-                                        {chosenFileName.length > 16
-                                            ? chosenFileName.slice(0, 16).concat('...')
-                                            : chosenFileName}
-                                    </button>
-                                    {error && <div className="text-red-500 w-full">{error}</div>}
-                                    {isAction == 2 && (
-                                        <a
-                                            className="mt-2 text-blue-400 underline"
-                                            href={chosenFileName}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                        >
-                                            Link
-                                        </a>
-                                    )}
-                                </div>
+                                        Link
+                                    </a>
+                                )}
                             </div>
+                        </div>
                     </div>
                 </div>
 
@@ -914,7 +952,7 @@ export default function ApplyLeave() {
                 viewContent={viewModalContent}
                 size="md"
             />
-            <div className="sm:ml-64 pt-20 h-screen bg-gray-50">
+            <div className="sm:ml-64 pt-12 h-screen bg-gray-50">
                 <div className="px-12 py-6">
                     <h2 className="font-bold text-3xl mb-4"> Apply Leave List </h2>
                     <div className="w-full mb-8 flex font-semibold items-center">

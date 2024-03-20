@@ -302,7 +302,7 @@ export default function DashboardEmployee() {
                     </div>
                 </Popover>
             )}
-            <div className="sm:ml-64 pt-20 h-screen bg-gray-50">
+            <div className="sm:ml-64 pt-12 h-screen bg-gray-50">
                 <div className="px-12 py-6">
                     <h2 className="font-bold text-3xl mb-4"> Dashboard </h2>
                     <div className="grid  grid-cols-1 md:grid-cols-2 xl:grid-cols-3  2xl:grid-cols-3 gap-10 mt-4">

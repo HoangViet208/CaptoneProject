@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { useDispatch } from 'react-redux'
@@ -7,6 +7,7 @@ import { loginAsyncApi } from '../../Redux/Account/AccountSlice'
 import { LoadingButton } from '@mui/lab'
 
 function Login() {
+    const buttonRef = useRef(null)
     const [showPassword, setShowPassword] = React.useState(false)
     const [username, setUsername] = React.useState()
     const [loadingButton, setLoadingButton] = useState(false)
@@ -102,6 +103,12 @@ function Login() {
             password: Yup.string().required('Please Enter your Password'),
         }),
     })
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault() // Ngăn chặn hành động mặc định của phím Enter (ví dụ như submit form)
+            buttonRef.current.focus() // Tập trung vào nút button
+        }
+    }
 
     return (
         <div className="md:grid grid-cols-2 h-full bg-gray-50">
@@ -131,6 +138,7 @@ function Login() {
                                 </label>
                                 <input
                                     //type="email"
+                                    onKeyDown={handleKeyPress}
                                     value={username}
                                     onChange={(e) => setUsername(e.target.value)}
                                     name="email"
@@ -148,6 +156,7 @@ function Login() {
                                     Password
                                 </label>
                                 <input
+                                    onKeyDown={handleKeyPress}
                                     type="password"
                                     name="password"
                                     value={password}
@@ -183,6 +192,7 @@ function Login() {
                                 </Link>
                             </div> */}
                             <LoadingButton
+                                ref={buttonRef}
                                 onClick={handleSubmit}
                                 loading={loadingButton}
                                 variant="contained"

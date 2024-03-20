@@ -64,7 +64,9 @@ const columns = [
 const columnsModal = [
     { id: 'number', label: 'Number', minWidth: 50, maxWidth: 50, align: 'center' },
     { id: 'email', label: 'Email', minWidth: 50, maxWidth: 100, align: 'left' },
+    { id: 'role', label: 'Role', minWidth: 50, maxWidth: 100, align: 'left' },
     { id: 'info', label: 'Name', minWidth: 50, maxWidth: 100, align: 'left' },
+   
     // { id: 'manager', label: 'Manager', minWidth: 200, align: 'center' },
 ]
 
@@ -426,7 +428,7 @@ export default function Team() {
                 viewContent={viewModalContent}
             />
 
-            <div className="sm:ml-64 pt-20 h-screen bg-gray-50">
+            <div className="sm:ml-64 pt-12 h-screen bg-gray-50">
                 <div className="px-12 py-6">
                     <h2 className="font-bold text-3xl mb-4"> Team List </h2>
                     <div className="w-full mb-8 flex font-semibold items-center">

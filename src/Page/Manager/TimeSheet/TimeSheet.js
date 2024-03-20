@@ -230,7 +230,7 @@ export default function TimeSheet() {
                 viewAction={viewModalAction}
             />
             {userRole === 'Manager' ? <Navbar /> : <NavbarHR />}
-            <div className="sm:ml-64 h-screen pt-20 bg-gray-50">
+            <div className="sm:ml-64 h-screen pt-12 bg-gray-50">
                 <div className="px-12 py-6">
                     <h2 className="font-bold text-3xl mb-4">Time Sheet List </h2>
                     <div className="mb-8 font-semibold">

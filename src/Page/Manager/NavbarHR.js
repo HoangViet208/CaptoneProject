@@ -192,7 +192,7 @@ export default function NavbarHR() {
             />
             {isModalOpen && MobiUi}
             <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-                <div className="px-3 py-3 lg:px-5 lg:pl-3">
+                <div className="px-3 py-1 lg:px-5 lg:pl-3">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center justify-start">
                             <button
@@ -220,10 +220,10 @@ export default function NavbarHR() {
                             <Link to="/Hr/ManageLeave" className="flex ml-2 md:mr-24 cursor-pointer">
                                 <img
                                     src="https://t4.ftcdn.net/jpg/03/14/20/15/360_F_314201503_drLthBSHdqSBwBOGo8AHreHIGnfLEUJi.jpg"
-                                    className="h-12 mr-3"
+                                    className="h-10 mr-3"
                                     alt="FlowBite Logo"
                                 />
-                                <span className="self-center text-lg font-semibold sm:text-2xl whitespace-nowrap dark:text-white">
+                                <span className="self-center text-lg font-semibold sm:text-xl whitespace-nowrap dark:text-white">
                                     Time Keeping
                                 </span>
                             </Link>
@@ -241,7 +241,7 @@ export default function NavbarHR() {
                                             aria-haspopup="true"
                                             aria-expanded={open ? 'true' : undefined}
                                         >
-                                            <Avatar sx={{ width: 48, height: 48 }}>{avatar && avatar.charAt(0)}</Avatar>
+                                            <Avatar sx={{ width: 32, height: 32 }}>{avatar && avatar.charAt(0)}</Avatar>
                                         </IconButton>
                                     </Tooltip>
                                 </div>
@@ -306,7 +306,7 @@ export default function NavbarHR() {
 
             <aside
                 id="logo-sidebar"
-                className=" fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
+                className=" fixed top-0 left-0 z-40 w-64 h-screen pt-12 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
                 aria-label="Sidebar"
             >
                 <div className="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">

@@ -650,7 +650,7 @@ export default function Overtime() {
                     
                 </Popover>
             )} */}
-            <div className="sm:ml-64 pt-20 h-screen bg-gray-50">
+            <div className="sm:ml-64 pt-12 h-screen bg-gray-50">
                 <div className="px-12 py-6">
                     <h2 className="font-bold text-3xl mb-4"> Request Overtime List </h2>
                     <div className="w-full mb-8 flex font-semibold items-center">
