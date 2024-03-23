@@ -289,6 +289,7 @@ export default function Team() {
             ),
             email: item.email,
             number: index + 1,
+            role: item.roleName
         }))
     }
     const rowsModal = createRowsModal()

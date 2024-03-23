@@ -5,12 +5,14 @@ import GetDepartmentApi, {
     PostDepartmentApi,
     PutDepartmentApi,
     GetDepartmentWithoutApi,
+    GetALLEmployeeInDepartmentApi,
 } from '../../Api/DepartmentApi'
 
 const initialState = {
     DepartmentList: [],
     DepartmentWithoutList: [],
     DepartmentDetail: [],
+    AllEmployeeInDepartment: {},
 }
 
 const authSlice = createSlice({
@@ -21,6 +23,7 @@ const authSlice = createSlice({
             state.DepartmentDetail = []
             state.DepartmentList = []
             state.DepartmentWithoutList = []
+            state.AllEmployeeInDepartment = {}
         },
     },
     extraReducers: (builder) => {
@@ -30,6 +33,12 @@ const authSlice = createSlice({
                 state.DepartmentList = action.payload
             })
             .addCase(getDepartmentAsyncApi.rejected, (state, action) => {})
+        builder
+            .addCase(GetALLEmployeeInDepartmentAsyncApi.pending, (state) => {})
+            .addCase(GetALLEmployeeInDepartmentAsyncApi.fulfilled, (state, action) => {
+                state.AllEmployeeInDepartment = action.payload
+            })
+            .addCase(GetALLEmployeeInDepartmentAsyncApi.rejected, (state, action) => {})
         builder
             .addCase(GetDepartmentWithoutAsyncApi.pending, (state) => {})
             .addCase(GetDepartmentWithoutAsyncApi.fulfilled, (state, action) => {
@@ -120,3 +129,17 @@ export const DeleteDepartmentAsyncApi = createAsyncThunk('DepartmentReducer/dele
         throw errors[0].errorMessage
     }
 })
+
+export const GetALLEmployeeInDepartmentAsyncApi = createAsyncThunk(
+    'DepartmentReducer/getALLEmployeeInDepartmentApi',
+    async (id) => {
+        try {
+            const response = await GetALLEmployeeInDepartmentApi(id)
+            return response
+        } catch (error) {
+            const json = error.response.data
+            const errors = json[''].errors
+            throw errors[0].errorMessage
+        }
+    }
+)

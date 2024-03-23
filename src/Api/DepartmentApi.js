@@ -53,4 +53,13 @@ export const DeleteDepartmentApi = async (id) => {
     }
 }
 
+export const GetALLEmployeeInDepartmentApi = async (id) => {
+    try {
+        const response = await axios.get(`${API_URL}/Department/get-department-info-by-employee-id?employeeId=${id}`)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
 export default GetDepartmentApi

@@ -30,7 +30,7 @@ const columns = [
     { id: 'info', label: 'Name', minWidth: 200, align: 'left' },
     { id: 'departmentName', label: 'Team', minWidth: 250, align: 'left' },
     { id: 'address', label: 'Address', minWidth: 250, align: 'left' },
-    { id: 'phoneNumber', label: 'Phone Number', minWidth: 100, align: 'left' },
+    { id: 'phoneNumber', label: 'Phone Number', minWidth: 150, align: 'left' },
     { id: 'gender', label: 'Gender', minWidth: 50, align: 'center' },
     { id: 'status', label: 'Status', minWidth: 50, align: 'center' },
     { id: 'action', label: 'Actions', minWidth: 50, align: 'center' },

@@ -69,6 +69,7 @@ import {
 import TableLoadData from '../../../Components/TableLoad'
 import { useSnackbar } from '../../../Hook/useSnackbar'
 import PopupAlert from '../../../Components/PopupAlert'
+import { GetALLEmployeeInDepartmentAsyncApi } from '../../../Redux/Department/DepartmentSlice'
 
 const CustomSelect = styled(Select)`
     color: #60a5fa; // Đổi màu chữ thành xanh
@@ -104,6 +105,11 @@ const breadcrumbIcons = () => {
 const dataBreadcrumbs = breadcrumbIcons()
 
 export default function ApplyLeave() {
+    const [openAccordionComponent, setOpenAccordionComponent] = useState(false)
+    const handleopenAccordionComponent = () => {
+        setOpenAccordionComponent(!openAccordionComponent)
+    }
+
     const [loadingButton, setLoadingButton] = useState(false)
     //popover
     const [anchorEl, setAnchorEl] = React.useState(null)
@@ -158,11 +164,13 @@ export default function ApplyLeave() {
     ])
     //setting redux
     const { ApplyLeaveByEmployee, ApplyLeaveTypeList, WorkSetting, loading } = useSelector((state) => state.applyLeave)
+    const { AllEmployeeInDepartment } = useSelector((state) => state.department)
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(GetWorkDateSettingByIdAsyncApi(employeeId))
         dispatch(getApplyLeaveByIdAsyncApi(employeeId))
         dispatch(GetApplyLeaveTypeAsyncApi())
+        dispatch(GetALLEmployeeInDepartmentAsyncApi(employeeId))
         return () => {}
     }, [])
     const minDate = startOfDay(threeDaysLater)
@@ -247,6 +255,7 @@ export default function ApplyLeave() {
                                             setOpen(false)
                                             setIsAction(0)
                                             formik.setTouched({})
+                                            setOpenAccordionComponent(false)
                                             SetClick(false)
                                             formik.setErrors({})
                                             setChosenFileName('Chosen file')
@@ -293,6 +302,7 @@ export default function ApplyLeave() {
                                                 leaveType: '',
                                                 leaveDate: '',
                                             })
+                                            setOpenAccordionComponent(false)
                                             setSelectedImage()
                                             setDateRange([
                                                 {
@@ -360,6 +370,7 @@ export default function ApplyLeave() {
                             formik.setTouched({})
                             formik.setErrors({})
                             setChosenFileName('Chosen file')
+                            setOpenAccordionComponent(false)
                             formik.setValues({
                                 leaveReason: '',
                                 leaveType: '',
@@ -492,6 +503,7 @@ export default function ApplyLeave() {
         setRequestId()
         setIsAction(0)
         setSelectedImage()
+        setOpenAccordionComponent(false)
         seterrorImport(false)
         formik.setTouched({})
         formik.setErrors({})
@@ -527,6 +539,15 @@ export default function ApplyLeave() {
     const handleClickSave = () => {
         setOpen(false)
     }
+    const [selectedLeaveTypeName, setSelectedLeaveTypeName] = useState('')
+
+   
+    const handleLeaveTypeChange = (event) => {
+        const selectedLeaveTypeId = event.target.value
+        const selectedLeaveType = ApplyLeaveTypeList.find((item) => item.id === selectedLeaveTypeId)
+        setSelectedLeaveTypeName(selectedLeaveType.name)
+    }
+    console.log('AllEmployeeInDepartment', AllEmployeeInDepartment)
     const viewModalContent = (
         <Fragment>
             <form onSubmit={formik.handleSubmit}>
@@ -542,7 +563,7 @@ export default function ApplyLeave() {
                                     size="small"
                                     type="date"
                                     error={formik.touched.leaveType && formik.errors.leaveType ? true : undefined}
-                                    onChange={formik.handleChange}
+                                    onChange={handleLeaveTypeChange}
                                     className="mt-2 w-full"
                                     value={formik.values.leaveType}
                                     name="leaveType"
@@ -673,7 +694,6 @@ export default function ApplyLeave() {
                         <div className="my-2">
                             <Button
                                 startIcon={<AddIcon />}
-                                type="submit"
                                 loadingPosition="start"
                                 variant="contained"
                                 color="error"
@@ -683,10 +703,34 @@ export default function ApplyLeave() {
                                     alignItems: 'center',
                                     width: '100%',
                                 }}
+                                onClick={handleopenAccordionComponent}
                             >
                                 <span>Manage Leave</span>
                                 <span></span>
                             </Button>
+                            <div className={openAccordionComponent == false ? 'hidden' : 'h-full'}>
+                                <h2 className="text-center text-xl my-2">Leave Information</h2>
+                                <div className="grid grid-cols-2 text-center ">
+                                    <div className="bg-yellow-500 ">Leave Type</div>
+                                    <div className="bg-red-500 ">{selectedLeaveTypeName}</div>
+                                </div>
+                                <div className="grid grid-cols-2 my-1 ">
+                                    <div className="text-left ">Standard Leave Days of Current Year</div>
+                                    <div className=" text-center ">365</div>
+                                </div>
+                                <div className="grid grid-cols-2 my-1 ">
+                                    <div className=" text-left">Standard Leave Days Transferred from Previous Year</div>
+                                    <div className=" text-center">0</div>
+                                </div>
+                                <div className="grid grid-cols-2 my-1 ">
+                                    <div className=" text-left">Total Used Leave Days in Previous Year</div>
+                                    <div className="text-center ">0</div>
+                                </div>
+                                <div className="grid grid-cols-2 my-1">
+                                    <div className="text-left ">Remaining Unused Leave Days</div>
+                                    <div className="text-center ">365</div>
+                                </div>
+                            </div>
                         </div>
 
                         <div className="my-2">
@@ -708,7 +752,7 @@ export default function ApplyLeave() {
                                         text: 'black',
                                     }}
                                 >
-                                    <span className="text-black">Manage Leave</span>
+                                    <span className="text-black">{AllEmployeeInDepartment.managerName}</span>
                                     <span></span>
                                 </Button>
                             </FormControl>
@@ -752,15 +796,14 @@ export default function ApplyLeave() {
                                     value={formik.values.Substitute}
                                     name="Substitute"
                                     variant="outlined"
-                                    IconComponent={() => (
-                                        <PersonIcon className='mr-3' />
-                                      )}
+                                    IconComponent={() => <PersonIcon className="mr-3" />}
                                 >
-                                    {ApplyLeaveTypeList.map((item, index) => (
-                                        <MenuItem key={index} value={item.id}>
-                                            {item.name}
-                                        </MenuItem>
-                                    ))}
+                                    {AllEmployeeInDepartment.supportHuman &&
+                                        AllEmployeeInDepartment.supportHuman.map((item, index) => (
+                                            <MenuItem key={index} value={item.id}>
+                                                {item.firstName} {item.lastName}
+                                            </MenuItem>
+                                        ))}
                                 </Select>
                             </FormControl>
                         </div>
