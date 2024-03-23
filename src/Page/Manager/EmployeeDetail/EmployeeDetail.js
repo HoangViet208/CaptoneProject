@@ -34,6 +34,10 @@ import { getDepartmentAsyncApi } from '../../../Redux/Department/DepartmentSlice
 import { getRoleAsyncApi } from '../../../Redux/Account/AccountSlice'
 import NavbarManager from '../Navbar'
 import IconBreadcrumbs from '../../../Components/Breadcrumbs'
+import General from './General'
+import AllRequest from './AllRequest'
+import TabsData from '../../../Components/Tabs'
+import PopupData from '../../../Components/Popup'
 
 const breadcrumbIcons = () => {
     const data = [
@@ -46,7 +50,32 @@ const breadcrumbIcons = () => {
 
 const dataBreadcrumbs = breadcrumbIcons()
 
+const tabsData = [
+    {
+        label: 'General',
+        //icon: <AccountBoxIcon />,
+        view: <General />,
+    },
+    {
+        label: 'All Request',
+      //icon: <KeyIcon />,
+        view: <AllRequest />,
+    },
+    // {
+    //     label: 'Time Entries',
+    //     icon: <EventNoteIcon />,
+    //     view: <TimeEntries />,
+    // },
+]
+
 export default function EmployeeDetail() {
+    const [openModal, setOpenModal] = useState(false)
+    const clickOpenFalse = (event) => {
+        setOpenModal(false)
+    }
+    const handleClickOpenAdd = () => {
+        setOpenModal(true)
+    }
     const [click, SetClick] = useState(false)
     const [loadingButton, setLoadingButton] = useState(false)
     const showSnackbar = useSnackbar()
@@ -155,232 +184,14 @@ export default function EmployeeDetail() {
                 })
         },
     })
+    let viewModalContent = <TabsData data={tabsData} />
     return (
         <div className="sm:ml-64 pt-12 h-screen bg-gray-50">
+        
             <NavbarManager />
-            <div className="px-12 py-6">
-                <h2 className="font-bold text-3xl mb-4"> Employee List </h2>
-                <div className="mb-8 font-semibold">
-                    <IconBreadcrumbs data={dataBreadcrumbs} />
-                </div>
-            </div>
-            <div className="bg-white block gap-10 my-5 lg:my-0 lg:flex px-12">
-                <div className="flex flex-col gap-5 w-full items-center h-[600px] rounded-2xl bg-white shadow-lg pt-16 my-5 lg:w-1/3 lg:my-0">
-                    <Avatar className="mx-auto" sx={{ width: 280, height: 280 }} />
-
-                    {/* <p className="text-center text-lg text-gray-400 font-semibold">Allowed *.jpeg, *.jpg, *.png, *.gif</p>
-                <Button className="" variant="contained" component="label">
-                    Upload Image
-                    <input
-                        type="file"
-                        hidden
-                        onChange={(event) => {
-                            setSelectedImage(event.target.files[0])
-                            SetClick(true)
-                        }}
-                    />
-                </Button> */}
-                </div>
-                <div className="rounded-2xl bg-white shadow-lg lg:w-2/3">
-                    <form onSubmit={formik.handleSubmit}>
-                        <div className=" gap-5 py-4 px-8 mb-5 lg:my-0">
-                            <div className="my-2">
-                                <TextField
-                                    className="w-full"
-                                    id="outlined-basic"
-                                    disabled={true}
-                                    error={formik.touched.username && formik.errors.username ? true : undefined}
-                                    value={formik.values.username}
-                                    name="username"
-                                    label="Username"
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    variant="outlined"
-                                />
-                                {formik.errors.username && formik.touched.username && (
-                                    <div className="text mt-1 text-red-600 font-semibold">{formik.errors.username}</div>
-                                )}
-                            </div>
-                            <div className="my-2">
-                                <FormControl fullWidth>
-                                    <InputLabel id="demo-simple-select-label">role</InputLabel>
-                                    <Select
-                                        id="outlined-basic"
-                                        disabled
-                                        error={formik.touched.roleID && formik.errors.roleID ? true : undefined}
-                                        className="w-full"
-                                        value={formik.values.roleID}
-                                        name="roleID"
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                        label="role"
-                                        variant="outlined"
-                                    >
-                                        {RoleList.map((item, index) => {
-                                            return (
-                                                <MenuItem key={index} value={item.id}>
-                                                    {item.name}
-                                                </MenuItem>
-                                            )
-                                        })}
-                                    </Select>
-                                </FormControl>
-                                {formik.errors.roleID && formik.touched.roleID && (
-                                    <div className="text mt-1 text-red-600 font-semibold">{formik.errors.roleID}</div>
-                                )}
-                            </div>
-                            <div className="my-2">
-                                <FormControl fullWidth>
-                                    <InputLabel id="demo-simple-select-label">Department</InputLabel>
-                                    <Select
-                                        id="outlined-basic"
-                                        disabled
-                                        error={
-                                            formik.touched.departmentID && formik.errors.departmentID ? true : undefined
-                                        }
-                                        className="w-full"
-                                        value={formik.values.departmentID}
-                                        name="departmentID"
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                        label="Department"
-                                        variant="outlined"
-                                    >
-                                        {DepartmentList.map((item, index) => {
-                                            return (
-                                                <MenuItem key={index} value={item.id}>
-                                                    {item.name}
-                                                </MenuItem>
-                                            )
-                                        })}
-                                    </Select>
-                                </FormControl>
-                                {formik.errors.departmentID && formik.touched.departmentID && (
-                                    <div className="text mt-1 text-red-600 font-semibold">
-                                        {formik.errors.departmentID}
-                                    </div>
-                                )}
-                            </div>
-                            <div className="grid grid-cols-2 gap-5">
-                                <div className="my-2">
-                                    <TextField
-                                        id="outlined-basic"
-                                        error={formik.touched.firstName && formik.errors.firstName ? true : undefined}
-                                        fullWidth
-                                        value={formik.values.firstName}
-                                        name="firstName"
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                        label="First Name"
-                                        variant="outlined"
-                                    />
-                                    {formik.errors.firstName && formik.touched.firstName && (
-                                        <div className="text mt-1 text-red-600 font-semibold">
-                                            {formik.errors.firstName}
-                                        </div>
-                                    )}
-                                </div>
-                                <div className="my-2">
-                                    <TextField
-                                        id="outlined-basic"
-                                        error={formik.touched.lastName && formik.errors.lastName ? true : undefined}
-                                        fullWidth
-                                        value={formik.values.lastName}
-                                        name="lastName"
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                        label="Last Name"
-                                        variant="outlined"
-                                    />
-                                    {formik.errors.lastName && formik.touched.lastName && (
-                                        <div className="text mt-1 text-red-600 font-semibold">
-                                            {formik.errors.lastName}
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-
-                            <div className="my-2">
-                                <TextField
-                                    id="outlined-basic"
-                                    error={formik.touched.address && formik.errors.address ? true : undefined}
-                                    className="w-full"
-                                    value={formik.values.address}
-                                    name="address"
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    label="Address"
-                                    variant="outlined"
-                                />
-                                {formik.errors.address && formik.touched.address && (
-                                    <div className="text mt-1 text-red-600 font-semibold">{formik.errors.address}</div>
-                                )}
-                            </div>
-                            <div className="my-2">
-                                <FormControl>
-                                    <FormLabel id="demo-radio-buttons-group-label">Gender</FormLabel>
-                                    <RadioGroup
-                                        aria-labelledby="demo-radio-buttons-group-label"
-                                        defaultValue="female"
-                                        error={formik.touched.gender && formik.errors.gender ? true : undefined}
-                                        className="w-full"
-                                        value={formik.values.gender}
-                                        name="gender"
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                    >
-                                        <Grid container spacing={1} alignItems="center">
-                                            <Grid item>
-                                                <FormControlLabel value={true} control={<Radio />} label="Female" />
-                                            </Grid>
-                                            <Grid item>
-                                                <FormControlLabel value={false} control={<Radio />} label="Male" />
-                                            </Grid>
-                                        </Grid>
-                                    </RadioGroup>
-                                </FormControl>
-
-                                {formik.errors.gender && formik.touched.gender && (
-                                    <div className="text mt-1 text-red-600 font-semibold">{formik.errors.gender}</div>
-                                )}
-                            </div>
-                            <div className="my-2">
-                                <TextField
-                                    id="outlined-basic"
-                                    error={formik.touched.phoneNumber && formik.errors.phoneNumber ? true : undefined}
-                                    className="w-full"
-                                    value={formik.values.phoneNumber}
-                                    name="phoneNumber"
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    label="Phone Number"
-                                    variant="outlined"
-                                />
-                                {formik.errors.phoneNumber && formik.touched.phoneNumber && (
-                                    <div className="text mt-1 text-red-600 font-semibold">
-                                        {formik.errors.phoneNumber}
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-
-                        <LoadingButton
-                            className=" right-8 float-right"
-                            startIcon={<AddIcon />}
-                            type="submit"
-                            loading={loadingButton}
-                            loadingPosition="start"
-                            color="info"
-                            variant="contained"
-                            sx={{
-                                textAlign: 'center',
-                            }}
-                            autoFocus
-                        >
-                            Save
-                        </LoadingButton>
-                    </form>
-                </div>
+          
+            <div className=" px-12 pt-2">
+                <TabsData data={tabsData} />
             </div>
         </div>
     )

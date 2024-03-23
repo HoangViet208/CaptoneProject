@@ -3,8 +3,10 @@ import Navbar from '../Navbar'
 import { NavLink } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
+
+
 //Mui
-import { Avatar, IconButton, Tooltip } from '@mui/material'
+import {  IconButton, Tooltip, FormControl, InputLabel, Select, MenuItem, } from '@mui/material'
 
 //Icon
 import VisibilityIcon from '@mui/icons-material/Visibility'
@@ -24,6 +26,9 @@ import IconBreadcrumbs from '../../../Components/Breadcrumbs'
 //redux
 import { getEmployeeAsyncApi, getEmployeeByIdAsyncApi } from '../../../Redux/Employee/employeeSlice'
 import NavbarHR from '../NavbarHR'
+import { getDepartmentAsyncApi } from '../../../Redux/Department/DepartmentSlice'
+import { formattedDate } from '../../../Hook/useFormatDate'
+import PopupData from '../../../Components/Popup'
 
 const columns = [
     { id: 'number', label: 'Number', minWidth: 50, align: 'center' },
@@ -48,16 +53,27 @@ const breadcrumbIcons = () => {
 const dataBreadcrumbs = breadcrumbIcons()
 
 export default function Employee() {
+   
     const [userRole, setUserRole] = useState(() => {
         const userString = localStorage.getItem('role')
         const userObject = JSON.parse(userString)
         return userObject || 'defaultRole' // Provide a default role if undefined
     })
+   
+    const [Department, setDepartment] = useState('')
+    //setting redux
+    const { DepartmentList } = useSelector((state) => state.department)
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(10)
     const [search, setSearch] = useState('')
     const { EmployeeList } = useSelector((state) => state.employee)
     const dispatch = useDispatch()
+    useEffect(() => {
+        dispatch(getDepartmentAsyncApi()).then((res) => {
+            setDepartment(res.payload[0].id)
+        })
+        return () => {}
+    }, [])
     useEffect(() => {
         const userStringEmployeeName = localStorage.getItem('employeeId')
         const employeeId = JSON.parse(userStringEmployeeName)
@@ -73,7 +89,9 @@ export default function Employee() {
     const handleChangePage = (newPage) => {
         setPage(newPage)
     }
-
+    const handleChangeDepartment = (event) => {
+        setDepartment(event.target.value)
+    }
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(+event.target.value)
         setPage(0)
@@ -81,6 +99,7 @@ export default function Employee() {
     const callbackSearch = (childData) => {
         setSearch(childData)
     }
+
     const createRows = () => {
         return EmployeeList.map((item, index) => ({
             ...item,
@@ -128,9 +147,12 @@ export default function Employee() {
         }))
     }
     const rows = createRows()
-
+  
+  
+   
     return (
         <div>
+            
             {userRole === 'Manager' ? <Navbar /> : <NavbarHR />}
             <div className="sm:ml-64 pt-12 h-screen bg-gray-50">
                 <div className="px-12 py-6">
@@ -138,10 +160,48 @@ export default function Employee() {
                     <div className="mb-8 font-semibold">
                         <IconBreadcrumbs data={dataBreadcrumbs} />
                     </div>
+                    <div></div>
                     <div className="bg-white p-4">
                         <div className="mb-5 flex items-center">
-                            <Search parentCallback={callbackSearch} />
-                            <div className="ml-auto md:mr-16 mr-4"></div>
+                            <div className='flex'>
+                            <FormControl sx={{ width: 300,  }}>
+                                <Search parentCallback={callbackSearch} />
+                            </FormControl>
+                            
+                            </div>
+                           
+                            <div className="ml-auto md:mr-16 mr-4">
+                                {userRole === 'Manager' ? (
+                                    ``
+                                ) : userRole === 'HR' ? (
+                                    <div className="">
+                                        <FormControl sx={{ width: 300,  }}>
+                                            <InputLabel size="small" id="demo-simple-select-label">
+                                                Team
+                                            </InputLabel>
+                                            <Select
+                                                size="small"
+                                                className="bg-white"
+                                                labelId="demo-simple-select-label"
+                                                id="demo-simple-select"
+                                                value={Department}
+                                                label="Team"
+                                                onChange={handleChangeDepartment}
+                                            >
+                                                {DepartmentList.map((item, index) => {
+                                                    return (
+                                                        <MenuItem key={index} value={item.id}>
+                                                            {item.name}
+                                                        </MenuItem>
+                                                    )
+                                                })}
+                                            </Select>
+                                        </FormControl>
+                                    </div>
+                                ) : (
+                                    ``
+                                )}
+                            </div>
                         </div>
                         <div>
                             <TableData
