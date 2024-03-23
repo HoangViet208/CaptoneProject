@@ -23,6 +23,7 @@ import IconBreadcrumbs from '../../../Components/Breadcrumbs'
 
 //redux
 import { getEmployeeAsyncApi, getEmployeeByIdAsyncApi } from '../../../Redux/Employee/employeeSlice'
+import NavbarHR from '../NavbarHR'
 
 const columns = [
     { id: 'number', label: 'Number', minWidth: 50, align: 'center' },
@@ -47,6 +48,11 @@ const breadcrumbIcons = () => {
 const dataBreadcrumbs = breadcrumbIcons()
 
 export default function Employee() {
+    const [userRole, setUserRole] = useState(() => {
+        const userString = localStorage.getItem('role')
+        const userObject = JSON.parse(userString)
+        return userObject || 'defaultRole' // Provide a default role if undefined
+    })
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(10)
     const [search, setSearch] = useState('')
@@ -125,7 +131,7 @@ export default function Employee() {
 
     return (
         <div>
-            <Navbar />
+            {userRole === 'Manager' ? <Navbar /> : <NavbarHR />}
             <div className="sm:ml-64 pt-12 h-screen bg-gray-50">
                 <div className="px-12 py-6">
                     <h2 className="font-bold text-3xl mb-4"> Employee List </h2>

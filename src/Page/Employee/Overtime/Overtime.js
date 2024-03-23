@@ -19,7 +19,7 @@ import { storage } from '../../../Config/FirebaseConfig'
 
 //Mui
 import { styled } from '@mui/system'
-import { Popover, Select, Button, Tooltip, IconButton, TextField, DialogActions } from '@mui/material'
+import { Popover, Select, Button, Tooltip, IconButton, TextField, DialogActions , FormControl} from '@mui/material'
 import { LoadingButton } from '@mui/lab'
 
 //Icon
@@ -509,6 +509,10 @@ export default function Overtime() {
                             </DemoContainer>
                         </LocalizationProvider>
                     </div>
+                    <div className="my-2 text-xs text-gray-400 ">
+                            <h2>Regulations for registering to work overtime:</h2>
+                            <p>-Register in advance or no later than 02 days after the overtime day</p>
+                        </div>
                     <div className="mb-2">
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <DemoContainer components={['TimePicker']}>
@@ -546,7 +550,77 @@ export default function Overtime() {
                         </LocalizationProvider>
                     </div>
 
-                    <div className="mb-2">
+                   
+                    <div className="my-2 w-[260px]">
+                            <div className="mb-1">
+                                <strong className=" text-gray-500">Number of hours registered for compensatory leave</strong>{' '}
+                            </div>
+                            <FormControl fullWidth>
+                                <Button
+                                    disabled
+                                    variant="contained"
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                        width: '100%',
+                                        textTransform: 'none',
+                                        height: '40px',
+                                        text: 'black',
+                                    }}
+                                >
+                                    <span className="text-black">{leaveDays}</span>
+                                    <span></span>
+                                </Button>
+                            </FormControl>
+                        </div>
+                        <div className="my-2 w-[260px]">
+                            <div className="mb-1">
+                                <strong className=" text-gray-500">Number of hours accumulated during the month</strong>{' '}
+                            </div>
+                            <FormControl fullWidth>
+                                <Button
+                                    disabled
+                                    variant="contained"
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                        width: '100%',
+                                        textTransform: 'none',
+                                        height: '40px',
+                                        text: 'black',
+                                    }}
+                                >
+                                    <span className="text-black">{leaveDays}</span>
+                                    <span></span>
+                                </Button>
+                            </FormControl>
+                        </div>
+                        <div className="my-2  w-[260px]">
+                            <div className="mb-1">
+                                <strong className=" text-gray-500">Cumulative number of hours per year</strong>{' '}
+                            </div>
+                            <FormControl fullWidth>
+                                <Button
+                                    disabled
+                                    variant="contained"
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                        width: '100%',
+                                        textTransform: 'none',
+                                        height: '40px',
+                                        text: 'black',
+                                    }}
+                                >
+                                    <span className="text-black">{leaveDays}</span>
+                                    <span></span>
+                                </Button>
+                            </FormControl>
+                        </div>
+                        <div className="mb-2">
                         <TextField
                             onChange={(e) => setReason(e.target.value)}
                             label={

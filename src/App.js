@@ -52,6 +52,8 @@ function App() {
                 <Route path="/Manager/ManageOvertime" exact component={ManageOvertime} />
                 <Route path="/Manager/ManageWorked" exact component={ManageWorked} />
                 {/*HR*/}
+                <Route path="/Hr/Employee" exact component={Employee} />
+                <Route path="/Hr/Employee/Detail/:id" render={(props) => <EmployeeDetail {...props} />} />
                 <Route path="/Hr/Workslot" exact component={WorkSlot} />
                 <Route path="/Hr/ManageLeave" exact component={ManageLeave} />
                 <Route path="/Hr/ManageHoliday" exact component={Holiday} />

@@ -33,6 +33,7 @@ import EventNoteIcon from '@mui/icons-material/EventNote'
 import PersonIcon from '@mui/icons-material/Person'
 import AddIcon from '@mui/icons-material/Add'
 import DoneIcon from '@mui/icons-material/Done'
+
 //Component
 import Search from '../../../Components/Search'
 import TableData from '../../../Components/Table'
@@ -120,6 +121,10 @@ const breadcrumbIcons = () => {
 const dataBreadcrumbs = breadcrumbIcons()
 
 export default function ManageLeave() {
+    const [openAccordionComponent, setOpenAccordionComponent] = useState(false)
+    const handleopenAccordionComponent = () => {
+        setOpenAccordionComponent(!openAccordionComponent)
+    }
     const [loadingButton, setLoadingButton] = useState(false)
     const [loadingRJButton, setLoadingRJButton] = useState(false)
     const [open, setOpen] = useState(false)
@@ -576,7 +581,7 @@ export default function ManageLeave() {
 
                             <div className="my-2">
                                 <Button
-                                    startIcon={<AddIcon />}
+                                    startIcon={<VisibilityIcon />}
                                     type="submit"
                                     loadingPosition="start"
                                     variant="contained"
@@ -591,6 +596,30 @@ export default function ManageLeave() {
                                     <span>Manage Leave</span>
                                     <span></span>
                                 </Button>
+                                <div className={openAccordionComponent == false ? 'hidden' : 'h-full'}>
+                                <h2 className="text-center text-xl my-2">Leave Information</h2>
+                                <div className="grid grid-cols-2 text-center ">
+                                    <div className="bg-yellow-500 ">Leave Type</div>
+                                    {/* <div className="bg-red-500 ">{selectedLeaveTypeName}</div> */}
+                                    <div className="bg-red-500 ">Sick Leave</div>
+                                </div>
+                                <div className="grid grid-cols-2 my-1 ">
+                                    <div className="text-left ">Standard Leave Days of Current Year</div>
+                                    <div className=" text-center ">365</div>
+                                </div>
+                                <div className="grid grid-cols-2 my-1 ">
+                                    <div className=" text-left">Standard Leave Days Transferred from Previous Year</div>
+                                    <div className=" text-center">0</div>
+                                </div>
+                                <div className="grid grid-cols-2 my-1 ">
+                                    <div className=" text-left">Total Used Leave Days in Previous Year</div>
+                                    <div className="text-center ">0</div>
+                                </div>
+                                <div className="grid grid-cols-2 my-1">
+                                    <div className="text-left ">Remaining Unused Leave Days</div>
+                                    <div className="text-center ">365</div>
+                                </div>
+                            </div>
                             </div>
 
                             <div className="my-2">

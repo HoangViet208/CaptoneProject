@@ -42,6 +42,7 @@ import EditIcon from '@mui/icons-material/Edit'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import DoneIcon from '@mui/icons-material/Done'
 import PersonIcon from '@mui/icons-material/Person'
+import VisibilityIcon from '@mui/icons-material/Visibility'
 //Component
 import TableData from '../../../Components/Table'
 import IconBreadcrumbs from '../../../Components/Breadcrumbs'
@@ -541,12 +542,11 @@ export default function ApplyLeave() {
     }
     const [selectedLeaveTypeName, setSelectedLeaveTypeName] = useState('')
 
-   
-    const handleLeaveTypeChange = (event) => {
-        const selectedLeaveTypeId = event.target.value
-        const selectedLeaveType = ApplyLeaveTypeList.find((item) => item.id === selectedLeaveTypeId)
-        setSelectedLeaveTypeName(selectedLeaveType.name)
-    }
+    // const handleLeaveTypeChange = (event) => {
+    //     const selectedLeaveTypeId = event.target.value
+    //     const selectedLeaveType = ApplyLeaveTypeList.find((item) => item.id === selectedLeaveTypeId)
+    //     setSelectedLeaveTypeName(selectedLeaveType.name)
+    // }
     console.log('AllEmployeeInDepartment', AllEmployeeInDepartment)
     const viewModalContent = (
         <Fragment>
@@ -563,7 +563,8 @@ export default function ApplyLeave() {
                                     size="small"
                                     type="date"
                                     error={formik.touched.leaveType && formik.errors.leaveType ? true : undefined}
-                                    onChange={handleLeaveTypeChange}
+                                    //onChange={handleLeaveTypeChange}
+                                    onChange={formik.handleChange}
                                     className="mt-2 w-full"
                                     value={formik.values.leaveType}
                                     name="leaveType"
@@ -693,7 +694,7 @@ export default function ApplyLeave() {
                         </div> */}
                         <div className="my-2">
                             <Button
-                                startIcon={<AddIcon />}
+                                startIcon={<VisibilityIcon />}
                                 loadingPosition="start"
                                 variant="contained"
                                 color="error"
@@ -712,7 +713,8 @@ export default function ApplyLeave() {
                                 <h2 className="text-center text-xl my-2">Leave Information</h2>
                                 <div className="grid grid-cols-2 text-center ">
                                     <div className="bg-yellow-500 ">Leave Type</div>
-                                    <div className="bg-red-500 ">{selectedLeaveTypeName}</div>
+                                    {/* <div className="bg-red-500 ">{selectedLeaveTypeName}</div> */}
+                                    <div className="bg-red-500 ">Sick Leave</div>
                                 </div>
                                 <div className="grid grid-cols-2 my-1 ">
                                     <div className="text-left ">Standard Leave Days of Current Year</div>

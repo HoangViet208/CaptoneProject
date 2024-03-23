@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import AssessmentIcon from '@mui/icons-material/Assessment'
+import BadgeIcon from '@mui/icons-material/Badge'
 import LogoutIcon from '@mui/icons-material/Logout'
 import InsertChartOutlinedIcon from '@mui/icons-material/InsertChartOutlined'
 import AddToPhotosIcon from '@mui/icons-material/AddToPhotos'
@@ -97,7 +98,6 @@ export default function NavbarHR() {
         <>
             <div onClick={handleClickOut} className="fixed  top-0 left-0 z-40 w-full h-full flex  bg-overlay">
                 <div className="bg-white w-48 mt-12 rounded-lg  h-screen overflow-y-auto dark:bg-gray-800">
-                    <h5 className="text-base font-semibold text-gray-500 uppercase dark:text-gray-400">Menu</h5>
                     <button
                         onClick={handleModalClose}
                         type="button"
@@ -121,6 +121,24 @@ export default function NavbarHR() {
                         <span className="sr-only">Close menu</span>
                     </button>
                     <ul className="space-y-2 font-medium cursor-pointer">
+                        <li className="cursor-pointer p-2">
+                            <Link
+                                to="/Hr/Employee"
+                                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
+                            >
+                                <BadgeIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                <span className="flex-1 ml-3 whitespace-nowrap">Employee</span>
+                            </Link>
+                        </li>
+                        <li className="cursor-pointer p-2">
+                            <Link
+                                to="/Hr/ManageLeave"
+                                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
+                            >
+                                <AssessmentIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                <span className="flex-1 ml-3 whitespace-nowrap">Employee</span>
+                            </Link>
+                        </li>
                         <li className="cursor-pointer p-2">
                             <Link
                                 to="/Hr/ManageOvertime"
@@ -331,7 +349,18 @@ export default function NavbarHR() {
                                 <span className="ml-3 text-lg">Dashboard</span>
                             </Link>
                         </li> */}
-
+                        <li className="cursor-pointer text-center mx-auto justify-center items-center">
+                            <NavLink
+                                to="/Hr/Employee"
+                                className="flex items-center gap-2 p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
+                                activeStyle={{
+                                    background: '#dbeafe',
+                                }}
+                            >
+                                <BadgeIcon className="ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                <span className="ml-3">Employee</span>
+                            </NavLink>
+                        </li>
                         <li className="cursor-pointer text-center mx-auto justify-center items-center">
                             <NavLink
                                 to="/Hr/ManageLeave"
