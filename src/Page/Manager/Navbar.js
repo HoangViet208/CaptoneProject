@@ -17,6 +17,7 @@ import ChangePassword from './Profile/ChangePassword'
 import AccountBoxIcon from '@mui/icons-material/AccountBox'
 import KeyIcon from '@mui/icons-material/Key'
 import TabsData from '../../Components/Tabs'
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 const tabsData = [
     {
         label: 'General',
@@ -141,7 +142,7 @@ export default function NavbarManager() {
                                 <span className="flex-1 ml-3 whitespace-nowrap">Employee</span>
                             </Link>
                         </li>
-                        <li className="cursor-pointer p-2">
+                        {/* <li className="cursor-pointer p-2">
                             <Link
                                 to="/Manager/RiskEmployee"
                                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
@@ -149,7 +150,7 @@ export default function NavbarManager() {
                                 <ContactMailIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
                                 <span className="flex-1 ml-3 whitespace-nowrap">Risk Employee</span>
                             </Link>
-                        </li>
+                        </li> */}
                         <li className="cursor-pointer p-2">
                             <Link
                                 to="/Manager/"
@@ -168,12 +169,21 @@ export default function NavbarManager() {
                                 <span className="flex-1 ml-3 whitespace-nowrap">Report List</span>
                             </Link>
                         </li> */}
+                         <li className="cursor-pointer p-2">
+                            <Link
+                                to="/Manager/ManageLeave"
+                                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
+                            >
+                                <InsertChartOutlinedIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                <span className="flex-1 ml-3 whitespace-nowrap">Manage Leave</span>
+                            </Link>
+                        </li>
                         <li className="cursor-pointer p-2">
                             <Link
                                 to="/Manager/ManageOvertime"
                                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
                             >
-                                <InsertChartOutlinedIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                <AddToPhotosIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
                                 <span className="flex-1 ml-3 whitespace-nowrap">Manage Overtime</span>
                             </Link>
                         </li>
@@ -182,7 +192,7 @@ export default function NavbarManager() {
                                 to="/Manager/ManageWorked"
                                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
                             >
-                                <AddToPhotosIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                <CalendarMonthIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
                                 <span className="flex-1 ml-3 whitespace-nowrap">Manage Worked</span>
                             </Link>
                         </li>
@@ -366,7 +376,7 @@ export default function NavbarManager() {
                                 <span className="ml-3">Employee</span>
                             </NavLink>
                         </li>
-                        <li className="cursor-pointer text-center mx-auto justify-center items-center">
+                        {/* <li className="cursor-pointer text-center mx-auto justify-center items-center">
                             <NavLink
                                 to="/Manager/RiskEmployee"
                                 className="flex items-center gap-2 p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
@@ -377,7 +387,7 @@ export default function NavbarManager() {
                                 <ContactMailIcon className="ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
                                 <span className="ml-3">Risk Employee</span>
                             </NavLink>
-                        </li>
+                        </li> */}
                         <li className="cursor-pointer text-center mx-auto justify-center items-center">
                             <NavLink
                                 to="/Manager/ManageLeave"
@@ -386,7 +396,7 @@ export default function NavbarManager() {
                                     background: '#dbeafe',
                                 }}
                             >
-                                <AssessmentIcon className="ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                <InsertChartOutlinedIcon className="ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
                                 <span className="ml-3">Manage Leave</span>
                             </NavLink>
                         </li>
@@ -398,7 +408,7 @@ export default function NavbarManager() {
                                     background: '#dbeafe',
                                 }}
                             >
-                                <InsertChartOutlinedIcon className="ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                <AddToPhotosIcon className="ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
                                 <span className="ml-3">Manage Overtime</span>
                             </NavLink>
                         </li>
@@ -410,7 +420,7 @@ export default function NavbarManager() {
                                     background: '#dbeafe',
                                 }}
                             >
-                                <AddToPhotosIcon className="ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                <CalendarMonthIcon className="ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
                                 <span className="ml-3">Manage Worked</span>
                             </NavLink>
                         </li>

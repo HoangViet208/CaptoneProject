@@ -62,7 +62,7 @@ const columns = [
     { id: 'number', label: 'Number', minWidth: 50, align: 'center' },
     { id: 'email', label: 'Email', minWidth: 200, align: 'left' },
     { id: 'info', label: 'Name', minWidth: 200, align: 'left' },
-    { id: 'roleName', label: 'Role', minWidth: 250, align: 'left' },
+    { id: 'roleName', label: 'Role', minWidth: 100, align: 'left' },
     { id: 'departmentName', label: 'Team', minWidth: 250, align: 'left' },
     // { id: 'type', label: 'Type', minWidth: 250, align: 'left' },
     { id: 'status', label: 'Status', minWidth: 50, align: 'center' },
@@ -82,7 +82,7 @@ const dataBreadcrumbs = breadcrumbIcons()
 export default function EmployeeAdmin() {
     const showSnackbar = useSnackbar()
     const [page, setPage] = useState(0)
-    const [rowsPerPage, setRowsPerPage] = useState(10)
+    const [rowsPerPage, setRowsPerPage] = useState(4)
     const [open, setOpen] = useState(false)
     const [openTeam, setOpenTeam] = useState(false)
     const [openConfirm, setOpenConfirm] = useState(false)
@@ -349,7 +349,11 @@ export default function EmployeeAdmin() {
                             className={`w-full `}
                             value={formik.values.username}
                             name="username"
-                            label="Username"
+                            label={
+                                <div className="mb-1 flex gap-1">
+                                    <p className=" text-gray-500">Username</p> <i className="text-red-500">*</i>
+                                </div>
+                            }
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             variant="outlined"
@@ -370,7 +374,11 @@ export default function EmployeeAdmin() {
                             name="password"
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            label="password"
+                            label={
+                                <div className="mb-1 flex gap-1">
+                                    <p className=" text-gray-500">Password</p> <i className="text-red-500">*</i>
+                                </div>
+                            }
                             variant="outlined"
                         />
                         {formik.errors.password && formik.touched.password && (
@@ -388,7 +396,11 @@ export default function EmployeeAdmin() {
                                 name="firstName"
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                label="First Name"
+                                label={
+                                    <div className="mb-1 flex gap-1">
+                                        <p className=" text-gray-500">Frist Name</p> <i className="text-red-500">*</i>
+                                    </div>
+                                }
                                 variant="outlined"
                             />
                             {formik.errors.firstName && formik.touched.firstName && (
@@ -405,7 +417,11 @@ export default function EmployeeAdmin() {
                                 name="lastName"
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                label="Last Name"
+                                label={
+                                    <div className="mb-1 flex gap-1">
+                                        <p className=" text-gray-500">Last Name</p> <i className="text-red-500">*</i>
+                                    </div>
+                                }
                                 variant="outlined"
                             />
                             {formik.errors.lastName && formik.touched.lastName && (
@@ -424,7 +440,11 @@ export default function EmployeeAdmin() {
                             name="address"
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            label="Address"
+                            label={
+                                <div className="mb-1 flex gap-1">
+                                    <p className=" text-gray-500">Address</p> <i className="text-red-500">*</i>
+                                </div>
+                            }
                             variant="outlined"
                         />
                         {formik.errors.address && formik.touched.address && (
@@ -433,7 +453,11 @@ export default function EmployeeAdmin() {
                     </div>
                     <div className="my-2">
                         <FormControl>
-                            <FormLabel id="demo-radio-buttons-group-label">Gender</FormLabel>
+                            <FormLabel id="demo-radio-buttons-group-label">               
+                                    <div className="mb-1 flex gap-1">
+                                        <p className=" text-gray-500">Gender</p> <i className="text-red-500">*</i>
+                                    </div>                   
+                            </FormLabel>
                             <RadioGroup
                                 aria-labelledby="demo-radio-buttons-group-label"
                                 defaultValue="female"
@@ -469,7 +493,11 @@ export default function EmployeeAdmin() {
                             name="phoneNumber"
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            label="Phone Number"
+                            label={
+                                <div className="mb-1 flex gap-1">
+                                    <p className=" text-gray-500">Phone number</p> <i className="text-red-500">*</i>
+                                </div>
+                            }
                             variant="outlined"
                         />
                         {formik.errors.phoneNumber && formik.touched.phoneNumber && (
@@ -479,7 +507,11 @@ export default function EmployeeAdmin() {
                     <div className="my-2">
                         <FormControl fullWidth>
                             <InputLabel size="small" id="demo-simple-select-label">
-                                role
+                       
+                                <div className="mb-1 flex gap-1">
+                                    <p className=" text-gray-500">Role</p> <i className="text-red-500">*</i>
+                                </div>
+        
                             </InputLabel>
                             <Select
                                 id="outlined-basic"
@@ -490,7 +522,7 @@ export default function EmployeeAdmin() {
                                 name="roleID"
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                label="role"
+                                label={"role *"}
                                 variant="outlined"
                             >
                                 {RoleList.map((item, index) => {
@@ -680,19 +712,19 @@ export default function EmployeeAdmin() {
                 <hr className="my-6" />
                 <div className="grid text-sm">
                     <div className="">
-                        <strong className="mx-1">Team Member</strong>
+                        <p className="mx-1">Team Member</p>
                         is a person who you want to be monitored
                     </div>
                     <div className="">
-                        <strong className="mx-1">Team Manager</strong>
+                        <p className="mx-1">Team Manager</p>
                         Manage employees' working time and holidays
                     </div>
                     <div className="">
-                        <strong className="mx-1">Team Manager HR</strong>
+                        <p className="mx-1">Team Manager HR</p>
                         can see their team members' tracking data in website
                     </div>
                     <div className="">
-                        <strong className="mx-1">Admin</strong>
+                        <p className="mx-1">Admin</p>
                         has the control of everything from adding a member, creating a team, seeing the tracking data
                     </div>
                 </div>
@@ -709,7 +741,7 @@ export default function EmployeeAdmin() {
             </DialogActions>
         </Fragment>
     )
-    const createRows = () => {  
+    const createRows = () => {
         return EmployeeList.map((item, index) => ({
             ...item,
             email: (
@@ -792,12 +824,13 @@ export default function EmployeeAdmin() {
                     </div>
                     <div className="bg-white p-4">
                         <div className="mb-5 flex items-center">
-                            <Search parentCallback={callbackSearch} />
+                            <Search size="small" parentCallback={callbackSearch} />
                             <div className="ml-auto md:mr-16 mr-4"></div>
                         </div>
                         <div>
                             <TableData
-                                tableHeight={520}
+                                tableHeight={400}
+                                rowsPerPageOptions={[4,25,50]}
                                 rows={rows}
                                 columns={columns}
                                 page={page}

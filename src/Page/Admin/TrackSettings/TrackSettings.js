@@ -42,6 +42,7 @@ import { FormatDateToTime, formatTimeToDate } from '../../../Hook/useFormatDate'
 import { useSnackbar } from '../../../Hook/useSnackbar'
 import PopupData from '../../../Components/Popup'
 import TableData from '../../../Components/Table'
+import NavbarHR from '../../Manager/NavbarHR'
 
 const columns = [
     { id: 'number', label: 'Number', minWidth: 50, align: 'center' },
@@ -307,9 +308,14 @@ export default function TrackSettings() {
     //         : []
     // }
     // const rows = createRows()
+    const [userRole, setUserRole] = useState(() => {
+        const userString = localStorage.getItem('role')
+        const userObject = JSON.parse(userString)
+        return userObject || 'defaultRole' // Provide a default role if undefined
+    })
     return (
         <div>
-            <Navbar />
+            {userRole === 'HR' ? <NavbarHR /> : <Navbar />}
             <div className="sm:ml-64 pt-12 h-screen bg-gray-50">
                 <div className="px-12 ">
                     <h2 className="font-bold text-3xl mb-4 pt-6">Track Settings</h2>
@@ -342,7 +348,7 @@ export default function TrackSettings() {
                         <div className="bg-white col-span-1 p-4 sm:mb-0 mb-10 flex flex-col">
                             <h2 className="text-lg">Work Day Settings</h2>
                             <h2 className="text-gray-600 mb-5">Choose work days</h2>
-                            <div className="grid grid-cols-3 gap-5">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                                 {dateSetting.dateStatus &&
                                     Object.entries(dateStatus).map(([day, checked]) => (
                                         <FormControlLabel
@@ -399,7 +405,7 @@ export default function TrackSettings() {
                         </div>
                         <div className="bg-white p-4 sm:mb-0 mb-10 flex flex-col">
                             <h2 className="text-lg">Work Time Settings</h2>
-                            <div className="grid gap-5 grid-cols-2 mb-2">
+                            <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 mb-2">
                                 <div>
                                     <h2 className="text-gray-600 mt-2">Start Time Morning</h2>
                                     <LocalizationProvider dateAdapter={AdapterDateFns}>

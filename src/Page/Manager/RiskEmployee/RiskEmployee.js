@@ -174,7 +174,7 @@ export default function RiskEmployee() {
                         </div>
                         <div>
                             <TableData
-                                tableHeight={520}
+                                tableHeight={400}
                                 rows={rows}
                                 columns={columns}
                                 page={page}

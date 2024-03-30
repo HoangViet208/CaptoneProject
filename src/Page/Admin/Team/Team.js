@@ -85,9 +85,9 @@ export default function Team() {
 
     const showSnackbar = useSnackbar()
     const [page, setPage] = useState(0)
-    const [rowsPerPage, setRowsPerPage] = useState(10)
+    const [rowsPerPage, setRowsPerPage] = useState(5)
     const [pageModal, setPageModal] = useState(0)
-    const [rowsPerPageModal, setRowsPerPageModal] = useState(10)
+    const [rowsPerPageModal, setRowsPerPageModal] = useState(5)
     const [open, setOpen] = useState(false)
     const [openTeam, setOpenTeam] = useState(false)
     const [openConfirm, setOpenConfirm] = useState(false)
@@ -307,7 +307,11 @@ export default function Team() {
                             name="name"
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            label="Name"
+                            label={
+                                <div className="mb-1 flex gap-1">
+                                    <p className=" text-gray-500">Name</p> <i className="text-red-500">*</i>
+                                </div>
+                            }
                             variant="outlined"
                         />
                         {formik.errors.name && formik.touched.name && (
@@ -453,7 +457,8 @@ export default function Team() {
                         </div>
                         <div>
                             <TableData
-                                tableHeight={550}
+                                tableHeight={460}
+                                rowsPerPageOptions={[5,25,50]}
                                 rows={rows}
                                 columns={columns}
                                 page={page}

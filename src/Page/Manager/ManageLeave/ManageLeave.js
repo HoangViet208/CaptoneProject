@@ -48,6 +48,7 @@ import {
     GetApplyLeaveTypeAsyncApi,
     PutApplyLeaveAsyncApi,
     PutApproveApplyLeaveAsyncApi,
+    PutCancelApprovedLeaveForHRAsyncApi,
     getApplyLeaveAsyncApi,
 } from '../../../Redux/ApplyLeave/ApplyLeaveSlice'
 import { useDispatch, useSelector } from 'react-redux'
@@ -93,7 +94,14 @@ const columnsReject = [
     { id: 'info', label: 'Employee Name', minWidth: 250, align: 'left' },
     { id: 'leavePeriod', label: 'Leave Period', minWidth: 250, align: 'left' },
     { id: 'days', label: 'Days', minWidth: 100, align: 'left' },
-
+    { id: 'type', label: 'Type', minWidth: 100, align: 'left' },
+    { id: 'reason', label: 'Reason', minWidth: 50, align: 'center' },
+]
+const columnsCancel = [
+    { id: 'number', label: 'Number', minWidth: 50, align: 'center' },
+    { id: 'info', label: 'Employee Name', minWidth: 250, align: 'left' },
+    { id: 'leavePeriod', label: 'Leave Period', minWidth: 250, align: 'left' },
+    { id: 'days', label: 'Days', minWidth: 100, align: 'left' },
     { id: 'type', label: 'Type', minWidth: 100, align: 'left' },
     { id: 'reason', label: 'Reason', minWidth: 50, align: 'center' },
 ]
@@ -126,6 +134,7 @@ export default function ManageLeave() {
         setOpenAccordionComponent(!openAccordionComponent)
     }
     const [loadingButton, setLoadingButton] = useState(false)
+    const [idDelete, setIdDelete] = useState()
     const [loadingRJButton, setLoadingRJButton] = useState(false)
     const [open, setOpen] = useState(false)
     const [openModal, setOpenModal] = useState(false)
@@ -145,7 +154,8 @@ export default function ManageLeave() {
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(GetApplyLeaveTypeAsyncApi())
-        dispatch(getApplyLeaveAsyncApi({ name: search, status: valueTabs == 3 ? -1 : valueTabs }))
+        dispatch(getApplyLeaveAsyncApi({ name: search, status: valueTabs == 4 ? -1 : valueTabs }))
+        setPage(0)
         return () => {}
     }, [search, valueTabs])
 
@@ -156,7 +166,8 @@ export default function ManageLeave() {
     const callbackSearch = (childData) => {
         setSearch(childData)
     }
-    const handleClickOpen = () => {
+    const handleClickOpen = (id) => {
+        setIdDelete(id)
         setOpen(true)
     }
     const clickOpenFalse = (event) => {
@@ -333,8 +344,9 @@ export default function ManageLeave() {
                 setLoadingRJButton(false)
             })
     }
+    console.log("ApplyLeaveList", ApplyLeaveList)
     const createRows = () => {
-        return ApplyLeaveList.map((item, index) => ({
+        return ApplyLeaveList && ApplyLeaveList.map((item, index) => ({
             ...item,
             reason: (
                 <Tooltip title={item.reason}>
@@ -370,7 +382,7 @@ export default function ManageLeave() {
             actionAll: (
                 <Tooltip title="Delete">
                     <div>
-                        <IconButton onClick={handleClickOpen}>
+                        <IconButton onClick={() => handleClickOpen(item.id)}>
                             <DeleteIcon />
                         </IconButton>
                     </div>
@@ -381,7 +393,10 @@ export default function ManageLeave() {
                     <p className="text-green-500">Approved</p>
                 ) : item.status == 2 ? (
                     <p className="text-red-500">Reject</p>
-                ) : (
+                ) : item.status == 3 ? (
+                    <p className="text-orange-500">Cancel</p>
+                )
+                 : (
                     <p className="text-yellow-500">Pending</p>
                 ),
         }))
@@ -394,10 +409,10 @@ export default function ManageLeave() {
             label: `Pending Leave`,
             view: searchData(
                 loading == true ? (
-                    <TableLoadData columns={columnsPending} tableHeight={540} />
+                    <TableLoadData columns={columnsPending} tableHeight={400} />
                 ) : (
                     <TableData
-                        tableHeight={480}
+                        tableHeight={380}
                         rows={rows}
                         columns={columnsPending}
                         page={page}
@@ -412,10 +427,10 @@ export default function ManageLeave() {
             label: `Approved Leave`,
             view: searchData(
                 loading == true ? (
-                    <TableLoadData columns={columnsPending} tableHeight={540} />
+                    <TableLoadData columns={columnsPending} tableHeight={400} />
                 ) : (
                     <TableData
-                        tableHeight={480}
+                        tableHeight={380}
                         rows={rows}
                         columns={columnsApprove}
                         page={page}
@@ -430,10 +445,28 @@ export default function ManageLeave() {
             label: `Reject Leave`,
             view: searchData(
                 loading == true ? (
-                    <TableLoadData columns={columnsPending} tableHeight={540} />
+                    <TableLoadData columns={columnsPending} tableHeight={400} />
                 ) : (
                     <TableData
-                        tableHeight={480}
+                        tableHeight={380}
+                        rows={rows}
+                        columns={columnsReject}
+                        page={page}
+                        rowsPerPage={rowsPerPage}
+                        handleChangePage={handleChangePage}
+                        handleChangeRowsPerPage={handleChangeRowsPerPage}
+                    />
+                )
+            ),
+        },
+        {
+            label: `Cancel Leave`,
+            view: searchData(
+                loading == true ? (
+                    <TableLoadData columns={columnsPending} tableHeight={400} />
+                ) : (
+                    <TableData
+                        tableHeight={380}
                         rows={rows}
                         columns={columnsReject}
                         page={page}
@@ -448,10 +481,10 @@ export default function ManageLeave() {
             label: `All Leaves`,
             view: searchData(
                 loading == true ? (
-                    <TableLoadData columns={columnsPending} tableHeight={540} />
+                    <TableLoadData columns={columnsPending} tableHeight={400} />
                 ) : (
                     <TableData
-                        tableHeight={480}
+                        tableHeight={380}
                         rows={rows}
                         columns={columnsAll}
                         page={page}
@@ -597,29 +630,31 @@ export default function ManageLeave() {
                                     <span></span>
                                 </Button>
                                 <div className={openAccordionComponent == false ? 'hidden' : 'h-full'}>
-                                <h2 className="text-center text-xl my-2">Leave Information</h2>
-                                <div className="grid grid-cols-2 text-center ">
-                                    <div className="bg-yellow-500 ">Leave Type</div>
-                                    {/* <div className="bg-red-500 ">{selectedLeaveTypeName}</div> */}
-                                    <div className="bg-red-500 ">Sick Leave</div>
+                                    <h2 className="text-center text-xl my-2">Leave Information</h2>
+                                    <div className="grid grid-cols-2 text-center ">
+                                        <div className="bg-yellow-500 ">Leave Type</div>
+                                        {/* <div className="bg-red-500 ">{selectedLeaveTypeName}</div> */}
+                                        <div className="bg-red-500 ">Sick Leave</div>
+                                    </div>
+                                    <div className="grid grid-cols-2 my-1 ">
+                                        <div className="text-left ">Standard Leave Days of Current Year</div>
+                                        <div className=" text-center ">365</div>
+                                    </div>
+                                    <div className="grid grid-cols-2 my-1 ">
+                                        <div className=" text-left">
+                                            Standard Leave Days Transferred from Previous Year
+                                        </div>
+                                        <div className=" text-center">0</div>
+                                    </div>
+                                    <div className="grid grid-cols-2 my-1 ">
+                                        <div className=" text-left">Total Used Leave Days in Previous Year</div>
+                                        <div className="text-center ">0</div>
+                                    </div>
+                                    <div className="grid grid-cols-2 my-1">
+                                        <div className="text-left ">Remaining Unused Leave Days</div>
+                                        <div className="text-center ">365</div>
+                                    </div>
                                 </div>
-                                <div className="grid grid-cols-2 my-1 ">
-                                    <div className="text-left ">Standard Leave Days of Current Year</div>
-                                    <div className=" text-center ">365</div>
-                                </div>
-                                <div className="grid grid-cols-2 my-1 ">
-                                    <div className=" text-left">Standard Leave Days Transferred from Previous Year</div>
-                                    <div className=" text-center">0</div>
-                                </div>
-                                <div className="grid grid-cols-2 my-1 ">
-                                    <div className=" text-left">Total Used Leave Days in Previous Year</div>
-                                    <div className="text-center ">0</div>
-                                </div>
-                                <div className="grid grid-cols-2 my-1">
-                                    <div className="text-left ">Remaining Unused Leave Days</div>
-                                    <div className="text-center ">365</div>
-                                </div>
-                            </div>
                             </div>
 
                             <div className="my-2">
@@ -771,7 +806,31 @@ export default function ManageLeave() {
             </form>
         </Fragment>
     )
-
+    const handleDelete = () => {
+   
+        dispatch(PutCancelApprovedLeaveForHRAsyncApi({"requestId" : idDelete, "reason": "thich"}))
+            .then((response) => {
+                if (response.meta.requestStatus == 'fulfilled') {
+                    showSnackbar({
+                        severity: 'success',
+                        children: 'Cancel request',
+                    })
+                    dispatch(getApplyLeaveAsyncApi({ name: search, status: valueTabs == 3 ? -1 : valueTabs }))
+                    setOpen(false)
+                }if (response.meta.requestStatus == 'rejected') {
+                
+                    showSnackbar({
+                        severity: 'error',
+                        children: 'Cannot cancel leave for past dates',
+                    })
+                    
+                    setOpen(false)
+                }
+            })
+            .catch((error) => {
+                setLoadingButton(false)
+            })
+    }
     return (
         <div>
             {userRole === 'Manager' ? <Navbar /> : <NavbarHR />}
@@ -782,7 +841,7 @@ export default function ManageLeave() {
                 viewContent={viewModalContent}
                 size="md"
             />
-            <PopupConfirm open={open} clickOpenFalse={clickOpenFalse} />
+            <PopupConfirm open={open} clickOpenFalse={clickOpenFalse} clickDelete={handleDelete} />
             <div className="sm:ml-64 pt-12 h-screen bg-gray-50">
                 <div className="px-12 py-6">
                     <h2 className="font-bold text-3xl mb-4">Manage Leave List </h2>

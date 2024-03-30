@@ -9,7 +9,7 @@ import TablePagination from '@mui/material/TablePagination'
 import TableRow from '@mui/material/TableRow'
 
 export default function TableData(props) {
-    const { tableHeight, columns, rows, page, rowsPerPage, handleChangeRowsPerPage, handleChangePage } = props
+    const { tableHeight, columns, rows, page, rowsPerPage, handleChangeRowsPerPage, handleChangePage, rowsPerPageOptions } = props
 
     const handleThisChangePage = (event, newPage) => {
         handleChangePage(newPage)
@@ -54,7 +54,7 @@ export default function TableData(props) {
                                 >
                                     <img
                                         src="https://firebasestorage.googleapis.com/v0/b/carmanaager-upload-file.appspot.com/o/images%2Fdownload.svg2561bc28-0cfc-4d75-b183-00387dc91474?alt=media&token=cc09aed8-ccd7-4d8a-ba3c-0b4ace899f40"
-                                        className="h-52 w-52 mx-auto "
+                                        className="h-48 w-48 mx-auto "
                                     />
                                     <div className="mx-auto max-w-screen-sm text-center mt-8 mb-8 lg:mb-16">
                                         <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
@@ -93,7 +93,7 @@ export default function TableData(props) {
                 </Table>
             </TableContainer>
             <TablePagination
-                rowsPerPageOptions={[10, 25, 100]}
+                rowsPerPageOptions={rowsPerPageOptions ? rowsPerPageOptions :[10, 25, 100]}
                 component="div"
                 count={rows && rows.length}
                 rowsPerPage={rowsPerPage}

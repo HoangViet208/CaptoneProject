@@ -8,6 +8,7 @@ import { Avatar, Menu, MenuItem, ListItemIcon, Divider, IconButton, Tooltip } fr
 import Settings from '@mui/icons-material/Settings'
 import EventAvailableIcon from '@mui/icons-material/EventAvailable'
 import { Link, NavLink } from 'react-router-dom'
+import TuneIcon from '@mui/icons-material/Tune'
 import LocationSearchingIcon from '@mui/icons-material/LocationSearching'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 import EventNoteIcon from '@mui/icons-material/EventNote'
@@ -17,6 +18,7 @@ import General from './EmployeeDetail/General'
 import ChangePassword from './Profile/ChangePassword'
 import TabsData from '../../Components/Tabs'
 import PopupData from '../../Components/Popup'
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 const tabsData = [
     {
         label: 'General',
@@ -141,10 +143,19 @@ export default function NavbarHR() {
                         </li>
                         <li className="cursor-pointer p-2">
                             <Link
-                                to="/Hr/ManageOvertime"
+                                to="/Hr/ManageLeave"
                                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
                             >
                                 <InsertChartOutlinedIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                <span className="flex-1 ml-3 whitespace-nowrap">Manage Leave</span>
+                            </Link>
+                        </li>
+                        <li className="cursor-pointer p-2">
+                            <Link
+                                to="/Hr/ManageOvertime"
+                                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
+                            >
+                                <AddToPhotosIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
                                 <span className="flex-1 ml-3 whitespace-nowrap">Manage Overtime</span>
                             </Link>
                         </li>
@@ -153,7 +164,7 @@ export default function NavbarHR() {
                                 to="/Hr/ManageWorked"
                                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
                             >
-                                <AddToPhotosIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                <CalendarMonthIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
                                 <span className="flex-1 ml-3 whitespace-nowrap">Manage Worked</span>
                             </Link>
                         </li>
@@ -182,6 +193,15 @@ export default function NavbarHR() {
                             >
                                 <EventAvailableIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
                                 <span className="flex-1 ml-3 whitespace-nowrap">Time Sheet</span>
+                            </Link>
+                        </li>
+                        <li className="cursor-pointer p-2">
+                            <Link
+                                to="/Hr/TrackSettings"
+                                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
+                            >
+                                <TuneIcon className="rotate-90 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                <span className="flex-1 ml-3 whitespace-nowrap">Track Settings</span>
                             </Link>
                         </li>
                         <li className="cursor-pointer p-2">
@@ -369,7 +389,7 @@ export default function NavbarHR() {
                                     background: '#dbeafe',
                                 }}
                             >
-                                <AssessmentIcon className="ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                <InsertChartOutlinedIcon className="ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
                                 <span className="ml-3">Manage Leave</span>
                             </NavLink>
                         </li>
@@ -381,7 +401,7 @@ export default function NavbarHR() {
                                     background: '#dbeafe',
                                 }}
                             >
-                                <InsertChartOutlinedIcon className="ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                <AddToPhotosIcon className="ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
                                 <span className="ml-3">Manage Overtime</span>
                             </NavLink>
                         </li>
@@ -393,7 +413,7 @@ export default function NavbarHR() {
                                     background: '#dbeafe',
                                 }}
                             >
-                                <AddToPhotosIcon className="ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                <CalendarMonthIcon className="ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
                                 <span className="ml-3">Manage Worked</span>
                             </NavLink>
                         </li>
@@ -432,6 +452,18 @@ export default function NavbarHR() {
                             >
                                 <EventAvailableIcon className="ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
                                 <span className="ml-3">Time Sheet</span>
+                            </NavLink>
+                        </li>
+                        <li className="cursor-pointer text-center mx-auto justify-center items-center">
+                            <NavLink
+                                to="/Hr/TrackSettings"
+                                className="flex items-center gap-2 p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
+                                activeStyle={{
+                                    background: '#dbeafe',
+                                }}
+                            >
+                                <TuneIcon className="rotate-90 ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                <span className="ml-3">Track Settings</span>
                             </NavLink>
                         </li>
                     </ul>

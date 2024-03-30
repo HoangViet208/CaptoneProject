@@ -743,7 +743,7 @@ export default function Holiday() {
                             <TableLoadData columns={columns} tableHeight={575} />
                         ) : (
                             <TableData
-                                tableHeight={520}
+                                tableHeight={400}
                                 rows={rows}
                                 columns={columns}
                                 page={page}

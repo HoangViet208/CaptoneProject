@@ -433,10 +433,10 @@ export default function ManageWorked() {
             label: 'Pending Worked',
             view: searchData(
                 loading == true ? (
-                    <TableLoadData columns={columnsPending} tableHeight={540} />
+                    <TableLoadData columns={columnsPending} tableHeight={380} />
                 ) : (
                     <TableData
-                        tableHeight={480}
+                        tableHeight={360}
                         rows={rows}
                         columns={columnsPending}
                         page={page}
@@ -451,10 +451,10 @@ export default function ManageWorked() {
             label: 'Approved Worked',
             view: searchData(
                 loading == true ? (
-                    <TableLoadData columns={columnsPending} tableHeight={540} />
+                    <TableLoadData columns={columnsPending} tableHeight={380} />
                 ) : (
                     <TableData
-                        tableHeight={480}
+                        tableHeight={360}
                         rows={rows}
                         columns={columnsApprove}
                         page={page}
@@ -469,10 +469,10 @@ export default function ManageWorked() {
             label: 'Reject Worked',
             view: searchData(
                 loading == true ? (
-                    <TableLoadData columns={columnsPending} tableHeight={540} />
+                    <TableLoadData columns={columnsPending} tableHeight={360} />
                 ) : (
                     <TableData
-                        tableHeight={480}
+                        tableHeight={380}
                         rows={rows}
                         columns={columnsReject}
                         page={page}
@@ -487,10 +487,10 @@ export default function ManageWorked() {
             label: 'All Workeds',
             view: searchData(
                 loading == true ? (
-                    <TableLoadData columns={columnsPending} tableHeight={540} />
+                    <TableLoadData columns={columnsPending} tableHeight={380} />
                 ) : (
                     <TableData
-                        tableHeight={480}
+                        tableHeight={360}
                         rows={rows}
                         columns={columnsAll}
                         page={page}

@@ -34,19 +34,19 @@ import TableLoadData from '../../../Components/TableLoad'
 
 const columnsPending = [
     { id: 'number', label: 'Number', minWidth: 50, align: 'center' },
-    { id: 'info', label: 'Employee Name', minWidth: 250, align: 'left' },
+    { id: 'info', label: 'Name', minWidth: 200, align: 'left' },
     { id: 'dayAndTime', label: 'Date', minWidth: 250, align: 'left' },
-    { id: 'timeInMonth', label: 'Time In Month', minWidth: 100, align: 'center' },
-    { id: 'timeInYear', label: 'Time In Year', minWidth: 100, align: 'center' },
+    { id: 'timeInMonth', label: 'Time In Month', minWidth: 200, align: 'center' },
+    { id: 'timeInYear', label: 'Time In Year', minWidth: 150, align: 'center' },
     { id: 'files', label: 'File', minWidth: 100, align: 'left' },
-    { id: 'applied', label: 'Applied On', minWidth: 50, align: 'center' },
+    { id: 'applied', label: 'Applied On', minWidth: 150, align: 'center' },
     { id: 'reason', label: 'Reason', minWidth: 50, align: 'center' },
     { id: 'action', label: 'Actions', minWidth: 50, maxWidth: 50, align: 'left' },
 ]
 
 const columnsApprove = [
     { id: 'number', label: 'Number', minWidth: 50, align: 'center' },
-    { id: 'info', label: 'Employee Name', minWidth: 250, align: 'left' },
+    { id: 'info', label: 'Employee Name', minWidth: 150, align: 'left' },
     { id: 'dayAndTime', label: 'Date', minWidth: 250, align: 'left' },
     { id: 'files', label: 'File', minWidth: 100, align: 'left' },
     { id: 'applied', label: 'Applied On', minWidth: 50, align: 'center' },
@@ -55,7 +55,7 @@ const columnsApprove = [
 ]
 const columnsReject = [
     { id: 'number', label: 'Number', minWidth: 50, align: 'center' },
-    { id: 'info', label: 'Employee Name', minWidth: 250, align: 'left' },
+    { id: 'info', label: 'Employee Name', minWidth: 150, align: 'left' },
     { id: 'dayAndTime', label: 'Date', minWidth: 250, align: 'left' },
     { id: 'files', label: 'File', minWidth: 100, align: 'left' },
     { id: 'applied', label: 'Applied On', minWidth: 50, align: 'center' },
@@ -64,7 +64,7 @@ const columnsReject = [
 ]
 const columnsAll = [
     { id: 'number', label: 'Number', minWidth: 50, align: 'center' },
-    { id: 'info', label: 'Employee Name', minWidth: 250, align: 'left' },
+    { id: 'info', label: 'Employee Name', minWidth: 150, align: 'left' },
     { id: 'dayAndTime', label: 'Date', minWidth: 250, align: 'left' },
     { id: 'files', label: 'File', minWidth: 100, align: 'left' },
     { id: 'applied', label: 'Applied On', minWidth: 50, align: 'center' },
@@ -333,10 +333,10 @@ export default function ManageOvertime() {
             label: 'Pending Overtime',
             view: searchData(
                 loading == true ? (
-                    <TableLoadData columns={columnsPending} tableHeight={540} />
+                    <TableLoadData columns={columnsPending} tableHeight={380} />
                 ) : (
                     <TableData
-                        tableHeight={480}
+                        tableHeight={360}
                         rows={rows}
                         columns={filteredColumnsPending}
                         page={page}
@@ -351,10 +351,10 @@ export default function ManageOvertime() {
             label: 'Approved Overtime',
             view: searchData(
                 loading == true ? (
-                    <TableLoadData columns={columnsPending} tableHeight={540} />
+                    <TableLoadData columns={columnsPending} tableHeight={380} />
                 ) : (
                     <TableData
-                        tableHeight={480}
+                        tableHeight={360}
                         rows={rows}
                         columns={columnsApprove}
                         page={page}
@@ -369,10 +369,10 @@ export default function ManageOvertime() {
             label: 'Reject Overtime',
             view: searchData(
                 loading == true ? (
-                    <TableLoadData columns={columnsPending} tableHeight={540} />
+                    <TableLoadData columns={columnsPending} tableHeight={380} />
                 ) : (
                     <TableData
-                        tableHeight={480}
+                        tableHeight={360}
                         rows={rows}
                         columns={columnsReject}
                         page={page}
@@ -387,10 +387,10 @@ export default function ManageOvertime() {
             label: 'All Overtimes',
             view: searchData(
                 loading == true ? (
-                    <TableLoadData columns={columnsPending} tableHeight={540} />
+                    <TableLoadData columns={columnsPending} tableHeight={380} />
                 ) : (
                     <TableData
-                        tableHeight={480}
+                        tableHeight={360}
                         rows={rows}
                         columns={columnsAll}
                         page={page}

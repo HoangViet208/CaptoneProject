@@ -27,7 +27,7 @@ function Login() {
             history.push('/Employee/Dashboard')
         }
         if (userObject && userObject == 'HR') {
-            history.push('/Hr/ManageLeave')
+            history.push('/Hr/Employee')
         }
         if (userObject && userObject == 'Admin') {
             history.push('/Admin/Team')
@@ -64,7 +64,7 @@ function Login() {
                 } else if (response.payload.role == 'Manager') {
                     history.push('/Manager/Employee')
                 } else if (response.payload.role == 'HR') {
-                    history.push('/Hr/ManageLeave')
+                    history.push('/Hr/Employee')
                 } else if (response.payload.role == 'Admin') {
                     history.push('/Admin/Team')
                 }

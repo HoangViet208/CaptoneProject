@@ -22,14 +22,14 @@ function Search({ parentCallback }) {
 
     return (
         <div>
-            <Paper component="form" sx={{ p: '2px 4px', display: 'flex', alignItems: 'center' }}>
+            <Paper size="small" component="form" >
                 <InputBase
-                    sx={{ ml: 1, flex: 1, borderRadius: '100px' }}
+                    sx={{ ml: 1, flex: 1, borderRadius: '100px', '& input': { fontSize: '0.875rem' } }}
                     placeholder="Search ..."
                     onChange={handleSearchTermChange}
                     size="small"
                 />
-                <IconButton sx={{ p: '10px', outline: 'none' }}>
+                <IconButton sx={{ p: '', outline: 'none' }} size="small">
                     <SearchIcon />
                 </IconButton>
             </Paper>

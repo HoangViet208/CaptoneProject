@@ -121,7 +121,7 @@ export default function Worked() {
     const openPopover = Boolean(anchorEl)
     const id = openPopover ? 'simple-popover' : undefined
     const [page, setPage] = useState(0)
-    const [rowsPerPage, setRowsPerPage] = useState(10)
+    const [rowsPerPage, setRowsPerPage] = useState(5)
     const [open, setOpen] = useState(false)
     const [openConfirm, setOpenConfirm] = useState(false)
     const [isAction, setIsAction] = useState(0)
@@ -519,10 +519,11 @@ export default function Worked() {
                     <div className="bg-white p-4">
                         <div>
                             {loading == true ? (
-                                <TableLoadData columns={columns} tableHeight={620} />
+                                <TableLoadData columns={columns} tableHeight={480} />
                             ) : (
                                 <TableData
-                                    tableHeight={570}
+                                    tableHeight={470}
+                                    rowsPerPageOptions={[5,25,50]}
                                     rows={rows}
                                     columns={columns}
                                     page={page}

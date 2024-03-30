@@ -124,7 +124,7 @@ export default function Overtime() {
     const openPopover = Boolean(anchorEl)
     const id = openPopover ? 'simple-popover' : undefined
     const [page, setPage] = useState(0)
-    const [rowsPerPage, setRowsPerPage] = useState(10)
+    const [rowsPerPage, setRowsPerPage] = useState(5)
     const [open, setOpen] = useState(false)
     const [openConfirm, setOpenConfirm] = useState(false)
     const [isAction, setIsAction] = useState(0)
@@ -492,12 +492,13 @@ export default function Overtime() {
     console.log('selectedDate', selectedDate)
     const viewModalContent = (
         <Fragment>
-            <div className="">
-                <div className="mx-2 flex flex-col items-center justify-center">
-                    <div className="mb-2">
+            <div className="w-full">
+                <div className="mx-2 w-full flex flex-col items-center justify-center">
+                    <div className="mb-2 w-full">
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DemoContainer components={['DatePicker']}>
                                 <DatePicker
+                                    className="w-full"
                                     label={
                                         <span>
                                             Registration Date <span style={{ color: 'red' }}>*</span>
@@ -509,14 +510,15 @@ export default function Overtime() {
                             </DemoContainer>
                         </LocalizationProvider>
                     </div>
-                    <div className="my-2 text-xs text-gray-400 ">
+                    <div className="my-2 text-xs text-gray-400 w-full">
                         <h2>Regulations for registering to work overtime:</h2>
                         <p>-Register in advance or no later than 02 days after the overtime day</p>
                     </div>
-                    <div className="mb-2">
+                    <div className="mb-2 w-full">
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <DemoContainer components={['TimePicker']}>
                                 <TimePicker
+                                    className="w-full"
                                     label={
                                         <span>
                                             Start Time <span style={{ color: 'red' }}>*</span>
@@ -531,10 +533,11 @@ export default function Overtime() {
                             </DemoContainer>
                         </LocalizationProvider>
                     </div>
-                    <div className="mb-2">
+                    <div className="mb-2 w-full">
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <DemoContainer components={['TimePicker']}>
                                 <TimePicker
+                                 className="w-full"
                                     label={
                                         <span>
                                             End Time <span style={{ color: 'red' }}>*</span>
@@ -550,7 +553,7 @@ export default function Overtime() {
                         </LocalizationProvider>
                     </div>
 
-                    <div className="my-2 w-[260px]">
+                    <div className="my-2 w-full">
                         <div className="mb-1">
                             <strong className=" text-gray-500">
                                 Number of hours registered for compensatory leave
@@ -559,6 +562,7 @@ export default function Overtime() {
                         <FormControl fullWidth>
                             <Button
                                 disabled
+                                className='w-full'
                                 variant="contained"
                                 sx={{
                                     display: 'flex',
@@ -575,7 +579,7 @@ export default function Overtime() {
                             </Button>
                         </FormControl>
                     </div>
-                    <div className="my-2 w-[260px]">
+                    <div className="my-2 w-full">
                         <div className="mb-1">
                             <strong className=" text-gray-500">Number of hours accumulated during the month</strong>{' '}
                         </div>
@@ -598,7 +602,7 @@ export default function Overtime() {
                             </Button>
                         </FormControl>
                     </div>
-                    <div className="my-2  w-[260px]">
+                    <div className="my-2  w-full">
                         <div className="mb-1">
                             <strong className=" text-gray-500">Cumulative number of hours per year</strong>{' '}
                         </div>
@@ -621,7 +625,7 @@ export default function Overtime() {
                             </Button>
                         </FormControl>
                     </div>
-                    <div className="mb-2">
+                    <div className="mb-2 w-full">
                         <TextField
                             onChange={(e) => setReason(e.target.value)}
                             label={
@@ -630,12 +634,12 @@ export default function Overtime() {
                                 </span>
                             }
                             multiline
-                            className="w-[260px]"
+                            className="w-full"
                             rows={3}
                             value={reason}
                         />
                     </div>
-                    <div className="mb-2 relative">
+                    <div className="mb-2 relative w-full">
                         <input
                             className="hidden w-full" // Ẩn input mặc định
                             type="file"
@@ -651,14 +655,14 @@ export default function Overtime() {
                         <div>
                             <button
                                 onClick={handleBrowseButtonClick}
-                                className="cursor-pointer  block rounded-md h-10 text-left w-[260px] pl-[90px] font-medium text-gray-600  border border-gray-300   bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                                className="cursor-pointer  block rounded-md h-10 text-left  pl-[90px] font-medium text-gray-600  border border-gray-300   bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
                                 variant="contained"
                             >
                                 {chosenFileName.length > 16
                                     ? chosenFileName.slice(0, 16).concat('...')
                                     : chosenFileName}
                             </button>
-                            {error && <div className="text-red-500 w-[260px]">{error}</div>}
+                            {error && <div className="text-red-500 ">{error}</div>}
                             {isAction == 2 && (
                                 <a
                                     className="mt-2 text-blue-400 underline"
@@ -745,10 +749,11 @@ export default function Overtime() {
                     <div className="bg-white p-4">
                         <div>
                             {loading == true ? (
-                                <TableLoadData columns={columns} tableHeight={620} />
+                                <TableLoadData columns={columns} tableHeight={480} />
                             ) : (
                                 <TableData
-                                    tableHeight={570}
+                                    tableHeight={470}
+                                    rowsPerPageOptions={[5, 25, 50]}
                                     rows={rows}
                                     columns={columns}
                                     page={page}

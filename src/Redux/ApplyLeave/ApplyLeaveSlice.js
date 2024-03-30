@@ -8,7 +8,9 @@ import GetApplyLeaveApi, {
     GetWorkDateSettingByIdApi,
     PutApproveApplyLeaveApi,
     GetApplyLeaveByRequestIdApi,
+    PutCancelApprovedLeaveForHRApi,
 } from '../../Api/ApplyLeaveApi'
+import { GetAllRequestApi } from '../../Api/RequestApi'
 
 const initialState = {
     loading: false,
@@ -17,6 +19,7 @@ const initialState = {
     ApplyLeaveTypeList: ['Casual Leave', 'Sick Leave'],
     ApplyLeaveByEmployee: [],
     WorkSetting: [],
+    AllRequestInEmployee: {},
 }
 
 const authSlice = createSlice({
@@ -28,6 +31,7 @@ const authSlice = createSlice({
             state.ApplyLeaveList = []
             state.ApplyLeaveTypeList = ['Casual Leave', 'Sick Leave']
             state.WorkSetting = []
+            state.AllRequestInEmployee = {}
         },
         ChangeTab: (state, action) => {
             console.log('action', action)
@@ -44,6 +48,17 @@ const authSlice = createSlice({
                 state.ApplyLeaveList = action.payload
             })
             .addCase(getApplyLeaveAsyncApi.rejected, (state, action) => {
+                state.loading = false
+            })
+        builder
+            .addCase(GetAllRequestAsyncApi.pending, (state) => {
+                state.loading = true
+            })
+            .addCase(GetAllRequestAsyncApi.fulfilled, (state, action) => {
+                state.loading = false
+                state.AllRequestInEmployee = action.payload
+            })
+            .addCase(GetAllRequestAsyncApi.rejected, (state, action) => {
                 state.loading = false
             })
         builder
@@ -87,6 +102,10 @@ const authSlice = createSlice({
             .addCase(PutApplyLeaveAsyncApi.pending, (state) => {})
             .addCase(PutApplyLeaveAsyncApi.fulfilled, (state, action) => {})
             .addCase(PutApplyLeaveAsyncApi.rejected, (state, action) => {})
+        builder
+            .addCase(PutCancelApprovedLeaveForHRAsyncApi.pending, (state) => {})
+            .addCase(PutCancelApprovedLeaveForHRAsyncApi.fulfilled, (state, action) => {})
+            .addCase(PutCancelApprovedLeaveForHRAsyncApi.rejected, (state, action) => {})
         builder
             .addCase(PutApproveApplyLeaveAsyncApi.pending, (state) => {})
             .addCase(PutApproveApplyLeaveAsyncApi.fulfilled, (state, action) => {})
@@ -159,6 +178,17 @@ export const GetApplyLeaveByRequestIdAsyncApi = createAsyncThunk(
     }
 )
 
+export const GetAllRequestAsyncApi = createAsyncThunk('ApplyLeaveReducer/GetAllRequestApi', async (id) => {
+    try {
+        const response = await GetAllRequestApi(id)
+        return response
+    } catch (error) {
+        const json = error.response.data
+        const errors = json[''].errors
+        throw errors[0].errorMessage
+    }
+})
+
 export const PostApplyLeaveAsyncApi = createAsyncThunk('ApplyLeaveReducer/postAsyncApi', async ({ id, body }) => {
     try {
         console.log('thanh cong1', id, body)
@@ -181,6 +211,20 @@ export const PutApplyLeaveAsyncApi = createAsyncThunk('ApplyLeaveReducer/putAsyn
     }
 })
 
+export const PutCancelApprovedLeaveForHRAsyncApi = createAsyncThunk(
+    'ApplyLeaveReducer/PutCancelApprovedLeaveForHRApi',
+    async (body) => {
+        try {
+            const response = await PutCancelApprovedLeaveForHRApi(body)
+            return response.data // Trả về dữ liệu từ response nếu thành công
+        } catch (error) {
+            const json = error.response.data
+            const errors = json[''].errors
+            throw errors[0].errorMessage
+        }
+    }
+)
+
 export const PutApproveApplyLeaveAsyncApi = createAsyncThunk(
     'ApplyLeaveReducer/PutApproveApplyLeaveApi',
     async (id) => {
@@ -194,9 +238,9 @@ export const PutApproveApplyLeaveAsyncApi = createAsyncThunk(
         }
     }
 )
-export const DeleteApplyLeaveAsyncApi = createAsyncThunk('ApplyLeaveReducer/deleteAsyncApi', async (body) => {
+export const DeleteApplyLeaveAsyncApi = createAsyncThunk('ApplyLeaveReducer/deleteAsyncApi', async (id) => {
     try {
-        const response = await DeleteApplyLeaveApi(body)
+        const response = await DeleteApplyLeaveApi(id)
         return response
     } catch (error) {
         const json = error.response.data

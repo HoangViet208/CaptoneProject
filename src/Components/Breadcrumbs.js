@@ -15,7 +15,7 @@ export default function IconBreadcrumbs(props) {
                 {data &&
                     data.map((item, index) => {
                         return (
-                            <Link
+                            <div
                                 key={index}
                                 sx={{
                                     display: 'flex',
@@ -29,10 +29,10 @@ export default function IconBreadcrumbs(props) {
                                         ? 'cursor-default'
                                         : 'cursor-pointer hover:underline hover:font-semibold'
                                 }`}
-                                to={item.url}
+                               // to={item.url}
                             >
                                 {item.title}
-                            </Link>
+                            </div>
                         )
                     })}
             </Breadcrumbs>

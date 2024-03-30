@@ -61,6 +61,7 @@ import {
 } from '../../../Hook/useFormatDate'
 import { useDispatch, useSelector } from 'react-redux'
 import {
+    DeleteApplyLeaveAsyncApi,
     GetApplyLeaveTypeAsyncApi,
     GetWorkDateSettingByIdAsyncApi,
     PostApplyLeaveAsyncApi,
@@ -129,8 +130,11 @@ export default function ApplyLeave() {
     const fileInputRef = useRef(null)
     const openPopover = Boolean(anchorEl)
     const id = openPopover ? 'simple-popover' : undefined
+    const [idDelete, setIdDelete] = useState()
+    const [reasonReject, setReasonReject] = useState()
+    const [statusRequest, setStatusRequest] = useState(-1)
     const [page, setPage] = useState(0)
-    const [rowsPerPage, setRowsPerPage] = useState(10)
+    const [rowsPerPage, setRowsPerPage] = useState(5)
     const [open, setOpen] = useState(false)
     const [openConfirm, setOpenConfirm] = useState(false)
     const [openAlert, setOpenAlert] = useState(false)
@@ -248,6 +252,7 @@ export default function ApplyLeave() {
                                         console.log('Response', response.meta.requestStatus == 'fulfilled')
                                         if (response.meta.requestStatus == 'fulfilled') {
                                             setSelectedImage()
+                                            setStatusRequest(-1)
                                             setIsLoading(false)
                                             showSnackbar({
                                                 severity: 'success',
@@ -276,6 +281,13 @@ export default function ApplyLeave() {
                                             setLeaveDaysDate([])
                                             dispatch(getApplyLeaveByIdAsyncApi(employeeId))
                                         }
+                                        if (response.meta.requestStatus == 'rejected') {
+                                            setIsLoading(false)
+                                            showSnackbar({
+                                                severity: 'error',
+                                                children: 'Workslot of dateRange not already',
+                                            })
+                                        }
                                         setIsLoading(false)
                                     })
                                     .catch((error) => {
@@ -288,6 +300,7 @@ export default function ApplyLeave() {
                                     .then((response) => {
                                         if (response.meta.requestStatus == 'fulfilled') {
                                             setRequestId()
+                                            setStatusRequest(-1)
                                             showSnackbar({
                                                 severity: 'success',
                                                 children: 'Request Successfully',
@@ -360,7 +373,7 @@ export default function ApplyLeave() {
                     .then((response) => {
                         if (response.meta.requestStatus == 'fulfilled') {
                             setRequestId()
-
+                            setStatusRequest(-1)
                             showSnackbar({
                                 severity: 'success',
                                 children: 'Request Successfully',
@@ -456,9 +469,10 @@ export default function ApplyLeave() {
         if (data.status != 0) {
             SetErrorEdit(true)
         }
+        setReasonReject(data.reasonReject)
         setOpen(true)
         setRequestId(data.id)
-
+        setStatusRequest(data.status)
         setIsAction(2)
         console.log('data', data.startDate, parse(data.startDate, 'dd/MM/yyyy', new Date()))
         const newDate = data.dateRange.map((item, index) => ({
@@ -524,7 +538,8 @@ export default function ApplyLeave() {
         setLeaveDays(0)
         setLeaveDaysDate([])
     }
-    const handleClickOpenConfirm = () => {
+    const handleClickOpenConfirm = (id) => {
+        setIdDelete(id)
         setOpenConfirm(true)
     }
     const handleClickOpenAlert = () => {
@@ -540,13 +555,13 @@ export default function ApplyLeave() {
     const handleClickSave = () => {
         setOpen(false)
     }
-    const [selectedLeaveTypeName, setSelectedLeaveTypeName] = useState('')
 
-    // const handleLeaveTypeChange = (event) => {
-    //     const selectedLeaveTypeId = event.target.value
-    //     const selectedLeaveType = ApplyLeaveTypeList.find((item) => item.id === selectedLeaveTypeId)
-    //     setSelectedLeaveTypeName(selectedLeaveType.name)
-    // }
+    function getNameById(id) {
+        console.log('nguid', id)
+        const leaveType = ApplyLeaveTypeList.find((item) => item.id === id)
+        return leaveType ? leaveType.name : null
+    }
+
     console.log('AllEmployeeInDepartment', AllEmployeeInDepartment)
     const viewModalContent = (
         <Fragment>
@@ -713,8 +728,11 @@ export default function ApplyLeave() {
                                 <h2 className="text-center text-xl my-2">Leave Information</h2>
                                 <div className="grid grid-cols-2 text-center ">
                                     <div className="bg-yellow-500 ">Leave Type</div>
-                                    {/* <div className="bg-red-500 ">{selectedLeaveTypeName}</div> */}
-                                    <div className="bg-red-500 ">Sick Leave</div>
+                                    <div className="bg-red-500 ">
+                                        {formik.values.leaveType &&
+                                            ApplyLeaveTypeList &&
+                                            getNameById(formik.values.leaveType)}
+                                    </div>
                                 </div>
                                 <div className="grid grid-cols-2 my-1 ">
                                     <div className="text-left ">Standard Leave Days of Current Year</div>
@@ -737,7 +755,7 @@ export default function ApplyLeave() {
 
                         <div className="my-2">
                             <div className="mb-1">
-                                <strong className=" text-gray-500">Manager Approve</strong>{' '}
+                                <strong className=" text-gray-500">Manager Approve</strong>
                             </div>
                             <FormControl fullWidth>
                                 <Button
@@ -871,6 +889,27 @@ export default function ApplyLeave() {
                                     </a>
                                 )}
                             </div>
+                            {statusRequest == 3 ? (
+                                <div className="my-2">
+                                    <div className="mb-1">
+                                        <strong className=" text-gray-500">Reason Cancel Request</strong>{' '}
+                                    </div>
+                                    <FormControl fullWidth>
+                                        <TextField
+                                            multiline
+                                            rows={6}
+                                            id="outlined-basic"
+                                            size="small"
+                                            disabled
+                                            className="mt-2 w-full"
+                                            value={reasonReject}
+                                            variant="outlined"
+                                        />
+                                    </FormControl>
+                                </div>
+                            ) : (
+                                ``
+                            )}
                         </div>
                     </div>
                 </div>
@@ -880,21 +919,25 @@ export default function ApplyLeave() {
                         <Button variant="contained" color="inherit" autoFocus onClick={clickOpenFalse}>
                             Cancel
                         </Button>
-                        <LoadingButton
-                            startIcon={<AddIcon />}
-                            disabled={error || !errorImport || errorEdit}
-                            type="submit"
-                            loading={isLoading}
-                            loadingPosition="start"
-                            variant="contained"
-                            color="primary"
-                            sx={{
-                                textAlign: 'center',
-                            }}
-                            autoFocus
-                        >
-                            Save changes
-                        </LoadingButton>
+                        {statusRequest == -1 || statusRequest == 0 ? (
+                            <LoadingButton
+                                startIcon={<AddIcon />}
+                                disabled={error || !errorImport || errorEdit}
+                                type="submit"
+                                loading={isLoading}
+                                loadingPosition="start"
+                                variant="contained"
+                                color="primary"
+                                sx={{
+                                    textAlign: 'center',
+                                }}
+                                autoFocus
+                            >
+                                Save changes
+                            </LoadingButton>
+                        ) : (
+                            ''
+                        )}
                     </div>
                 </DialogActions>
             </form>
@@ -961,8 +1004,12 @@ export default function ApplyLeave() {
                     </button>
                 ) : item.status == 2 ? (
                     <button className="bg-red-300 text-red-700  w-24 font-semibold py-1 px-2 rounded-xl">Reject</button>
+                ) : item.status == 3 ? (
+                    <button className="bg-orange-300 text-orange-700  w-24 font-semibold py-1 px-2 rounded-xl">
+                        Cancel
+                    </button>
                 ) : (
-                    <button className="bg-orange-300 text-orange-700 w-24 font-semibold py-1 px-2 rounded-xl">
+                    <button className="bg-yellow-300 text-yellow-700 w-24 font-semibold py-1 px-2 rounded-xl">
                         Pending
                     </button>
                 ),
@@ -975,7 +1022,9 @@ export default function ApplyLeave() {
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Delete">
-                        <IconButton onClick={item.status == 0 ? handleClickOpenConfirm : handleClickOpenAlert}>
+                        <IconButton
+                            onClick={item.status === 0 ? () => handleClickOpenConfirm(item.id) : handleClickOpenAlert}
+                        >
                             <DeleteIcon />
                         </IconButton>
                     </Tooltip>
@@ -985,10 +1034,34 @@ export default function ApplyLeave() {
     }
     const rows = createRows()
     console.log('search', dateRange)
+    const handleDelete = () => {
+        setLoadingButton(true)
+        dispatch(DeleteApplyLeaveAsyncApi(idDelete))
+            .then((response) => {
+                if (response.meta.requestStatus == 'fulfilled') {
+                    dispatch(getApplyLeaveByIdAsyncApi(employeeId))
+                    showSnackbar({
+                        severity: 'success',
+                        children: 'Delete request',
+                    })
+                    setOpenConfirm(false)
+                }
+                if (response.meta.requestStatus == 'rejected') {
+                    showSnackbar({
+                        severity: 'error',
+                        children: 'Workslot of dateRange not already',
+                    })
+                    setOpenConfirm(false)
+                }
+            })
+            .catch((error) => {
+                setLoadingButton(false)
+            })
+    }
     return (
         <div>
             <Navbar />
-            <PopupConfirm open={openConfirm} clickOpenFalse={clickOpenFalseConfirm} />
+            <PopupConfirm open={openConfirm} clickOpenFalse={clickOpenFalseConfirm} clickDelete={handleDelete} />
             <PopupAlert open={openAlert} clickOpenFalse={clickOpenFalseAlert} />
             <PopupData
                 open={open}
@@ -1017,10 +1090,11 @@ export default function ApplyLeave() {
                     <div className="bg-white p-4">
                         <div>
                             {loading == true ? (
-                                <TableLoadData columns={columns} tableHeight={620} />
+                                <TableLoadData columns={columns} tableHeight={480} />
                             ) : (
                                 <TableData
-                                    tableHeight={570}
+                                    tableHeight={470}
+                                    rowsPerPageOptions={[5, 25, 50]}
                                     rows={rows}
                                     columns={columns}
                                     page={page}

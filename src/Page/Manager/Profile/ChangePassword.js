@@ -72,7 +72,7 @@ export default function ChangePassword() {
     }
 
     return (
-        <div className="bg-white h-[550px] p-4">
+        <div className="bg-white h-[480px] p-4">
             <form onSubmit={frmUser.handleSubmit}>
                 {error && <div className="text-center text-xl text-red-500 font-semibold mb-2">{error}</div>}
                 <div className=" my-5">
@@ -80,6 +80,7 @@ export default function ChangePassword() {
                         <div className="text mt-1 text-center text-xl text-red-600 my-3 font-semibold">{error}</div>
                     )}
                     <TextField
+                        size="small"
                         id="outlined-basic"
                         error={frmUser.touched.userName && frmUser.errors.userName ? true : undefined}
                         className="w-full"
@@ -98,8 +99,11 @@ export default function ChangePassword() {
                         className="w-full"
                         variant="outlined"
                     >
-                        <InputLabel htmlFor="outlined-adornment-password">Old Password</InputLabel>
+                        <InputLabel size="small" htmlFor="outlined-adornment-password">
+                            Old Password
+                        </InputLabel>
                         <OutlinedInput
+                            size="small"
                             className="w-full"
                             name="oldPassword"
                             id="outlined-adornment-password 1"
@@ -131,8 +135,11 @@ export default function ChangePassword() {
                         className="w-full"
                         variant="outlined"
                     >
-                        <InputLabel htmlFor="outlined-adornment-password">New Password</InputLabel>
+                        <InputLabel size="small" htmlFor="outlined-adornment-password">
+                            New Password
+                        </InputLabel>
                         <OutlinedInput
+                            size="small"
                             className="w-full"
                             name="newPassword"
                             id="outlined-adornment-password 2"
@@ -164,8 +171,11 @@ export default function ChangePassword() {
                         className="w-full"
                         variant="outlined"
                     >
-                        <InputLabel htmlFor="outlined-adornment-password">Confirm Password</InputLabel>
+                        <InputLabel size="small" htmlFor="outlined-adornment-password">
+                            Confirm Password
+                        </InputLabel>
                         <OutlinedInput
+                            size="small"
                             className="w-full"
                             name="confirmPassword"
                             id="outlined-adornment-password 3"

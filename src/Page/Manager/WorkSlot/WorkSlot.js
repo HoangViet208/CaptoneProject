@@ -328,7 +328,7 @@ export default function WorkSlot() {
 
             <NavbarHR />
 
-            <div className="sm:ml-64 h-screen pt-20 bg-gray-50">
+            <div className="sm:ml-64  pt-20 bg-gray-50">
                 <div className="w-full py-8 px-5 bg-white relative ">
                     <div className="  xl:flex mb-2 w-full  absolute right-[200px] top-[32px]">
                         <div className="sm:ml-[220px]">
@@ -386,7 +386,7 @@ export default function WorkSlot() {
                             center: 'title',
                             right: 'prev,next today',
                         }}
-                        height="84vh"
+                        height="80vh"
                         daysOfWeek={(0, 1)}
                         DayGrid={true}
                         TimeGrid={true}

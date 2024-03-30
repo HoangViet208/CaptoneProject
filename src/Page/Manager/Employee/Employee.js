@@ -3,10 +3,8 @@ import Navbar from '../Navbar'
 import { NavLink } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
-
-
 //Mui
-import {  IconButton, Tooltip, FormControl, InputLabel, Select, MenuItem, } from '@mui/material'
+import { IconButton, Tooltip, FormControl, InputLabel, Select, MenuItem } from '@mui/material'
 
 //Icon
 import VisibilityIcon from '@mui/icons-material/Visibility'
@@ -35,9 +33,10 @@ const columns = [
     { id: 'email', label: 'Email', minWidth: 200, align: 'left' },
     { id: 'info', label: 'Name', minWidth: 200, align: 'left' },
     { id: 'departmentName', label: 'Team', minWidth: 250, align: 'left' },
-    { id: 'address', label: 'Address', minWidth: 250, align: 'left' },
-    { id: 'phoneNumber', label: 'Phone Number', minWidth: 150, align: 'left' },
-    { id: 'gender', label: 'Gender', minWidth: 50, align: 'center' },
+    //{ id: 'address', label: 'Address', minWidth: 250, align: 'left' },
+    //{ id: 'phoneNumber', label: 'Phone Number', minWidth: 150, align: 'left' },
+    // { id: 'gender', label: 'Gender', minWidth: 50, align: 'center' },
+    { id: 'roleName', label: 'Role', minWidth: 100, align: 'left' },
     { id: 'status', label: 'Status', minWidth: 50, align: 'center' },
     { id: 'action', label: 'Actions', minWidth: 50, align: 'center' },
 ]
@@ -53,13 +52,12 @@ const breadcrumbIcons = () => {
 const dataBreadcrumbs = breadcrumbIcons()
 
 export default function Employee() {
-   
     const [userRole, setUserRole] = useState(() => {
         const userString = localStorage.getItem('role')
         const userObject = JSON.parse(userString)
         return userObject || 'defaultRole' // Provide a default role if undefined
     })
-   
+
     const [Department, setDepartment] = useState('')
     //setting redux
     const { DepartmentList } = useSelector((state) => state.department)
@@ -77,15 +75,19 @@ export default function Employee() {
     useEffect(() => {
         const userStringEmployeeName = localStorage.getItem('employeeId')
         const employeeId = JSON.parse(userStringEmployeeName)
-        dispatch(getEmployeeByIdAsyncApi(employeeId)).then((response) => {
-            if (response.meta.requestStatus == 'fulfilled') {
-                console.log('effect', response)
-                dispatch(getEmployeeAsyncApi({ roleId: '', departmentId: response.payload.departmentId, name: search }))
-            }
-        })
+        userRole === 'Manager'
+            ? dispatch(getEmployeeByIdAsyncApi(employeeId)).then((response) => {
+                  if (response.meta.requestStatus == 'fulfilled') {
+                      console.log('effect', response)
+                      dispatch(
+                          getEmployeeAsyncApi({ roleId: '', departmentId: response.payload.departmentId, name: search })
+                      )
+                  }
+              })
+            : Department && dispatch(getEmployeeAsyncApi({ roleId: '', departmentId: Department, name: search }))
 
         return () => {}
-    }, [search])
+    }, [search, Department])
     const handleChangePage = (newPage) => {
         setPage(newPage)
     }
@@ -147,12 +149,9 @@ export default function Employee() {
         }))
     }
     const rows = createRows()
-  
-  
-   
+
     return (
         <div>
-            
             {userRole === 'Manager' ? <Navbar /> : <NavbarHR />}
             <div className="sm:ml-64 pt-12 h-screen bg-gray-50">
                 <div className="px-12 py-6">
@@ -163,19 +162,16 @@ export default function Employee() {
                     <div></div>
                     <div className="bg-white p-4">
                         <div className="mb-5 flex items-center">
-                            <div className='flex'>
-                            <FormControl sx={{ width: 300,  }}>
-                                <Search parentCallback={callbackSearch} />
-                            </FormControl>
-                            
-                            </div>
-                           
-                            <div className="ml-auto md:mr-16 mr-4">
+                            <div className="w-full block sm:flex gap-4">
+                                <FormControl >
+                                    <Search parentCallback={callbackSearch} />
+                                </FormControl>
+                                <div className="ml-auto md:mr-16 mr-4 sm:mt-0 mt-5">
                                 {userRole === 'Manager' ? (
                                     ``
                                 ) : userRole === 'HR' ? (
                                     <div className="">
-                                        <FormControl sx={{ width: 300,  }}>
+                                        <FormControl sx={{ width: 300 }}>
                                             <InputLabel size="small" id="demo-simple-select-label">
                                                 Team
                                             </InputLabel>
@@ -202,10 +198,13 @@ export default function Employee() {
                                     ``
                                 )}
                             </div>
+                            </div>
+
+                          
                         </div>
                         <div>
                             <TableData
-                                tableHeight={520}
+                                tableHeight={400}
                                 rows={rows}
                                 columns={columns}
                                 page={page}

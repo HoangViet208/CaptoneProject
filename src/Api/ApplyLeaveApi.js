@@ -70,6 +70,17 @@ export const PutApplyLeaveApi = async (id, body) => {
         throw error
     }
 }
+export const PutCancelApprovedLeaveForHRApi = async (body) => {
+    try {
+        const response = await axios.patch(
+            `${API_URL}/RequestLeave/cancel-approved-leave-request-for-hr`, body
+            
+        )
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
 
 export const PutApproveApplyLeaveApi = async (id) => {
     try {
@@ -82,11 +93,12 @@ export const PutApproveApplyLeaveApi = async (id) => {
 
 export const DeleteApplyLeaveApi = async (id) => {
     try {
-        const response = await axios.delete(`${API_URL}/ApplyLeaves/${id}`)
+        const response = await axios.delete(`${API_URL}/RequestLeave/delete-nonapproved-leave-request-for-employee?requestId=${id}`)
         return response.data
     } catch (error) {
         throw error
     }
 }
+
 
 export default GetApplyLeaveApi

@@ -38,6 +38,7 @@ import General from './General'
 import AllRequest from './AllRequest'
 import TabsData from '../../../Components/Tabs'
 import PopupData from '../../../Components/Popup'
+import NavbarHR from '../NavbarHR'
 
 const breadcrumbIcons = () => {
     const data = [
@@ -58,7 +59,7 @@ const tabsData = [
     },
     {
         label: 'All Request',
-      //icon: <KeyIcon />,
+        //icon: <KeyIcon />,
         view: <AllRequest />,
     },
     // {
@@ -69,129 +70,26 @@ const tabsData = [
 ]
 
 export default function EmployeeDetail() {
-    const [openModal, setOpenModal] = useState(false)
-    const clickOpenFalse = (event) => {
-        setOpenModal(false)
-    }
-    const handleClickOpenAdd = () => {
-        setOpenModal(true)
-    }
-    const [click, SetClick] = useState(false)
-    const [loadingButton, setLoadingButton] = useState(false)
-    const showSnackbar = useSnackbar()
-    const { EmployeeDetail } = useSelector((state) => state.employee)
-    const { RoleList } = useSelector((state) => state.account)
-    const { DepartmentList } = useSelector((state) => state.department)
-    const param = useParams()
-
-    const dispatch = useDispatch()
-    useEffect(() => {
-        // const userStringEmployeeName = localStorage.getItem('employeeId')
-        // const employeeId = JSON.parse(userStringEmployeeName)
-        console.log('effect', param.id)
-        dispatch(getDepartmentAsyncApi())
-        dispatch(getRoleAsyncApi())
-        dispatch(getEmployeeByIdAsyncApi(param.id))
-            .then((response) => {
-                if (response.meta.requestStatus == 'fulfilled') {
-                    console.log('effect', response)
-                    formik.setValues({
-                        username: response.payload.email,
-                        firstName: response.payload.firstName,
-                        lastName: response.payload.lastName,
-                        gender: response.payload.gender,
-                        address: response.payload.address,
-                        phoneNumber: response.payload.phoneNumber,
-                        roleID: response.payload.roleId,
-                        departmentID: response.payload.departmentId,
-                    })
-                }
-            })
-            .catch((error) => {
-                // Handle failure case
-            })
-        return () => {}
-    }, [])
-    const initialValues = {
-        username: '',
-        firstName: '',
-        lastName: '',
-        gender: '',
-        address: '',
-        phoneNumber: '',
-        roleID: '',
-        departmentID: '',
-    }
-    const formik = useFormik({
-        initialValues: initialValues,
-        validationSchema: Yup.object({
-            username: Yup.string().required('Username is required').email('Invalid email address'),
-            firstName: Yup.string().min(2, 'Too Short!').max(4000, 'Too Long!').required(),
-            lastName: Yup.string().min(2, 'Too Short!').max(4000, 'Too Long!').required(),
-            gender: Yup.string().required(),
-            phoneNumber: Yup.string().required(),
-            address: Yup.string().required(),
-            roleID: Yup.string().required(),
-            departmentID: Yup.string().required(),
-        }),
-        onSubmit: (values) => {
-            setLoadingButton(true)
-            const userStringEmployeeName = localStorage.getItem('employeeId')
-            const employeeId = JSON.parse(userStringEmployeeName)
-            const newData = {
-                id: employeeId,
-                username: values.username,
-                firstName: values.firstName,
-                lastName: values.lastName,
-                gender: values.gender,
-                address: values.address,
-                phoneNumber: values.phoneNumber,
-                roleID: values.roleId,
-                departmentID: values.departmentId,
-            }
-            dispatch(PutEmployeeAsyncApi(newData))
-                .then((response) => {
-                    setLoadingButton(false)
-                    if (response.meta.requestStatus == 'fulfilled') {
-                        showSnackbar({
-                            severity: 'success',
-                            children: 'Update Employee successfully',
-                        })
-                        SetClick(false)
-                        dispatch(getEmployeeByIdAsyncApi(employeeId))
-                            .then((response) => {
-                                if (response.meta.requestStatus == 'fulfilled') {
-                                    formik.setValues({
-                                        username: response.payload.email,
-                                        firstName: response.payload.firstName,
-                                        lastName: response.payload.lastName,
-                                        gender: response.payload.gender,
-                                        address: response.payload.address,
-                                        phoneNumber: response.payload.phoneNumber,
-                                        roleID: response.payload.roleId,
-                                        departmentID: response.payload.departmentId,
-                                    })
-                                }
-                            })
-                            .catch((error) => {
-                                // Handle failure case
-                            })
-                    }
-                })
-                .catch((error) => {
-                    // Handle failure case
-                    setLoadingButton(false)
-                })
-        },
+    const [userRole, setUserRole] = useState(() => {
+        const userString = localStorage.getItem('role')
+        const userObject = JSON.parse(userString)
+        return userObject || 'defaultRole' // Provide a default role if undefined
     })
     let viewModalContent = <TabsData data={tabsData} />
     return (
-        <div className="sm:ml-64 pt-12 h-screen bg-gray-50">
-        
-            <NavbarManager />
-          
-            <div className=" px-12 pt-2">
-                <TabsData data={tabsData} />
+        <div className="">
+
+           {userRole === 'Manager' ? <NavbarManager /> : <NavbarHR />}
+            <div className="sm:ml-64 pt-12 h-screen bg-gray-50">
+                <div className="px-12 py-6">
+                    <h2 className="font-bold text-3xl mb-4"> Employee Detail </h2>
+                    <div className="mb-2 font-semibold">
+                        <IconBreadcrumbs data={dataBreadcrumbs} />
+                    </div>
+                    <div className="">
+                        <TabsData data={tabsData} />
+                    </div>
+                </div>
             </div>
         </div>
     )

@@ -37,7 +37,7 @@ function App() {
                 {/*Admin*/}
                 <Route path="/Admin/Team" exact component={Team} />
                 <Route path="/Admin/Employee" exact component={EmployeeAdmin} />
-                <Route path="/Admin/Wifi" exact component={Wifi} />
+                <Route path="/Admin/Deactive" exact component={Wifi} />
                 {/* <Route path="/Admin/RiskEmployeeSettings" exact component={RiskEmployeeSettings} /> */}
                 <Route path="/Admin/TrackSettings" exact component={TrackSettings} />
                 {/*Manager*/}
@@ -60,6 +60,7 @@ function App() {
                 <Route path="/Hr/ManageOvertime" exact component={ManageOvertime} />
                 <Route path="/Hr/ManageWorked" exact component={ManageWorked} />
                 <Route path="/Hr/TimeSheet" exact component={TimeSheet} />
+                <Route path="/Hr/TrackSettings" exact component={TrackSettings} />
                 {/*Employee*/}
 
                 <Route path="/Employee/Dashboard" exact component={DashboardEmployee} />

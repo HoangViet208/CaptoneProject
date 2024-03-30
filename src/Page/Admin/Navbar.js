@@ -152,11 +152,11 @@ export default function NavbarAdmin() {
 
                         <li className="cursor-pointer p-2">
                             <Link
-                                to="/Admin/Wifi"
+                                to="/Admin/Deactive"
                                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
                             >
                                 <WifiIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
-                                <span className="flex-1 ml-3 whitespace-nowrap">Wifi</span>
+                                <span className="flex-1 ml-3 whitespace-nowrap">Deactive</span>
                             </Link>
                         </li>
                         {/* <li className="cursor-pointer p-2">
@@ -377,14 +377,14 @@ export default function NavbarAdmin() {
                         </li>
                         <li className="cursor-pointer text-center mx-auto justify-center items-center">
                             <NavLink
-                                to="/Admin/Wifi"
+                                to="/Admin/Deactive"
                                 className="flex items-center gap-2 p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
                                 activeStyle={{
                                     background: '#dbeafe',
                                 }}
                             >
                                 <WifiIcon className="ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
-                                <span className="ml-3">Wifi</span>
+                                <span className="ml-3">Deactive</span>
                             </NavLink>
                         </li>
                         {/* <li className="cursor-pointer text-center mx-auto justify-center items-center">

@@ -37,19 +37,18 @@ export default function General() {
     const [click, SetClick] = useState(false)
     const [loadingButton, setLoadingButton] = useState(false)
     const param = useParams()
+   
     const showSnackbar = useSnackbar()
     const { EmployeeDetail } = useSelector((state) => state.employee)
     const { RoleList } = useSelector((state) => state.account)
     const { DepartmentList } = useSelector((state) => state.department)
-
+  console.log("param", param.id, )
     const dispatch = useDispatch()
+    
     useEffect(() => {
-        const userStringEmployeeName = localStorage.getItem('employeeId')
-        const employeeId = JSON.parse(userStringEmployeeName)
-        console.log('effect', employeeId)
         dispatch(getDepartmentAsyncApi())
         dispatch(getRoleAsyncApi())
-        dispatch(getEmployeeByIdAsyncApi(employeeId))
+        dispatch(getEmployeeByIdAsyncApi(param.id))
             .then((response) => {
                 if (response.meta.requestStatus == 'fulfilled') {
                     console.log('effect', response)
@@ -70,6 +69,7 @@ export default function General() {
             })
         return () => {}
     }, [])
+
     const initialValues = {
         username: '',
         firstName: '',
@@ -143,8 +143,8 @@ export default function General() {
         },
     })
     return (
-        <div className="bg-white block gap-10 my-5 lg:my-0 lg:flex">
-            <div className="flex flex-col gap-5 w-full items-center h-[600px] rounded-2xl bg-white shadow-lg pt-16 my-5 lg:w-1/3 lg:my-0">
+        <div className="bg-white block gap-10 my-5 lg:my-0 lg:flex h-[480px]">
+            <div className="flex flex-col gap-5 w-full items-center  rounded-2xl bg-white shadow-lg pt-16 my-5 lg:w-1/3 lg:my-0">
                 <Avatar className="mx-auto" sx={{ width: 280, height: 280 }} />
 
                 {/* <p className="text-center text-lg text-gray-400 font-semibold">Allowed *.jpeg, *.jpg, *.png, *.gif</p>
@@ -166,7 +166,8 @@ export default function General() {
                         <div className="my-2">
                             <TextField
                                 className="w-full"
-                                id="outlined-basic"
+                                size="small"
+                                id="username"
                                 disabled={true}
                                 error={formik.touched.username && formik.errors.username ? true : undefined}
                                 value={formik.values.username}
@@ -182,10 +183,11 @@ export default function General() {
                         </div>
                         <div className="my-2">
                             <FormControl fullWidth>
-                                <InputLabel id="demo-simple-select-label">role</InputLabel>
+                                <InputLabel size='small' id="demo-simple-select-label">role</InputLabel>
                                 <Select
-                                    id="outlined-basic"
+                                    id="role"
                                     disabled
+                                    size="small"
                                     error={formik.touched.roleID && formik.errors.roleID ? true : undefined}
                                     className="w-full"
                                     value={formik.values.roleID}
@@ -210,13 +212,16 @@ export default function General() {
                         </div>
                         <div className="my-2">
                             <FormControl fullWidth>
-                                <InputLabel id="demo-simple-select-label">Department</InputLabel>
+                                <InputLabel size="small" id="demo-simple-select-label">
+                                    Team
+                                </InputLabel>
                                 <Select
-                                    id="outlined-basic"
+                                    size="small"
+                                    id="Team"
                                     disabled
                                     error={formik.touched.departmentID && formik.errors.departmentID ? true : undefined}
                                     className="w-full"
-                                    value={formik.values.departmentID}
+                                    value={formik.values.departmentID ? formik.values.departmentID : ''} 
                                     name="departmentID"
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
@@ -239,7 +244,8 @@ export default function General() {
                         <div className="grid grid-cols-2 gap-5">
                             <div className="my-2">
                                 <TextField
-                                    id="outlined-basic"
+                                    size="small"
+                                    id="firstName"
                                     error={formik.touched.firstName && formik.errors.firstName ? true : undefined}
                                     fullWidth
                                     value={formik.values.firstName}
@@ -257,7 +263,8 @@ export default function General() {
                             </div>
                             <div className="my-2">
                                 <TextField
-                                    id="outlined-basic"
+                                    size="small"
+                                    id="lastName"
                                     error={formik.touched.lastName && formik.errors.lastName ? true : undefined}
                                     fullWidth
                                     value={formik.values.lastName}
@@ -275,7 +282,8 @@ export default function General() {
 
                         <div className="my-2">
                             <TextField
-                                id="outlined-basic"
+                                size="small"
+                                id="address"
                                 error={formik.touched.address && formik.errors.address ? true : undefined}
                                 className="w-full"
                                 value={formik.values.address}
@@ -291,8 +299,12 @@ export default function General() {
                         </div>
                         <div className="my-2">
                             <FormControl>
-                                <FormLabel id="demo-radio-buttons-group-label">Gender</FormLabel>
+                                <FormLabel size="small" id="demo-radio-buttons-group-label">
+                                    Gender
+                                </FormLabel>
                                 <RadioGroup
+                                    size="small"
+                                    id=""
                                     aria-labelledby="demo-radio-buttons-group-label"
                                     defaultValue="female"
                                     error={formik.touched.gender && formik.errors.gender ? true : undefined}
@@ -319,7 +331,8 @@ export default function General() {
                         </div>
                         <div className="my-2">
                             <TextField
-                                id="outlined-basic"
+                                size="small"
+                                id="phoneNumber"
                                 error={formik.touched.phoneNumber && formik.errors.phoneNumber ? true : undefined}
                                 className="w-full"
                                 value={formik.values.phoneNumber}
