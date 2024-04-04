@@ -152,11 +152,11 @@ export default function NavbarAdmin() {
 
                         <li className="cursor-pointer p-2">
                             <Link
-                                to="/Admin/Deactive"
+                                to="/Admin/Wifi"
                                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
                             >
                                 <WifiIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
-                                <span className="flex-1 ml-3 whitespace-nowrap">Deactive</span>
+                                <span className="flex-1 ml-3 whitespace-nowrap">Wifi</span>
                             </Link>
                         </li>
                         {/* <li className="cursor-pointer p-2">
@@ -168,7 +168,7 @@ export default function NavbarAdmin() {
                                 <span className="flex-1 ml-3 whitespace-nowrap">Risk Settings</span>
                             </Link>
                         </li> */}
-                        <li className="cursor-pointer p-2">
+                        {/* <li className="cursor-pointer p-2">
                             <Link
                                 to="/Admin/TrackSettings"
                                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
@@ -176,7 +176,7 @@ export default function NavbarAdmin() {
                                 <TuneIcon className="rotate-90 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
                                 <span className="flex-1 ml-3 whitespace-nowrap">Track Settings</span>
                             </Link>
-                        </li>
+                        </li> */}
                         {/* <li className="cursor-pointer p-2">
                             <Link
                                 to="/Admin/LeaveSettings"
@@ -377,14 +377,14 @@ export default function NavbarAdmin() {
                         </li>
                         <li className="cursor-pointer text-center mx-auto justify-center items-center">
                             <NavLink
-                                to="/Admin/Deactive"
+                                to="/Admin/Wifi"
                                 className="flex items-center gap-2 p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
                                 activeStyle={{
                                     background: '#dbeafe',
                                 }}
                             >
                                 <WifiIcon className="ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
-                                <span className="ml-3">Deactive</span>
+                                <span className="ml-3">Wifi</span>
                             </NavLink>
                         </li>
                         {/* <li className="cursor-pointer text-center mx-auto justify-center items-center">
@@ -399,7 +399,7 @@ export default function NavbarAdmin() {
                                 <span className="ml-3">Risk Settings</span>
                             </NavLink>
                         </li> */}
-                        <li className="cursor-pointer text-center mx-auto justify-center items-center">
+                        {/* <li className="cursor-pointer text-center mx-auto justify-center items-center">
                             <NavLink
                                 to="/Admin/TrackSettings"
                                 className="flex items-center gap-2 p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
@@ -410,7 +410,7 @@ export default function NavbarAdmin() {
                                 <TuneIcon className="rotate-90 ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
                                 <span className="ml-3">Track Settings</span>
                             </NavLink>
-                        </li>
+                        </li> */}
                         {/* <li className="cursor-pointer text-center mx-auto justify-center items-center">
                             <NavLink
                                 to="/Admin/LeaveSettings"

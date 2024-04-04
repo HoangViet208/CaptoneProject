@@ -10,24 +10,28 @@ import { storage } from '../../../Config/FirebaseConfig'
 
 //Mui
 import {
-    Avatar,
+    Popover,
+    InputAdornment,
+    TextField,
+    OutlinedInput,
+    Select,
+    Button,
+    FormControl,
+    MenuItem,
+    DialogActions,
     Tooltip,
     IconButton,
-    TextField,
-    Button,
     InputLabel,
-    Box,
-    MenuItem,
-    FormControl,
-    Select,
-    DialogActions,
 } from '@mui/material'
+
 import { LoadingButton } from '@mui/lab'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker'
+import { addDays, startOfDay, parse, set, format } from 'date-fns'
 
 //Icon
+import EventNoteIcon from '@mui/icons-material/EventNote'
 import DashboardIcon from '@mui/icons-material/Dashboard'
 import FileUploadIcon from '@mui/icons-material/FileUpload'
 import AddIcon from '@mui/icons-material/Add'
@@ -41,10 +45,18 @@ import IconBreadcrumbs from '../../../Components/Breadcrumbs'
 import TableData from '../../../Components/Table'
 import PopupConfirm from '../../../Components/PopupConfirm'
 import PopupData from '../../../Components/Popup'
+import { DateRange } from 'react-date-range'
 
 //hooks
 import { useSnackbar } from '../../../Hook/useSnackbar'
-import { calculateDays, formatDate, formatDateToInputValue, getDayOfWeek } from '../../../Hook/useFormatDate'
+import {
+    calculateDays,
+    formatDate,
+    formatDateToInputValue,
+    formattedDate,
+    getDateRangeArray,
+    getDayOfWeek,
+} from '../../../Hook/useFormatDate'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import {
@@ -110,6 +122,26 @@ export default function Holiday() {
         holidayType: 'Public Holiday',
         holidayId: 0,
     }
+    const [anchorEl, setAnchorEl] = React.useState(null)
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget)
+    }
+
+    const handleClose = () => {
+        setAnchorEl(null)
+    }
+    const threeDaysLater = addDays(today, 7)
+    const minDate = startOfDay(threeDaysLater)
+    const [dateRange, setDateRange] = useState([
+        {
+            startDate: threeDaysLater,
+            endDate: threeDaysLater,
+            key: 'selection',
+        },
+    ])
+
+    const openPopover = Boolean(anchorEl)
+    const id = openPopover ? 'simple-popover' : undefined
     const [dataUser, setDataUser] = useState([])
     const [errorSelect, seterrorSelect] = useState(false)
     const { HolidayList, loading } = useSelector((state) => state.holiday)
@@ -129,6 +161,9 @@ export default function Holiday() {
         })
         return () => {}
     }, [])
+    const handleDateChange = (ranges) => {
+        setDateRange([ranges.selection])
+    }
     const formik = useFormik({
         initialValues: initialValues,
         validationSchema: Yup.object({
@@ -147,11 +182,18 @@ export default function Holiday() {
             const idArray = selectedUser.map((item) => item.id)
             if (isAction == 1) {
                 setLoadingButton(true)
+                var idValuesArray = []
+
+                for (var i = 0; i < DepartmentList.length; i++) {
+                    idValuesArray.push(DepartmentList[i].id)
+                }
+                const startDateStr = format(dateRange[0].startDate, 'yyyy/MM/dd')
+                const endDateStr = format(dateRange[0].endDate, 'yyyy/MM/dd')
                 console.log('chay', values.holidayDate, values.holidayDateEnd, idArray)
                 const body = {
-                    departmentIds: idArray,
-                    startDate: values.holidayDate.replace(/-/g, '/').replace(/\/-/, '/'),
-                    endDate: values.holidayDateEnd.replace(/-/g, '/').replace(/\/-/, '/'),
+                    departmentIds: idValuesArray,
+                    startDate: startDateStr,
+                    endDate: endDateStr,
                     holidayName: values.holidayTitle,
                     description: values.holidayDescription,
                     isRecurring: true,
@@ -266,11 +308,13 @@ export default function Holiday() {
             children: 'ngu233',
         })
     }
-    const handleClickOpenConfirm = () => {
+    const [idDelete, setIdDelete] = useState()
+    const handleClickOpenConfirm = (holidayId) => {
+        setIdDelete(holidayId)
         setOpenConfirm(true)
     }
     const handleDelete = () => {
-        dispatch(DeleteHolidayAsyncApi())
+        dispatch(DeleteHolidayAsyncApi([idDelete]))
             .then((response) => {
                 if (response.meta.requestStatus == 'fulfilled') {
                     dispatch(getDepartmentAsyncApi())
@@ -301,38 +345,44 @@ export default function Holiday() {
         setOpen(true)
         setIsAction(1)
     }
-    const handleMultiSelectUserChange = (newValue) => {
-        seterrorSelect(true)
-        setSelectedUser(newValue)
-    }
+    // const handleMultiSelectUserChange = (newValue) => {
+    //     seterrorSelect(true)
+    //     setSelectedUser(newValue)
+    // }
     console.log('a', formik.values)
     const handleClickOpenUpdate = (data) => {
         setOpen(true)
         setIsAction(2)
-        console.log('123145', data.startDate)
-        const result = [...selectedUser]
-        for (let i = 0; i < data.departmentIds.length; i++) {
-            const id = data.departmentIds[i]
-            const name = data.departmentNames[i]
-            // Tạo đối tượng mới và đưa vào mảng kết quả
-            const newValue = {
-                id: id,
-                name: name,
-            }
-            result.push(newValue)
-        }
-        setSelectedUser(result)
+        // console.log('123145', data.startDate)
+        // const result = [...selectedUser]
+        // for (let i = 0; i < data.departmentIds.length; i++) {
+        //     const id = data.departmentIds[i]
+        //     const name = data.departmentNames[i]
+        //     // Tạo đối tượng mới và đưa vào mảng kết quả
+        //     const newValue = {
+        //         id: id,
+        //         name: name,
+        //     }
+        //     result.push(newValue)
+        // }
+        // setSelectedUser(result)
+        // setDateRange([
+        //     {
+        //         startDate: parse(data.startDate, 'yyyy/MM/dd', new Date()),
+        //         endDate: parse(data.endDate, 'yyyy/MM/dd', new Date()),
+        //         key: 'selection',
+        //     },
+        // ])
         formik.setValues({
-            holidayDate: data.startDate.replace(/\//g, '-'),
-            holidayDateEnd: data.endDate.replace(/\//g, '-'),
+            //holidayDate: data.startDate.replace(/\//g, '-'),
+            // holidayDateEnd: data.endDate.replace(/\//g, '-'),
             holidayTitle: data.holidayName,
-            departmentId: [],
+            // departmentId: [],
             holidayDescription: data.description,
-            holidaySesion: 'Full day',
-            holidayType: 'Public Holiday',
-            holidayId: 0,
+            // holidaySesion: 'Full day',
+            //   holidayType: 'Public Holiday',
+            holidayId: data.id,
         })
-        console.log('1', formatDateToInputValue(data.startDate.slice(0, 10)), data.startDate.slice(0, 10))
     }
     const handleClickOpenImport = () => {
         setOpenImport(true)
@@ -463,17 +513,18 @@ export default function Holiday() {
                             <RemoveRedEyeIcon />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip onClick={handleClickOpenConfirm} title="Delete">
+                 
+                    <Tooltip  onClick={() => handleClickOpenConfirm(item.holidayId) } title="Delete">
                         <IconButton>
                             <DeleteIcon />
                         </IconButton>
                     </Tooltip>
                 </div>
             ),
-            departmentNames:
-                item.departmentNames.join(', ').length > 20
-                    ? item.departmentNames.join(', ').slice(0, 20) + '...'
-                    : item.departmentNames.join(', '),
+            // departmentNames:
+            //     item.name.join(', ').length > 20
+            //         ? item.name.join(', ').slice(0, 20) + '...'
+            //         : item.name.join(', '),
             title: item.holidayName,
         }))
     }
@@ -484,28 +535,94 @@ export default function Holiday() {
         <Fragment>
             <form onSubmit={formik.handleSubmit}>
                 <div className=" px-8 mb-5 lg:my-0">
-                    <div className="my-4">
+                    <div className="my-2">
+                        <div className="mb-1">
+                            <strong className=" text-gray-500">Leave Dates</strong> <i className="text-red-500">*</i>
+                        </div>
+                        <div>
+                            <OutlinedInput
+                                type="text"
+                                aria-describedby={id}
+                                placeholder="Select Date Range"
+                                size="small"
+                                fullWidth
+                                onClick={handleClick}
+                                endAdornment={
+                                    <InputAdornment position="end">
+                                        <IconButton aria-label="toggle password visibility" edge="end">
+                                            <EventNoteIcon />
+                                        </IconButton>
+                                    </InputAdornment>
+                                }
+                                value={
+                                    formattedDate(dateRange[0].startDate) + ' - ' + formattedDate(dateRange[0].endDate)
+                                }
+                                readOnly
+                            />
+
+                            {openPopover && (
+                                <Popover
+                                    id={id}
+                                    open={openPopover}
+                                    anchorEl={anchorEl}
+                                    onClose={handleClose}
+                                    anchorOrigin={{
+                                        vertical: 'bottom',
+                                        horizontal: 'left',
+                                    }}
+                                >
+                                    {' '}
+                                    <div style={{ position: 'relative' }}>
+                                        <DateRange
+                                            ranges={dateRange}
+                                            onChange={handleDateChange}
+                                            moveRangeOnFirstSelection={false} // Không di chuyển khoảng ngày khi chọn ngày đầu tiên
+                                            minDate={minDate}
+                                        />
+                                        <style>{`
+                                        /* Ẩn hai ô input */
+                                        .rdrDateRangeWrapper input {
+                                            display: none;
+                                        }
+                                    `}</style>
+                                    </div>
+                                </Popover>
+                            )}
+                        </div>
+                    </div>
+                    {/* <div className="my-4">
                         <div className="mb-2">
                             <strong className=" text-gray-500">Holiday Start Day</strong>
                         </div>
-                        <TextField
-                            id="outlined-basic"
-                            size="small"
-                            type="date"
-                            error={formik.touched.holidayDate && formik.errors.holidayDate ? true : undefined}
-                            onChange={formik.handleChange}
-                            className="mt-2 w-full"
-                            value={formik.values.holidayDate}
-                            name="holidayDate"
-                            disabled={isAction == 1 ? false : true}
-                            variant="outlined"
-                            inputProps={{
-                                min: today.toISOString().split('T')[0], // Chặn ngày từ quá khứ
-                            }}
-                        />
-                        {formik.errors.holidayDate && formik.touched.holidayDate && (
-                            <div className="text mt-1 text-red-600 font-semibold">{formik.errors.holidayDate}</div>
-                        )}
+                        
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DesktopDatePicker
+                                error={formik.touched.holidayDate && formik.errors.holidayDate ? true : undefined}
+                                onChange={formik.handleChange}
+                                className="mt-2 w-full"
+                                value={formik.values.holidayDate}
+                                name="holidayDate"
+                                format="dd/MM/yyyy"
+                                inputVariant="outlined"
+                                TextFieldComponent={(props) => (
+                                    <TextField
+                                        {...props}
+                                        error={
+                                            formik.touched.holidayDate && formik.errors.holidayDate ? true : undefined
+                                        }
+                                        className="mt-2 w-full"
+                                        disabled={isAction === 1 ? false : true}
+                                        InputProps={{
+                                            ...props.InputProps,
+                                            readOnly: true,
+                                        }}
+                                    />
+                                )}
+                                inputProps={{
+                                    min: today.toISOString().split('T')[0], // Chặn ngày từ quá khứ
+                                }}
+                            />
+                        </LocalizationProvider>
                     </div>
                     <div className="my-4">
                         <div className="mb-2">
@@ -529,8 +646,8 @@ export default function Holiday() {
                         {formik.errors.holidayDateEnd && formik.touched.holidayDateEnd && (
                             <div className="text mt-1 text-red-600 font-semibold">{formik.errors.holidayDateEnd}</div>
                         )}
-                    </div>
-                    <div className="my-4">
+                    </div> */}
+                    {/* <div className="my-4">
                         <div className="mb-2">
                             <strong className=" text-gray-500">Department List</strong>
                         </div>
@@ -544,7 +661,7 @@ export default function Holiday() {
                         {formik.errors.departmentId && formik.touched.departmentId && (
                             <div className="text mt-1 text-red-600 font-semibold">{formik.errors.departmentId}</div>
                         )}
-                    </div>
+                    </div> */}
                     <div className="my-4">
                         <div className="mb-2">
                             <strong className=" text-gray-500">Holiday Title</strong>
@@ -598,7 +715,7 @@ export default function Holiday() {
                                 Cancel
                             </Button>
                             <LoadingButton
-                                disabled={!errorSelect}
+                                //disabled={!errorSelect}
                                 startIcon={<AddIcon />}
                                 type="submit"
                                 loading={loadingButton}
@@ -690,7 +807,7 @@ export default function Holiday() {
     }, [])
     return (
         <div>
-             {userRole === 'Manager' ? <Navbar /> : <NavbarHR />}
+            {userRole === 'Manager' ? <Navbar /> : <NavbarHR />}
             <PopupConfirm open={openConfirm} clickOpenFalse={clickOpenFalseConfirm} clickDelete={handleDelete} />
             <PopupData
                 open={open}
@@ -698,7 +815,7 @@ export default function Holiday() {
                 viewTitle={isAction == 1 ? 'Add Holiday' : isAction == 2 ? 'Update Holiday' : ''}
                 viewContent={viewModalContent}
             />
-            <PopupConfirm open={openConfirm} clickOpenFalse={clickOpenFalseConfirm} />
+            <PopupConfirm open={openConfirm} clickOpenFalse={clickOpenFalseConfirm} clickDelete={handleDelete} />
             <PopupData
                 size="xs"
                 open={openImport}

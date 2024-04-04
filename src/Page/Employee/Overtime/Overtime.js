@@ -413,39 +413,7 @@ export default function Overtime() {
         seterrorImport(false)
     }
     const createRows = () => {
-        const data = [
-            {
-                id: '1',
-                Date: '2022/06/12',
-                timeStart: '18:00',
-                timeEnd: '22:00',
-
-                statusReqeust: 'Approved',
-                status: 'Successfully',
-                reason: 'Làm thêm',
-            },
-            {
-                id: '2',
-                Date: '2022/06/12',
-                timeStart: '18:00',
-                timeEnd: '22:00',
-
-                statusReqeust: 'Pending',
-                status: '',
-                reason: 'Tăng ca cho ngày mai',
-            },
-            {
-                id: '3',
-                Date: '2022/06/12',
-                timeStart: '18:00',
-                timeEnd: '22:00',
-
-                statusReqeust: 'Reject',
-                status: '',
-                reason: 'Tăng ca',
-            },
-        ]
-
+      
         return OvertimeByEmployee.map((item, index) => ({
             ...item,
             time: calculateTime(item.timeStart, item.timeEnd),

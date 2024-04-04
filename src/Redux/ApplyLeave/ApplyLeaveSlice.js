@@ -227,9 +227,9 @@ export const PutCancelApprovedLeaveForHRAsyncApi = createAsyncThunk(
 
 export const PutApproveApplyLeaveAsyncApi = createAsyncThunk(
     'ApplyLeaveReducer/PutApproveApplyLeaveApi',
-    async (id) => {
+    async (id, empId) => {
         try {
-            const response = await PutApproveApplyLeaveApi(id)
+            const response = await PutApproveApplyLeaveApi(id, empId)
             return response.data // Trả về dữ liệu từ response nếu thành công
         } catch (error) {
             const json = error.response.data
@@ -238,9 +238,9 @@ export const PutApproveApplyLeaveAsyncApi = createAsyncThunk(
         }
     }
 )
-export const DeleteApplyLeaveAsyncApi = createAsyncThunk('ApplyLeaveReducer/deleteAsyncApi', async (id) => {
+export const DeleteApplyLeaveAsyncApi = createAsyncThunk('ApplyLeaveReducer/deleteAsyncApi', async (id, empId) => {
     try {
-        const response = await DeleteApplyLeaveApi(id)
+        const response = await DeleteApplyLeaveApi(id , empId)
         return response
     } catch (error) {
         const json = error.response.data

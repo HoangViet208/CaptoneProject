@@ -38,8 +38,9 @@ export const PutHolidayApi = async (body) => {
 
 export const DeleteHolidayApi = async (body) => {
     try {
+        console.log("ga2", body)
         const response = await axios.delete(`${API_URL}/Holiday`, body)
-        return response.data
+        return response
     } catch (error) {
         throw error
     }

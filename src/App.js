@@ -37,7 +37,7 @@ function App() {
                 {/*Admin*/}
                 <Route path="/Admin/Team" exact component={Team} />
                 <Route path="/Admin/Employee" exact component={EmployeeAdmin} />
-                <Route path="/Admin/Deactive" exact component={Wifi} />
+                <Route path="/Admin/Wifi" exact component={Wifi} />
                 {/* <Route path="/Admin/RiskEmployeeSettings" exact component={RiskEmployeeSettings} /> */}
                 <Route path="/Admin/TrackSettings" exact component={TrackSettings} />
                 {/*Manager*/}

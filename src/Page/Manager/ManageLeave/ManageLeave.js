@@ -271,10 +271,12 @@ export default function ManageLeave() {
         setLeaveDays(0)
         setLeaveDaysDate([])
     }
+    const userId = localStorage.getItem('employeeId')
+    const UserParseId = JSON.parse(userId)
     const handleClickApprove = () => {
         setLoadingButton(true)
 
-        dispatch(PutApproveApplyLeaveAsyncApi(requestId))
+        dispatch(PutApproveApplyLeaveAsyncApi(requestId, UserParseId))
             .then((response) => {
                 setLoadingButton(false)
                 if (response.meta.requestStatus == 'fulfilled') {
@@ -311,6 +313,7 @@ export default function ManageLeave() {
         const Updatedata = {
             id: requestId,
             status: 2,
+            reasonReject: "ngu ne",
         }
         dispatch(PutApplyLeaveAsyncApi({ id: employeeId, body: Updatedata }))
             .then((response) => {
@@ -806,9 +809,9 @@ export default function ManageLeave() {
             </form>
         </Fragment>
     )
+  
     const handleDelete = () => {
-   
-        dispatch(PutCancelApprovedLeaveForHRAsyncApi({"requestId" : idDelete, "reason": "thich"}))
+        dispatch(PutCancelApprovedLeaveForHRAsyncApi({"requestId" : idDelete, "reason": "thich","employeeIdDecider": UserParseId }))
             .then((response) => {
                 if (response.meta.requestStatus == 'fulfilled') {
                     showSnackbar({

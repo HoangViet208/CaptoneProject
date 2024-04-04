@@ -82,18 +82,18 @@ export const PutCancelApprovedLeaveForHRApi = async (body) => {
     }
 }
 
-export const PutApproveApplyLeaveApi = async (id) => {
+export const PutApproveApplyLeaveApi = async (id,empId) => {
     try {
-        const response = await axios.patch(`${API_URL}/RequestLeave/approve-leave-request?requestId=${id}`)
+        const response = await axios.patch(`${API_URL}/RequestLeave/approve-leave-request?requestId=${id}&employeeIdDecider=${empId}`)
         return response.data
     } catch (error) {
         throw error
     }
 }
 
-export const DeleteApplyLeaveApi = async (id) => {
+export const DeleteApplyLeaveApi = async (id,empId) => {
     try {
-        const response = await axios.delete(`${API_URL}/RequestLeave/delete-nonapproved-leave-request-for-employee?requestId=${id}`)
+        const response = await axios.delete(`${API_URL}/RequestLeave/delete-nonapproved-leave-request-for-employee?requestId=${id}&employeeIdDecider=${empId}`)
         return response.data
     } catch (error) {
         throw error

@@ -20,7 +20,7 @@ import { DateRangePicker } from 'react-date-range'
 import 'react-date-range/dist/styles.css'
 import 'react-date-range/dist/theme/default.css'
 import dayjs from 'dayjs'
-import { formatDate, formattedDate, getDayOfWeek } from '../../../Hook/useFormatDate'
+import { calculateTime, formatDate, formattedDate, getDayOfWeek } from '../../../Hook/useFormatDate'
 import EventAvailableIcon from '@mui/icons-material/EventAvailable'
 import PopupData from '../../../Components/Popup'
 import { useDispatch, useSelector } from 'react-redux'
@@ -117,7 +117,8 @@ export default function AllRequest() {
     const [overtimeRequests, setOvertimeRequests] = useState([])
     
     const param = useParams()
-    const { AllRequestInEmployee, ApplyLeaveList, ApplyLeaveTypeList, valueTabs, loading  } = useSelector((state) => state.applyLeave)
+    const { AllRequestInEmployee, ApplyLeaveList, ApplyLeaveTypeList, valueTabs  } = useSelector((state) => state.applyLeave)
+    const { WorkedList } = useSelector((state) => state.worked)
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(GetApplyLeaveTypeAsyncApi())
@@ -354,6 +355,101 @@ export default function AllRequest() {
 
     const rowsOvertime = createRowsOvertime()
 
+    const createRowsWorked = () => {
+
+        return WorkedList.map((item, index) => ({
+            ...item,
+            reason: (
+                <Tooltip title={item.reason}>
+                    {item.reason.length > 5 ? item.reason.slice(0, 5) + '...' : item.reason}
+                </Tooltip>
+            ),
+
+            dayAndTime: item.dateOfWorkTime == null ? '' : formatDate(item.dateOfWorkTime),
+            time: item.Date,
+            files: (
+                <a className="mt-2 text-blue-400 underline" href={item.linkFile} target="_blank">
+                    Link
+                </a>
+            ),
+            timeInMonth: item.timeInMonth + '/3 Days',
+            applied: formatDate(item.submitDate),
+            info: (
+                <div className="flex gap-2 items-center ">
+                    {' '}
+                    {/* Added the class 'align-center' for centering */}
+                    <p className="font-bold">{item.employeeName}</p>
+                </div>
+            ),
+            number: index + 1,
+            action: (
+                <div className="flex gap-2">
+                    <div className="border-[1px] border-green-500 text-green-500 px-4 py-1 rounded-3xl hover:bg-green-500 hover:text-white">
+                        <LoadingButton
+                            type="submit"
+                            loading={loadingButton}
+                            sx={{
+                                textAlign: 'center',
+                                color: 'rgb(34 197 94)',
+                                '&:hover': {
+                                    color: 'white',
+                                },
+                            }}
+                            autoFocus
+                            onClick={() => handleClickApprove(item)}
+                        >
+                            Approve
+                        </LoadingButton>
+                    </div>
+                    <div className="border-[1px] border-red-500 text-red-500 px-4 py-1 rounded-3xl hover:bg-red-500 hover:text-white">
+                        <LoadingButton
+                            type="submit"
+                            loading={loadingRJButton}
+                            sx={{
+                                textAlign: 'center',
+                                color: 'rgb(239 68 68)',
+                                '&:hover': {
+                                    color: 'white',
+                                },
+                            }}
+                            autoFocus
+                            onClick={() => handleClickReject(item)}
+                        >
+                            Reject
+                        </LoadingButton>
+                    </div>
+                </div>
+            ),
+            actionAll: (
+                <Tooltip onClick={handleClickOpen} title="Delete">
+                    <IconButton>
+                        <DeleteIcon />
+                    </IconButton>
+                </Tooltip>
+            ),
+            status: (
+                <Tooltip
+                    title={
+                        item.status == 'True'
+                            ? `Approved by ${item.aprrovedBy}`
+                            : item.status == 'False'
+                            ? `Reject by ${item.rejectBy}`
+                            : `Pending...`
+                    }
+                >
+                    {item.status == 'True' ? (
+                        <p className="text-green-500">{item.status}</p>
+                    ) : item.status == 'False' ? (
+                        <p className="text-red-500">{item.status}</p>
+                    ) : (
+                        <p className="text-yellow-500">{item.status}</p>
+                    )}
+                </Tooltip>
+            ),
+        }))
+    }
+    const rowsWorked = createRowsWorked()
+
     const handleClickOpen = () => {
         setOpen(true)
     }
@@ -382,9 +478,11 @@ export default function AllRequest() {
             Save changes
         </Button>
     )
+    const userId = localStorage.getItem('employeeId')
+    const UserParseId = JSON.parse(userId)
     const handleClickApprove = () => {
         setLoadingButton(true)
-        dispatch(PutApproveApplyLeaveAsyncApi(requestId))
+        dispatch(PutApproveApplyLeaveAsyncApi(requestId, UserParseId))
             .then((response) => {
                 setLoadingButton(false)
                 if (response.meta.requestStatus == 'fulfilled') {
@@ -486,7 +584,15 @@ export default function AllRequest() {
         {
             label: 'Request Worked',
             icon: <CalendarMonthIcon />,
-            view: <></>,
+            view: <TableData
+            tableHeight={400}
+            rows={rowsWorked}
+            columns={columsWorked}
+            page={pageLeave}
+            rowsPerPage={rowsPerPageLeave}
+            handleChangePage={handleChangePageLeave}
+            handleChangeRowsPerPage={handleChangeRowsPerPageLeave}
+        />,
         },
     ]
     const viewModalContentRequest = (

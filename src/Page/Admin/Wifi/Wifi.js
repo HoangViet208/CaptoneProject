@@ -45,7 +45,7 @@ const columns = [
 const breadcrumbIcons = () => {
     const data = [
         { title: 'Dashboard', icon: <DashboardIcon />, url: '/', status: true },
-        { title: 'Deactive', icon: <BadgeIcon />, url: '/Admin/Deactive', status: false },
+        { title: 'Wifi', icon: <BadgeIcon />, url: '/Admin/Wifi', status: false },
     ]
     return data
 }
@@ -169,7 +169,7 @@ export default function Wifi() {
                             setIsInvalidBssid(true)
                             showSnackbar({
                                 severity: 'success',
-                                children: 'Add Deactive successfully',
+                                children: 'Add Wifisuccessfully',
                             })
 
                             dispatch(getwifiAsyncApi())
@@ -201,7 +201,7 @@ export default function Wifi() {
                             setIsInvalidBssid(true)
                             showSnackbar({
                                 severity: 'success',
-                                children: 'Update Deactive successfully',
+                                children: 'Update Wifisuccessfully',
                             })
                             setTriggeRule()
                             setTriggerName()
@@ -214,7 +214,7 @@ export default function Wifi() {
             }
         }
     }
-    const onchangeActiveDeactive = async (data) => {
+    const onchangeActiveWifi= async (data) => {
         const newData = {
             id: data.id,
             bssid: data.bssid,
@@ -226,7 +226,7 @@ export default function Wifi() {
             const response = await dispatch(PutwifiAsyncApi(newData))
             showSnackbar({
                 severity: 'success',
-                children: 'Update status Deactive successfully',
+                children: 'Update status Wifisuccessfully',
             })
             await dispatch(getwifiAsyncApi())
         } catch (error) {
@@ -257,13 +257,13 @@ export default function Wifi() {
                 item.status == false ? (
                     <Tooltip title="Active">
                         <IconButton>
-                            <ToggleOnOutlinedIcon onClick={() => onchangeActiveDeactive(item)} />
+                            <ToggleOnOutlinedIcon onClick={() => onchangeActiveWifi(item)} />
                         </IconButton>
                     </Tooltip>
                 ) : (
                     <Tooltip title="Inactive">
                         <IconButton>
-                            <ToggleOffOutlinedIcon onClick={() => onchangeActiveDeactive(item)} />
+                            <ToggleOffOutlinedIcon onClick={() => onchangeActiveWifi(item)} />
                         </IconButton>
                     </Tooltip>
                 ),
@@ -320,7 +320,7 @@ export default function Wifi() {
                 {isInvalidName && (
                     <p className="text-red-500 mt-1">
                         <ErrorIcon fontSize="small" className="mr-1" />
-                        Please enter a valid Deactive name.
+                        Please enter a valid Wifiname.
                     </p>
                 )}
             </div>
@@ -345,7 +345,7 @@ export default function Wifi() {
                 {isInvalidBssid && (
                     <p className="text-red-500 mt-1">
                         <ErrorIcon fontSize="small" className="mr-1" />
-                        Please enter a valid Deactive Bssid.
+                        Please enter a valid WifiBssid.
                     </p>
                 )}
             </div>
@@ -363,13 +363,13 @@ export default function Wifi() {
                 size="lg"
                 open={open}
                 clickOpenFalse={clickOpenFalse}
-                viewTitle={isAction == 1 ? 'Add Deactive' : isAction == 2 ? 'Edit Deactive' : ''}
+                viewTitle={isAction == 1 ? 'Add Wifi' : isAction == 2 ? 'Edit Wifi' : ''}
                 viewContent={viewModalContent}
                 viewAction={viewodalAction}
             />
             <div className="sm:ml-64 pt-12 h-screen bg-gray-50">
                 <div className="px-12 py-6">
-                    <h2 className="font-bold text-3xl mb-4">Deactive List </h2>
+                    <h2 className="font-bold text-3xl mb-4">WifiList </h2>
                     <div className="w-full mb-8 flex font-semibold items-center">
                         <IconBreadcrumbs data={dataBreadcrumbs} />
                         <div className="ml-auto uppercase flex gap-5">

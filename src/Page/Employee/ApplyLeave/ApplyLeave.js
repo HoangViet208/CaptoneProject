@@ -109,7 +109,10 @@ const dataBreadcrumbs = breadcrumbIcons()
 export default function ApplyLeave() {
     const [openAccordionComponent, setOpenAccordionComponent] = useState(false)
     const handleopenAccordionComponent = () => {
-        setOpenAccordionComponent(!openAccordionComponent)
+        if(formik.values.leaveType !== "") {
+            setOpenAccordionComponent(!openAccordionComponent)
+        }
+  
     }
 
     const [loadingButton, setLoadingButton] = useState(false)
@@ -1033,10 +1036,12 @@ export default function ApplyLeave() {
         }))
     }
     const rows = createRows()
+    const userId = localStorage.getItem('employeeId')
+    const UserParseId = JSON.parse(userId)
     console.log('search', dateRange)
     const handleDelete = () => {
         setLoadingButton(true)
-        dispatch(DeleteApplyLeaveAsyncApi(idDelete))
+        dispatch(DeleteApplyLeaveAsyncApi(idDelete, UserParseId))
             .then((response) => {
                 if (response.meta.requestStatus == 'fulfilled') {
                     dispatch(getApplyLeaveByIdAsyncApi(employeeId))
