@@ -6,6 +6,7 @@ import GetOvertimeApi, {
     PutOvertimeApi,
     GetOvertimeTypeApi,
     GetWorkDateSettingByIdApi,
+    CancelOvertimeApi,
 } from '../../Api/OvertimeApi'
 
 const initialState = {
@@ -75,6 +76,10 @@ const authSlice = createSlice({
             .addCase(PutOvertimeAsyncApi.pending, (state) => {})
             .addCase(PutOvertimeAsyncApi.fulfilled, (state, action) => {})
             .addCase(PutOvertimeAsyncApi.rejected, (state, action) => {})
+        builder
+            .addCase(CancelOvertimeAsyncApi.pending, (state) => {})
+            .addCase(CancelOvertimeAsyncApi.fulfilled, (state, action) => {})
+            .addCase(CancelOvertimeAsyncApi.rejected, (state, action) => {})
         builder
             .addCase(DeleteOvertimeAsyncApi.pending, (state) => {})
             .addCase(DeleteOvertimeAsyncApi.fulfilled, (state, action) => {})
@@ -150,9 +155,21 @@ export const PutOvertimeAsyncApi = createAsyncThunk('OvertimeReducer/putAsyncApi
         throw errors[0].errorMessage
     }
 })
-export const DeleteOvertimeAsyncApi = createAsyncThunk('OvertimeReducer/deleteAsyncApi', async (body) => {
+
+export const CancelOvertimeAsyncApi = createAsyncThunk('OvertimeReducer/cancelAsyncApi', async ( body ) => {
     try {
-        const response = await DeleteOvertimeApi(body)
+        const response = await CancelOvertimeApi(body)
+        return response.data // Trả về dữ liệu từ response nếu thành công
+    } catch (error) {
+        const json = error.response.data
+        const errors = json[''].errors
+        throw errors[0].errorMessage
+    }
+})
+
+export const DeleteOvertimeAsyncApi = createAsyncThunk('OvertimeReducer/deleteAsyncApi', async (data) => {
+    try {
+        const response = await DeleteOvertimeApi(data.idDelete, data.employeeId)
         return response
     } catch (error) {
         const json = error.response.data

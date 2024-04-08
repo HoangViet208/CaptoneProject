@@ -82,8 +82,9 @@ export const PutCancelApprovedLeaveForHRApi = async (body) => {
     }
 }
 
-export const PutApproveApplyLeaveApi = async (id,empId) => {
+export const PutApproveApplyLeaveApi = async (id, empId) => {
     try {
+        console.log("UserParseId", id , empId) 
         const response = await axios.patch(`${API_URL}/RequestLeave/approve-leave-request?requestId=${id}&employeeIdDecider=${empId}`)
         return response.data
     } catch (error) {

@@ -18,6 +18,9 @@ import AccountBoxIcon from '@mui/icons-material/AccountBox'
 import KeyIcon from '@mui/icons-material/Key'
 import TabsData from '../../Components/Tabs'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
+import NotificationComponent from '../../Components/Notification'
+import { getDatabase, ref, onValue } from 'firebase/database'
+import app from '../../Config/FirebaseConfig'
 const tabsData = [
     {
         label: 'General',
@@ -55,19 +58,45 @@ export default function NavbarManager() {
     const employeeName = JSON.parse(userStringEmployeeName)
     const userString = localStorage.getItem('role')
     const userObject = JSON.parse(userString)
+    const [isLoading, setIsLoading] = useState(false)
+    const [dataNotification ,setDataNotification] = useState([])
     useEffect(() => {
-        // if (userObject && userObject == 'Manager') {
-        // } else if (userObject && userObject == 'User') {
-        //     history.push('/Employee/Dashboard')
-        // } else if (userObject && userObject == 'HR') {
-        //     history.push('/Hr/ManageLeave')
-        // } else if (userObject && userObject == 'Admin') {
-        //     history.push('/Admin/Team')
-        // } else {
-        //     history.push('')
-        // }
-    }, [])
+        if (userObject && userObject == 'Manager') {
+        } else if (userObject && userObject == 'User') {
+            history.push('/Employee/Dashboard')
+        } else if (userObject && userObject == 'HR') {
+            history.push('/Hr/ManageLeave')
+        } else if (userObject && userObject == 'Admin') {
+            history.push('/Admin/Team')
+        } else {
+            history.push('')
+        }
+        const fetchDataFromDatabase = () => {
+            setIsLoading(true)
+            const db = getDatabase(app);
+            const dbRef = ref(db, 'leaveRequests/managerNoti');
 
+            // Lắng nghe sự thay đổi trong dữ liệu
+            onValue(dbRef, (snapshot) => {
+                if (snapshot.exists()) {
+                    setIsLoading(false)
+                    setDataNotification(Object.values(snapshot.val()));
+                } else {
+                    setIsLoading(false)
+                    console.log('Data does not exist');
+                }
+            });
+        };
+
+        fetchDataFromDatabase();
+           
+        return () => {
+            const db = getDatabase(app);
+            const dbRef = ref(db, 'leaveRequests/managerNoti');
+            onValue(dbRef, () => {}); // Pass empty function to remove listener
+        };
+    }, [])
+   console.log("fetchRealDatabase ", dataNotification)
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget)
     }
@@ -263,13 +292,14 @@ export default function NavbarManager() {
                         </div>
 
                         <div className="flex items-center">
-                            <div className="flex items-center ml-3">
+                        <NotificationComponent isLoading={isLoading} dataNotification={dataNotification} />
+                            <div className="flex items-center ">
                                 <div>
                                     <Tooltip title="Account settings">
                                         <IconButton
                                             onClick={handleClick}
                                             size="small"
-                                            sx={{ ml: 2 }}
+                                            sx={{ ml: 1 }}
                                             aria-controls={open ? 'account-menu' : undefined}
                                             aria-haspopup="true"
                                             aria-expanded={open ? 'true' : undefined}
@@ -313,9 +343,9 @@ export default function NavbarManager() {
                                     transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                                     anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                                 >
-                                    <div className="grid grid-rows-2 px-5 py-2 cursor-default">
-                                        <p>{employeeName && employeeName}</p>
-                                        <strong>({role && role})</strong>
+                                    <div className=" px-5 py-2 cursor-default w-64">
+                                        <p>{employeeName && employeeName}   <strong>({role && role})</strong></p>
+                                      
                                     </div>
                                     <hr className="mb-2" />
 
@@ -332,6 +362,7 @@ export default function NavbarManager() {
                                     </MenuItem>
                                 </Menu>
                             </div>
+                          
                         </div>
                     </div>
                 </div>

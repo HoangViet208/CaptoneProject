@@ -96,8 +96,7 @@ export default function ManageWorked() {
     const [selectedDate, setSelectedDate] = useState(dayjs())
     const showSnackbar = useSnackbar()
     //setting redux
-    const { valueTabs } = useSelector((state) => state.applyLeave)
-    const { WorkedList, loading } = useSelector((state) => state.worked)
+    const { WorkedList, loading, valueTabs } = useSelector((state) => state.worked)
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(

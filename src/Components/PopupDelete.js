@@ -52,7 +52,7 @@ BootstrapDialogTitle.propTypes = {
     onClose: PropTypes.func.isRequired,
 }
 
-export default function PopupConfirm(props) {
+export default function PopupDelete(props) {
     const { open, clickOpenFalse, clickDelete, content, witdhModal, isError } = props
 
     const handleClose = () => {
@@ -84,7 +84,6 @@ export default function PopupConfirm(props) {
                 <DialogContent dividers>
                     <h2 className="font-bold text-xl">Are you sure to remove this ?</h2>
                     <p className="mb-5 text-gray-400">You can't undo this action once you removed this.</p>
-                    {content}
                 </DialogContent>
                 <DialogActions className="my-2">
                     <Button variant="contained" color="inherit" onClick={handleClose}>

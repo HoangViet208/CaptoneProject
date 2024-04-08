@@ -98,7 +98,6 @@ export const getDayOfWeek = (dateString) => {
     const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
     const date = new Date(dateString)
     const dayOfWeek = date.getDay() // Lấy thứ của ngày (0-6, 0 là Chủ Nhật)
-
     return daysOfWeek[dayOfWeek]
 }
 export const getDateToMonth = (dateString) => {
@@ -168,7 +167,34 @@ export const isNonWorkingDay = (dateString, listDayOff) => {
     return listDayOff[dayName.toLowerCase()]
 }
 // Hàm trợ giúp để lấy tên ngày dựa trên số thứ tự
-function getDayName(dayOfWeek) {
+export function getDayName(dayOfWeek) {
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
     return days[dayOfWeek]
+}
+
+export function getTimeAgo(dateTime) {
+    const currentDate = new Date();
+    const pastDate = new Date(dateTime);
+
+    const timeDifference = currentDate - pastDate;
+    const secondsDifference = Math.floor(timeDifference / 1000);
+    const minutesDifference = Math.floor(secondsDifference / 60);
+    const hoursDifference = Math.floor(minutesDifference / 60);
+    const daysDifference = Math.floor(hoursDifference / 24);
+    const monthsDifference = Math.floor(daysDifference / 30.4167); // Average number of days in a month
+    const yearsDifference = Math.floor(daysDifference / 365);
+
+    if (yearsDifference > 0) {
+        return `${yearsDifference} year${yearsDifference > 1 ? 's' : ''} ago`;
+    } else if (monthsDifference > 0) {
+        return `${monthsDifference} month${monthsDifference > 1 ? 's' : ''} ago`;
+    } else if (daysDifference > 0) {
+        return `${daysDifference} day${daysDifference > 1 ? 's' : ''} ago`;
+    } else if (hoursDifference > 0) {
+        return `${hoursDifference} hour${hoursDifference > 1 ? 's' : ''} ago`;
+    } else if (minutesDifference > 0) {
+        return `${minutesDifference} minute${minutesDifference > 1 ? 's' : ''} ago`;
+    } else {
+        return `about a minute ago`;
+    }
 }

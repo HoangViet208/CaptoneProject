@@ -27,49 +27,50 @@ import PopupConfirm from '../../../Components/PopupConfirm'
 //hooks
 import { formatDate, formatDateExact } from '../../../Hook/useFormatDate'
 import { useDispatch, useSelector } from 'react-redux'
-import { PutOvertimeAsyncApi, getOvertimeAsyncApi } from '../../../Redux/Overtime/OvertimeSlice'
+import { CancelOvertimeAsyncApi, PutOvertimeAsyncApi, getOvertimeAsyncApi } from '../../../Redux/Overtime/OvertimeSlice'
 import { useSnackbar } from '../../../Hook/useSnackbar'
 import NavbarHR from '../NavbarHR'
 import TableLoadData from '../../../Components/TableLoad'
+import { Fragment } from 'react'
+import PopupDelete from '../../../Components/PopupDelete'
 
 const columnsPending = [
     { id: 'number', label: 'Number', minWidth: 50, align: 'center' },
     { id: 'info', label: 'Name', minWidth: 200, align: 'left' },
-    { id: 'dayAndTime', label: 'Date', minWidth: 250, align: 'left' },
-    { id: 'timeInMonth', label: 'Time In Month', minWidth: 200, align: 'center' },
-    { id: 'timeInYear', label: 'Time In Year', minWidth: 150, align: 'center' },
-    { id: 'files', label: 'File', minWidth: 100, align: 'left' },
+    { id: 'dayAndTime', label: 'Date', minWidth: 150, align: 'left' },
+    { id: 'timeInMonth', label: 'Time In Month', maxWidth: 100, align: 'center' },
+    { id: 'timeInYear', label: 'Time In Year', maxWidth: 100, align: 'center' },
+    { id: 'files', label: 'File', minWidth: 50, align: 'left' },
     { id: 'applied', label: 'Applied On', minWidth: 150, align: 'center' },
-    { id: 'reason', label: 'Reason', minWidth: 50, align: 'center' },
+    { id: 'reason', label: 'Reason', minWidth: 100, align: 'center' },
     { id: 'action', label: 'Actions', minWidth: 50, maxWidth: 50, align: 'left' },
 ]
 
 const columnsApprove = [
     { id: 'number', label: 'Number', minWidth: 50, align: 'center' },
     { id: 'info', label: 'Employee Name', minWidth: 150, align: 'left' },
-    { id: 'dayAndTime', label: 'Date', minWidth: 250, align: 'left' },
-    { id: 'files', label: 'File', minWidth: 100, align: 'left' },
+    { id: 'dayAndTime', label: 'Date', minWidth: 150, align: 'left' },
+    { id: 'files', label: 'File', minWidth: 50, align: 'left' },
     { id: 'applied', label: 'Applied On', minWidth: 50, align: 'center' },
 
-    { id: 'reason', label: 'Reason', minWidth: 50, align: 'center' },
+    { id: 'reason', label: 'Reason', minWidth: 100, align: 'center' },
 ]
 const columnsReject = [
     { id: 'number', label: 'Number', minWidth: 50, align: 'center' },
     { id: 'info', label: 'Employee Name', minWidth: 150, align: 'left' },
-    { id: 'dayAndTime', label: 'Date', minWidth: 250, align: 'left' },
+    { id: 'dayAndTime', label: 'Date', minWidth: 150, align: 'left' },
     { id: 'files', label: 'File', minWidth: 100, align: 'left' },
     { id: 'applied', label: 'Applied On', minWidth: 50, align: 'center' },
-
     { id: 'reason', label: 'Reason', minWidth: 50, align: 'center' },
 ]
 const columnsAll = [
     { id: 'number', label: 'Number', minWidth: 50, align: 'center' },
     { id: 'info', label: 'Employee Name', minWidth: 150, align: 'left' },
-    { id: 'dayAndTime', label: 'Date', minWidth: 250, align: 'left' },
-    { id: 'files', label: 'File', minWidth: 100, align: 'left' },
+    { id: 'dayAndTime', label: 'Date', minWidth: 150, align: 'left' },
+    { id: 'files', label: 'File', minWidth: 50, align: 'left' },
     { id: 'applied', label: 'Applied On', minWidth: 50, align: 'center' },
     { id: 'status', label: 'Status', minWidth: 50, align: 'left' },
-    { id: 'reason', label: 'Reason', minWidth: 50, align: 'center' },
+    { id: 'reason', label: 'Reason', minWidth: 100, align: 'center' },
     { id: 'actionAll', label: 'Actions', minWidth: 50, maxWidth: 50, align: 'left' },
 ]
 
@@ -84,6 +85,11 @@ const breadcrumbIcons = () => {
 const dataBreadcrumbs = breadcrumbIcons()
 
 export default function ManageOvertime() {
+    const userId = localStorage.getItem('employeeId')
+    const UserParseId = JSON.parse(userId)
+    const [requestId, setRequestId] = useState()
+    const [errorReject, setErrorReject] = useState(true)
+    const [rejectReason, setRejectReason] = useState('')
     const [loadingButton, setLoadingButton] = useState(false)
     const [loadingRJButton, setLoadingRJButton] = useState(false)
     const [open, setOpen] = useState(false)
@@ -95,14 +101,13 @@ export default function ManageOvertime() {
     console.log('date', formatDateExact(today))
     const [selectedDate, setSelectedDate] = useState(dayjs())
     //setting redux
-    const { valueTabs } = useSelector((state) => state.applyLeave)
-    const { OvertimeList, loading } = useSelector((state) => state.overTime)
+    const { OvertimeList, loading, valueTabs } = useSelector((state) => state.overTime)
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(
             getOvertimeAsyncApi({
                 name: search,
-                status: valueTabs == 3 ? -1 : valueTabs,
+                status: valueTabs == 4 ? -1 : valueTabs,
                 date: formatDateExact(selectedDate),
             })
         )
@@ -137,11 +142,14 @@ export default function ManageOvertime() {
     const callbackSearch = (childData) => {
         setSearch(childData)
     }
-    const handleClickOpen = () => {
+    const handleClickOpen = (data) => {
+        setRequestId(data)
         setOpen(true)
     }
     const clickOpenFalse = (event) => {
         setOpen(false)
+        setErrorReject(true)
+        setRejectReason()
     }
 
     const handleDateChange = (newDate) => {
@@ -197,7 +205,7 @@ export default function ManageOvertime() {
                     dispatch(
                         getOvertimeAsyncApi({
                             name: search,
-                            status: valueTabs == 3 ? -1 : valueTabs,
+                            status: valueTabs == 4 ? -1 : valueTabs,
                             date: formatDateExact(selectedDate),
                         })
                     )
@@ -211,20 +219,22 @@ export default function ManageOvertime() {
                 setLoadingButton(false)
             })
     }
+ 
     const handleClickReject = (data) => {
         setLoadingRJButton(true)
         const Updatedata = {
-            requestId: data.id,
+            requestId: requestId,
             status: 2,
+            messageFromDecider: UserParseId,
         }
-        dispatch(PutOvertimeAsyncApi({ id: data.employeeId, body: Updatedata }))
+        dispatch(PutOvertimeAsyncApi({ id: UserParseId , body: Updatedata }))
             .then((response) => {
-                setLoadingRJButton(true)
+                setLoadingRJButton(false)
                 if (response.meta.requestStatus == 'fulfilled') {
                     dispatch(
                         getOvertimeAsyncApi({
                             name: search,
-                            status: valueTabs == 3 ? -1 : valueTabs,
+                            status: valueTabs == 4 ? -1 : valueTabs,
                             date: formatDateExact(selectedDate),
                         })
                     )
@@ -232,6 +242,41 @@ export default function ManageOvertime() {
                         severity: 'success',
                         children: 'Reject request',
                     })
+                    setErrorReject(true)
+                    setRejectReason("")
+                    setOpen(false)
+                }
+            })
+            .catch((error) => {
+                setLoadingRJButton(false)
+            })
+    }
+    const handleClickCancel = () => {
+        console.log("da chay cancel")
+        setLoadingRJButton(true)
+        const Updatedata = {
+            requestId: requestId,
+            reason: rejectReason,
+            employeeIdDecider: UserParseId
+        }
+        dispatch(CancelOvertimeAsyncApi(Updatedata))
+            .then((response) => {
+                setLoadingRJButton(true)
+                if (response.meta.requestStatus == 'fulfilled') {
+                    dispatch(
+                        getOvertimeAsyncApi({
+                            name: search,
+                            status: valueTabs == 4 ? -1 : valueTabs,
+                            date: formatDateExact(selectedDate),
+                        })
+                    )
+                    showSnackbar({
+                        severity: 'success',
+                        children: 'Cancel request',
+                    })
+                    setErrorReject(true)
+                    setRejectReason("")
+                    setOpen(false)
                 }
             })
             .catch((error) => {
@@ -267,14 +312,19 @@ export default function ManageOvertime() {
             number: index + 1,
             action: userRole === 'Manager' ? (
                 <div className="flex gap-2">
-                    <div className="border-[1px] border-green-500 text-green-500 px-4 py-1 rounded-3xl hover:bg-green-500 hover:text-white">
+                    <div >
                         <LoadingButton
                             type="submit"
                             loading={loadingButton}
                             sx={{
                                 textAlign: 'center',
-                                color: 'rgb(34 197 94)',
+                                color: '#22c55e',
+                                backgroundColor: 'transparent',
+                                border: '1px solid #22c55e',
+                                padding: '4px 16px', // tùy chỉnh px và py theo cần thiết
+                                borderRadius: '9999px', // hoặc '3xl' nếu bạn muốn sử dụng classnames
                                 '&:hover': {
+                                    backgroundColor: '#22c55e',
                                     color: 'white',
                                 },
                             }}
@@ -284,19 +334,24 @@ export default function ManageOvertime() {
                             Approve
                         </LoadingButton>
                     </div>
-                    <div className="border-[1px] border-red-500 text-red-500 px-4 py-1 rounded-3xl hover:bg-red-500 hover:text-white">
+                    <div className="">
                         <LoadingButton
                             type="submit"
                             loading={loadingRJButton}
                             sx={{
                                 textAlign: 'center',
                                 color: 'rgb(239 68 68)',
+                                backgroundColor: 'transparent',
+                                border: '1px solid #f44336',
+                                padding: '4px 16px', // tùy chỉnh px và py theo cần thiết
+                                borderRadius: '9999px', // hoặc '3xl' nếu bạn muốn sử dụng classnames
                                 '&:hover': {
+                                    backgroundColor: '#f44336',
                                     color: 'white',
                                 },
                             }}
                             autoFocus
-                            onClick={() => handleClickReject(item)}
+                            onClick={() => handleClickOpen(item.id)}
                         >
                             Reject
                         </LoadingButton>
@@ -305,7 +360,7 @@ export default function ManageOvertime() {
             ) : '',
             actionAll: (
                 <Tooltip title="Delete">
-                    <div onClick={handleClickOpen}>
+                    <div onClick={() => handleClickOpen(item.id)}>
                         <IconButton>
                             <DeleteIcon />
                         </IconButton>
@@ -384,6 +439,24 @@ export default function ManageOvertime() {
             ),
         },
         {
+            label: 'Cancel Overtime',
+            view: searchData(
+                loading == true ? (
+                    <TableLoadData columns={columnsPending} tableHeight={380} />
+                ) : (
+                    <TableData
+                        tableHeight={360}
+                        rows={rows}
+                        columns={columnsReject}
+                        page={page}
+                        rowsPerPage={rowsPerPage}
+                        handleChangePage={handleChangePage}
+                        handleChangeRowsPerPage={handleChangeRowsPerPage}
+                    />
+                )
+            ),
+        },
+        {
             label: 'All Overtimes',
             view: searchData(
                 loading == true ? (
@@ -402,11 +475,51 @@ export default function ManageOvertime() {
             ),
         },
     ]
-   
+    const handleChangeReasonRejectInput = (e) => {
+        console.log("12345", e)
+        if(e == ""){
+            setErrorReject(true)
+        }else{
+            setErrorReject(false)
+        }
+        setRejectReason(e)
+    }
+    const RejectContent = (
+        <Fragment>
+            <div className="">
+                <div className="my-2">
+                    <div className="mb-1">
+                        <strong className=" text-gray-500">Reject Reason</strong>
+                        <i className="text-red-500">*</i>
+                    </div>
+                 
+                        <TextField
+                            multiline
+                            rows={6}
+                            id="outlined-basic"
+                            size="small"
+                            className="mt-2 w-full"
+                            name="leaveReason"
+                            variant="outlined"
+                            value={rejectReason}
+                            onChange={(e) => handleChangeReasonRejectInput(e.target.value)}
+                        />
+                   
+                </div>
+            </div>
+        </Fragment>
+    )
     return (
         <div>
             {userRole === 'Manager' ? <Navbar /> : <NavbarHR />}
-            <PopupConfirm open={open} clickOpenFalse={clickOpenFalse} />
+            <PopupConfirm
+                open={open}
+                witdhModal={'sm'}
+                clickOpenFalse={clickOpenFalse}
+                clickDelete={valueTabs == 4 ? handleClickCancel  : handleClickReject}
+                isError={errorReject}
+                content={RejectContent}
+            />
             <div className="sm:ml-64 pt-12 h-screen bg-gray-50">
                 <div className="px-12 py-6">
                     <h2 className="font-bold text-3xl mb-4">Manage Overtime List </h2>
@@ -414,7 +527,7 @@ export default function ManageOvertime() {
                         <IconBreadcrumbs data={dataBreadcrumbs} />
                     </div>
                     <div className="bg-white">
-                        <TabsData data={tabsData} />
+                        <TabsData changeTab={"OverTime"} data={tabsData} />
                     </div>
                 </div>
             </div>

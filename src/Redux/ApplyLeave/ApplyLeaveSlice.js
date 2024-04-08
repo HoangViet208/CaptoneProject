@@ -20,6 +20,7 @@ const initialState = {
     ApplyLeaveByEmployee: [],
     WorkSetting: [],
     AllRequestInEmployee: {},
+    RequestId: 0,
 }
 
 const authSlice = createSlice({
@@ -32,10 +33,15 @@ const authSlice = createSlice({
             state.ApplyLeaveTypeList = ['Casual Leave', 'Sick Leave']
             state.WorkSetting = []
             state.AllRequestInEmployee = {}
+            state.RequestId = 0
         },
         ChangeTab: (state, action) => {
             console.log('action', action)
             state.valueTabs = action.payload
+        },
+        changeRequestId: (state, action) => {
+            console.log('action', action)
+            state.RequestId = action.payload
         },
     },
     extraReducers: (builder) => {
@@ -227,9 +233,9 @@ export const PutCancelApprovedLeaveForHRAsyncApi = createAsyncThunk(
 
 export const PutApproveApplyLeaveAsyncApi = createAsyncThunk(
     'ApplyLeaveReducer/PutApproveApplyLeaveApi',
-    async (id, empId) => {
+    async (data) => {
         try {
-            const response = await PutApproveApplyLeaveApi(id, empId)
+            const response = await PutApproveApplyLeaveApi(data.requestId, data.UserParseId)
             return response.data // Trả về dữ liệu từ response nếu thành công
         } catch (error) {
             const json = error.response.data
@@ -238,9 +244,9 @@ export const PutApproveApplyLeaveAsyncApi = createAsyncThunk(
         }
     }
 )
-export const DeleteApplyLeaveAsyncApi = createAsyncThunk('ApplyLeaveReducer/deleteAsyncApi', async (id, empId) => {
+export const DeleteApplyLeaveAsyncApi = createAsyncThunk('ApplyLeaveReducer/deleteAsyncApi', async (data) => {
     try {
-        const response = await DeleteApplyLeaveApi(id , empId)
+        const response = await DeleteApplyLeaveApi(data.idDelete , data.UserParseId)
         return response
     } catch (error) {
         const json = error.response.data

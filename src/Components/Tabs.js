@@ -9,6 +9,7 @@ import AppBar from '@mui/material/AppBar'
 import SwipeableViews from 'react-swipeable-views'
 import { useDispatch } from 'react-redux'
 import { ApplyLeaveAction } from '../Redux/ApplyLeave/ApplyLeaveSlice'
+import { OvertimeAction } from '../Redux/Overtime/OvertimeSlice'
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props
@@ -45,12 +46,13 @@ function a11yProps(index) {
 
 export default function TabsData(props) {
     const theme = useTheme()
-    const { data, isVertical } = props
+    const { data, isVertical, changeTab } = props
     const [value, setValue] = React.useState(0)
     const dispatch = useDispatch()
     const handleChange = (event, newValue) => {
         setValue(newValue)
-        dispatch(ApplyLeaveAction.ChangeTab(newValue))
+        changeTab == "OverTime" ?  dispatch(OvertimeAction.ChangeTab(newValue)) :  dispatch(ApplyLeaveAction.ChangeTab(newValue))
+       
     }
     const handleChangeIndex = (index) => {
         setValue(index)

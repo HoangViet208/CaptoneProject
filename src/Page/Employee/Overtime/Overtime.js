@@ -12,6 +12,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { TimePicker } from '@mui/x-date-pickers/TimePicker'
 import { addDays, startOfDay, parse, set } from 'date-fns'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import dayjs, { Dayjs } from 'dayjs'
 
 //Firebase
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage'
@@ -53,6 +54,7 @@ import {
     getDayOfWeek,
 } from '../../../Hook/useFormatDate'
 import {
+    DeleteOvertimeAsyncApi,
     PostOvertimeAsyncApi,
     PutOvertimeAsyncApi,
     getOvertimeByIdAsyncApi,
@@ -115,6 +117,7 @@ export default function Overtime() {
         setDate(threeDaysLater)
     }
     const showSnackbar = useSnackbar()
+    const [idDelete, setIdDelete] = useState()
     const [errorEdit, SetErrorEdit] = useState(false)
     const [openAlert, setOpenAlert] = useState(false)
     const [error, SetError] = useState()
@@ -170,9 +173,19 @@ export default function Overtime() {
         setOpen(true)
         setIsAction(1)
     }
+    const [selectedDate, setSelectedDate] = useState(today)
+
+    const handleDateChange = (date) => {
+        setSelectedDate(date)
+    }
     const handleClickOpenUpdate = (data, event) => {
         if (data.statusRequest != 0) {
             SetErrorEdit(true)
+        }
+        console.log('selectedDate', data.date)
+        if (data.date) {
+            // Đặt giá trị đã chuyển đổi vào selectedDate
+            setSelectedDate(data.date)
         }
         setIdRequest(data.id)
         setAnchorEl(event.currentTarget)
@@ -210,7 +223,8 @@ export default function Overtime() {
         setLeaveDays(0)
         setLeaveDaysDate([])
     }
-    const handleClickOpenConfirm = () => {
+    const handleClickOpenConfirm = (id) => {
+        setIdDelete(id)
         setOpenConfirm(true)
     }
     const clickOpenFalseConfirm = (event) => {
@@ -226,11 +240,7 @@ export default function Overtime() {
     const handleClickSave = () => {
         setOpen(false)
     }
-    const [selectedDate, setSelectedDate] = useState(null)
 
-    const handleDateChange = (date) => {
-        setSelectedDate(date)
-    }
     console.log('mn', selectedStartTime)
     const handleRequest = () => {
         console.log('chay new')
@@ -238,9 +248,9 @@ export default function Overtime() {
         const { format, parse } = require('date-fns')
         // const parsedDate = parse(date, 'dd MMM, yyyy', new Date())
         // const formattedDateStr = format(parsedDate, 'yyyy/MM/dd')
-        const newDate = formatDateExact(date)
-        const timeStart = FormatDateToTime(selectedDate)
-        const endTime = FormatDateToTime(selectedDate)
+        const newDate = formatDateExact(selectedDate)
+        const timeStart = FormatDateToTime(selectedStartTime)
+        const endTime = FormatDateToTime(selectedEndTime)
         const storageRef = ref(storage, `Package/${selectedImage.name}`)
         const uploadTask = uploadBytesResumable(storageRef, selectedImage)
         console.log('mnr', formatDateExact(date), selectedStartTime, timeStart)
@@ -296,13 +306,13 @@ export default function Overtime() {
             }
         )
     }
-
+    console.log('selectedDate', selectedDate)
     const handleRequestUpdate = () => {
         console.log('chay update')
         const { format, parse } = require('date-fns')
         // const parsedDate = parse(date, 'dd MMM, yyyy', new Date())
         // const formattedDateStr = format(parsedDate, 'yyyy/MM/dd')
-        const newDate = formatDateExact(date)
+        const newDate = formatDateExact(selectedDate)
         const timeStart = FormatDateToTime(selectedStartTime)
         const endTime = FormatDateToTime(selectedEndTime)
         setLoadingButton(true)
@@ -398,6 +408,34 @@ export default function Overtime() {
             )
         }
     }
+    const userId = localStorage.getItem('employeeId')
+    const UserParseId = JSON.parse(userId)
+    const handleDelete = () => {
+        setLoadingButton(true)
+        dispatch(DeleteOvertimeAsyncApi({ idDelete, employeeId }))
+            .then((response) => {
+                if (response.meta.requestStatus == 'fulfilled') {
+                    dispatch(getOvertimeByIdAsyncApi(employeeId))
+                    showSnackbar({
+                        severity: 'success',
+                        children: 'Delete request successfully',
+                    })
+                    setOpenConfirm(false)
+                    setLoadingButton(false)
+                }
+                if (response.meta.requestStatus == 'rejected') {
+                    showSnackbar({
+                        severity: 'error',
+                        children: 'Workslot of dateRange not already',
+                    })
+                    setOpenConfirm(false)
+                    setLoadingButton(false)
+                }
+            })
+            .catch((error) => {
+                setLoadingButton(false)
+            })
+    }
     const handleClose = () => {
         setAnchorEl(null)
         setChosenFileName('Chosen file')
@@ -413,7 +451,6 @@ export default function Overtime() {
         seterrorImport(false)
     }
     const createRows = () => {
-      
         return OvertimeByEmployee.map((item, index) => ({
             ...item,
             time: calculateTime(item.timeStart, item.timeEnd),
@@ -425,13 +462,15 @@ export default function Overtime() {
             ),
             status:
                 item.status == 'Approved' ? (
-                    <button className="bg-green-300 w-32 text-green-600 font-semibold py-1 px-2 rounded-xl">
+                    <button className="bg-green-500 w-32 text-green-800 font-semibold py-1 px-2 rounded-xl">
                         Approved
                     </button>
                 ) : item.status == 'Rejected' ? (
-                    <button className="bg-red-300  w-32 font-semibold py-1 px-2 rounded-xl">Reject</button>
+                    <button className="bg-red-500 text-red-800  w-32 font-semibold py-1 px-2 rounded-xl">Reject</button>
+                ) : item.status == 'Cancel' ? (
+                    <button className="bg-orange-500 text-orange-800  w-32 font-semibold py-1 px-2 rounded-xl">Cancel</button>
                 ) : (
-                    <button className="bg-orange-300  w-32 font-semibold py-1 px-2 rounded-xl">Pending</button>
+                    <button className="bg-yellow-500 text-yellow-800  w-32 font-semibold py-1 px-2 rounded-xl">Pending</button>
                 ),
             number: index + 1,
             action: (
@@ -442,7 +481,11 @@ export default function Overtime() {
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Delete">
-                        <IconButton onClick={item.statusRequest == 0 ? handleClickOpenConfirm : handleClickOpenAlert}>
+                        <IconButton
+                            onClick={
+                                item.statusRequest == 0 ? () => handleClickOpenConfirm(item.id) : handleClickOpenAlert
+                            }
+                        >
                             <DeleteIcon />
                         </IconButton>
                     </Tooltip>
@@ -472,7 +515,7 @@ export default function Overtime() {
                                             Registration Date <span style={{ color: 'red' }}>*</span>
                                         </span>
                                     }
-                                    value={selectedDate}
+                                    value={dayjs(selectedDate)}
                                     onChange={handleDateChange}
                                 />
                             </DemoContainer>
@@ -495,8 +538,8 @@ export default function Overtime() {
                                     slotProps={{ textField: { size: 'small', readOnly: true } }}
                                     value={selectedStartTime}
                                     onChange={handleChangeStartTime}
-                                    minTime={minTime}
-                                    maxTime={selectedEndTime || maxTime} // Để ngăn người dùng chọn thời gian kết thúc trước thời gian bắt đầu
+                                    //minTime={minTime}
+                                    //maxTime={selectedEndTime || maxTime} // Để ngăn người dùng chọn thời gian kết thúc trước thời gian bắt đầu
                                 />
                             </DemoContainer>
                         </LocalizationProvider>
@@ -505,7 +548,7 @@ export default function Overtime() {
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <DemoContainer components={['TimePicker']}>
                                 <TimePicker
-                                 className="w-full"
+                                    className="w-full"
                                     label={
                                         <span>
                                             End Time <span style={{ color: 'red' }}>*</span>
@@ -514,8 +557,8 @@ export default function Overtime() {
                                     slotProps={{ textField: { size: 'small', readOnly: true } }}
                                     value={selectedEndTime}
                                     onChange={handleChangeEndTime}
-                                    minTime={selectedStartTime || minTime} // Để ngăn người dùng chọn thời gian kết thúc trước thời gian bắt đầu
-                                    maxTime={maxTime}
+                                    //  minTime={selectedStartTime || minTime} // Để ngăn người dùng chọn thời gian kết thúc trước thời gian bắt đầu
+                                    //maxTime={maxTime}
                                 />
                             </DemoContainer>
                         </LocalizationProvider>
@@ -530,7 +573,7 @@ export default function Overtime() {
                         <FormControl fullWidth>
                             <Button
                                 disabled
-                                className='w-full'
+                                className="w-full"
                                 variant="contained"
                                 sx={{
                                     display: 'flex',
@@ -623,11 +666,11 @@ export default function Overtime() {
                         <div>
                             <button
                                 onClick={handleBrowseButtonClick}
-                                className="cursor-pointer  block rounded-md h-10 text-left  pl-[90px] font-medium text-gray-600  border border-gray-300   bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                                className="cursor-pointer w-full  block rounded-md h-10 text-left  pl-[90px] font-medium text-gray-600  border border-gray-300   bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
                                 variant="contained"
                             >
-                                {chosenFileName.length > 16
-                                    ? chosenFileName.slice(0, 16).concat('...')
+                                {chosenFileName.length > 20
+                                    ? chosenFileName.slice(0, 20).concat('...')
                                     : chosenFileName}
                             </button>
                             {error && <div className="text-red-500 ">{error}</div>}
@@ -648,7 +691,7 @@ export default function Overtime() {
             <div className="">
                 <hr />
                 <DialogActions>
-                    <div className=" float-right mr-4">
+                    <div className=" float-right">
                         <LoadingButton
                             onClick={() =>
                                 isAction == 1 ? handleRequest() : isAction == 2 ? handleRequestUpdate() : null
@@ -671,10 +714,11 @@ export default function Overtime() {
             </div>
         </Fragment>
     )
+
     return (
         <div>
             <Navbar />
-            <PopupConfirm open={openConfirm} clickOpenFalse={clickOpenFalseConfirm} />
+            <PopupConfirm open={openConfirm} clickOpenFalse={clickOpenFalseConfirm} clickDelete={handleDelete} />
             <PopupAlert open={openAlert} clickOpenFalse={clickOpenFalseAlert} />
             <PopupData
                 open={openPopover}

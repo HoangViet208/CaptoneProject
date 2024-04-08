@@ -126,6 +126,7 @@ export default function ApplyLeave() {
     const handleClose = () => {
         setAnchorEl(null)
     }
+   
     const [errorEdit, SetErrorEdit] = useState(false)
     const [error, SetError] = useState()
     const [errorImport, seterrorImport] = useState(false)
@@ -1041,13 +1042,13 @@ export default function ApplyLeave() {
     console.log('search', dateRange)
     const handleDelete = () => {
         setLoadingButton(true)
-        dispatch(DeleteApplyLeaveAsyncApi(idDelete, UserParseId))
+        dispatch(DeleteApplyLeaveAsyncApi({ idDelete, UserParseId}))
             .then((response) => {
                 if (response.meta.requestStatus == 'fulfilled') {
                     dispatch(getApplyLeaveByIdAsyncApi(employeeId))
                     showSnackbar({
                         severity: 'success',
-                        children: 'Delete request',
+                        children: 'Delete request successfully',
                     })
                     setOpenConfirm(false)
                 }
