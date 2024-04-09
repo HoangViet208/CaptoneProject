@@ -39,6 +39,14 @@ export const GetOvertimeTypeApi = async () => {
         throw error
     }
 }
+export const GetTotalTimeOvertimeApi = async (id) => {
+    try {
+        const response = await axios.get(`${API_URL}/RequestOverTime/get-total-hours-month-year-managername?employeeId=${id}`)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
 export const PostOvertimeApi = async (id, body) => {
     try {
         const response = await axios.post(
@@ -83,5 +91,7 @@ export const DeleteOvertimeApi = async (requestId, employeeIdDecider) => {
         throw error
     }
 }
+
+
 
 export default GetOvertimeApi

@@ -88,6 +88,7 @@ export default function ManageOvertime() {
     const userId = localStorage.getItem('employeeId')
     const UserParseId = JSON.parse(userId)
     const [requestId, setRequestId] = useState()
+    const [employeeId, setEmployeeID] = useState()
     const [errorReject, setErrorReject] = useState(true)
     const [rejectReason, setRejectReason] = useState('')
     const [loadingButton, setLoadingButton] = useState(false)
@@ -116,7 +117,7 @@ export default function ManageOvertime() {
     const handleChangePage = (newPage) => {
         setPage(newPage)
     }
- const [userRole, setUserRole] = useState(() => {
+    const [userRole, setUserRole] = useState(() => {
         const userString = localStorage.getItem('role')
         const userObject = JSON.parse(userString)
         return userObject || 'defaultRole' // Provide a default role if undefined
@@ -143,7 +144,8 @@ export default function ManageOvertime() {
         setSearch(childData)
     }
     const handleClickOpen = (data) => {
-        setRequestId(data)
+        setRequestId(data.id)
+        setEmployeeID(data.employeeId)
         setOpen(true)
     }
     const clickOpenFalse = (event) => {
@@ -219,15 +221,15 @@ export default function ManageOvertime() {
                 setLoadingButton(false)
             })
     }
- 
+
     const handleClickReject = (data) => {
         setLoadingRJButton(true)
         const Updatedata = {
             requestId: requestId,
             status: 2,
-            messageFromDecider: UserParseId,
+            messageFromDecider: rejectReason,
         }
-        dispatch(PutOvertimeAsyncApi({ id: UserParseId , body: Updatedata }))
+        dispatch(PutOvertimeAsyncApi({ id: employeeId, body: Updatedata }))
             .then((response) => {
                 setLoadingRJButton(false)
                 if (response.meta.requestStatus == 'fulfilled') {
@@ -243,7 +245,7 @@ export default function ManageOvertime() {
                         children: 'Reject request',
                     })
                     setErrorReject(true)
-                    setRejectReason("")
+                    setRejectReason('')
                     setOpen(false)
                 }
             })
@@ -252,12 +254,12 @@ export default function ManageOvertime() {
             })
     }
     const handleClickCancel = () => {
-        console.log("da chay cancel")
+        console.log('da chay cancel')
         setLoadingRJButton(true)
         const Updatedata = {
             requestId: requestId,
             reason: rejectReason,
-            employeeIdDecider: UserParseId
+            employeeIdDecider: UserParseId,
         }
         dispatch(CancelOvertimeAsyncApi(Updatedata))
             .then((response) => {
@@ -275,7 +277,7 @@ export default function ManageOvertime() {
                         children: 'Cancel request',
                     })
                     setErrorReject(true)
-                    setRejectReason("")
+                    setRejectReason('')
                     setOpen(false)
                 }
             })
@@ -284,8 +286,6 @@ export default function ManageOvertime() {
             })
     }
     const createRows = () => {
-  
-
         return OvertimeList.map((item, index) => ({
             ...item,
             reason: (
@@ -310,79 +310,81 @@ export default function ManageOvertime() {
                 </div>
             ),
             number: index + 1,
-            action: userRole === 'Manager' ? (
-                <div className="flex gap-2">
-                    <div >
-                        <LoadingButton
-                            type="submit"
-                            loading={loadingButton}
-                            sx={{
-                                textAlign: 'center',
-                                color: '#22c55e',
-                                backgroundColor: 'transparent',
-                                border: '1px solid #22c55e',
-                                padding: '4px 16px', // tùy chỉnh px và py theo cần thiết
-                                borderRadius: '9999px', // hoặc '3xl' nếu bạn muốn sử dụng classnames
-                                '&:hover': {
-                                    backgroundColor: '#22c55e',
-                                    color: 'white',
-                                },
-                            }}
-                            autoFocus
-                            onClick={() => handleClickApprove(item)}
-                        >
-                            Approve
-                        </LoadingButton>
+            action:
+                userRole === 'Manager' ? (
+                    <div className="flex gap-2">
+                        <div>
+                            <LoadingButton
+                                type="submit"
+                                loading={loadingButton}
+                                sx={{
+                                    textAlign: 'center',
+                                    color: '#22c55e',
+                                    backgroundColor: 'transparent',
+                                    border: '1px solid #22c55e',
+                                    padding: '4px 16px', // tùy chỉnh px và py theo cần thiết
+                                    borderRadius: '9999px', // hoặc '3xl' nếu bạn muốn sử dụng classnames
+                                    '&:hover': {
+                                        backgroundColor: '#22c55e',
+                                        color: 'white',
+                                    },
+                                }}
+                                autoFocus
+                                onClick={() => handleClickApprove(item)}
+                            >
+                                Approve
+                            </LoadingButton>
+                        </div>
+                        <div className="">
+                            <LoadingButton
+                                type="submit"
+                                loading={loadingRJButton}
+                                sx={{
+                                    textAlign: 'center',
+                                    color: 'rgb(239 68 68)',
+                                    backgroundColor: 'transparent',
+                                    border: '1px solid #f44336',
+                                    padding: '4px 16px', // tùy chỉnh px và py theo cần thiết
+                                    borderRadius: '9999px', // hoặc '3xl' nếu bạn muốn sử dụng classnames
+                                    '&:hover': {
+                                        backgroundColor: '#f44336',
+                                        color: 'white',
+                                    },
+                                }}
+                                autoFocus
+                                onClick={() => handleClickOpen(item)}
+                            >
+                                Reject
+                            </LoadingButton>
+                        </div>
                     </div>
-                    <div className="">
-                        <LoadingButton
-                            type="submit"
-                            loading={loadingRJButton}
-                            sx={{
-                                textAlign: 'center',
-                                color: 'rgb(239 68 68)',
-                                backgroundColor: 'transparent',
-                                border: '1px solid #f44336',
-                                padding: '4px 16px', // tùy chỉnh px và py theo cần thiết
-                                borderRadius: '9999px', // hoặc '3xl' nếu bạn muốn sử dụng classnames
-                                '&:hover': {
-                                    backgroundColor: '#f44336',
-                                    color: 'white',
-                                },
-                            }}
-                            autoFocus
-                            onClick={() => handleClickOpen(item.id)}
-                        >
-                            Reject
-                        </LoadingButton>
-                    </div>
-                </div>
-            ) : '',
+                ) : (
+                    ''
+                ),
             actionAll: (
                 <Tooltip title="Delete">
-                    <div onClick={() => handleClickOpen(item.id)}>
+                    <div onClick={() => handleClickOpen(item)}>
                         <IconButton>
                             <DeleteIcon />
                         </IconButton>
                     </div>
                 </Tooltip>
             ),
-           
-            status:   item.status == 'Approved' ? (
-                <p className="text-green-500">{item.status}</p>
-            ) : item.status == 'Rejected' ? (
-                <p className="text-red-500">{item.status}</p>
-            ) : (
-                <p className="text-yellow-500">{item.status}</p>
-            ) ,
-               
+
+            status:
+                item.status == 'Approved' ? (
+                    <p className="text-green-500">{item.status}</p>
+                ) : item.status == 'Rejected' ? (
+                    <p className="text-red-500">{item.status}</p>
+                ) : (
+                    <p className="text-yellow-500">{item.status}</p>
+                ),
         }))
     }
 
     const rows = createRows()
-    const filteredColumnsPending = userRole === 'HR'
-    ? columnsPending.filter(column => column.id !== 'action')
-    : columnsPending;
+    const filteredColumnsPending =
+        userRole === 'HR' ? columnsPending.filter((column) => column.id !== 'action') : columnsPending
     const tabsData = [
         {
             label: 'Pending Overtime',
@@ -476,10 +478,10 @@ export default function ManageOvertime() {
         },
     ]
     const handleChangeReasonRejectInput = (e) => {
-        console.log("12345", e)
-        if(e == ""){
+        console.log('12345', e)
+        if (e == '') {
             setErrorReject(true)
-        }else{
+        } else {
             setErrorReject(false)
         }
         setRejectReason(e)
@@ -492,19 +494,18 @@ export default function ManageOvertime() {
                         <strong className=" text-gray-500">Reject Reason</strong>
                         <i className="text-red-500">*</i>
                     </div>
-                 
-                        <TextField
-                            multiline
-                            rows={6}
-                            id="outlined-basic"
-                            size="small"
-                            className="mt-2 w-full"
-                            name="leaveReason"
-                            variant="outlined"
-                            value={rejectReason}
-                            onChange={(e) => handleChangeReasonRejectInput(e.target.value)}
-                        />
-                   
+
+                    <TextField
+                        multiline
+                        rows={6}
+                        id="outlined-basic"
+                        size="small"
+                        className="mt-2 w-full"
+                        name="leaveReason"
+                        variant="outlined"
+                        value={rejectReason}
+                        onChange={(e) => handleChangeReasonRejectInput(e.target.value)}
+                    />
                 </div>
             </div>
         </Fragment>
@@ -516,7 +517,7 @@ export default function ManageOvertime() {
                 open={open}
                 witdhModal={'sm'}
                 clickOpenFalse={clickOpenFalse}
-                clickDelete={valueTabs == 4 ? handleClickCancel  : handleClickReject}
+                clickDelete={valueTabs == 4 ? handleClickCancel : handleClickReject}
                 isError={errorReject}
                 content={RejectContent}
             />
@@ -527,7 +528,7 @@ export default function ManageOvertime() {
                         <IconBreadcrumbs data={dataBreadcrumbs} />
                     </div>
                     <div className="bg-white">
-                        <TabsData changeTab={"OverTime"} data={tabsData} />
+                        <TabsData changeTab={'OverTime'} data={tabsData} />
                     </div>
                 </div>
             </div>

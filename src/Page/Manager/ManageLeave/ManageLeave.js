@@ -421,12 +421,16 @@ export default function ManageLeave() {
                 ...item,
                 reasonReject: (
                     <Tooltip title={item.reasonReject}>
-                        {/* <div>{item.reasonReject.length > 5 ? item.reasonReject.slice(0, 5) + '...' : item.reasonReject}</div> */}
+                        <span>
+                           {item.reasonReject.length > 5 ? item.reasonReject.slice(0, 5) + '...' : item.reasonReject}
+                        </span>
                     </Tooltip>
                 ),
                 reason: (
                     <Tooltip title={item.reason}>
-                        <div>{item.reason.length > 5 ? item.reason.slice(0, 5) + '...' : item.reason}</div>
+                        <div>
+                            {item.reason.length > 5 ? item.reason.slice(0, 5) + '...' : item.reason}
+                        </div>
                     </Tooltip>
                 ),
                 file: (

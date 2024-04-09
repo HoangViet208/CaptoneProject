@@ -52,7 +52,7 @@ const LineChart = (props) => {
             {loading ? (
                 <p>Loading...</p> // hiển thị thông báo đợi tải
             ) : (
-                <ReactApexChart options={chartData.options} series={chartData.series} type="area" height={500} />
+                <ReactApexChart options={chartData.options} series={chartData.series} type="area" height={400} />
             )}
         </>
     )

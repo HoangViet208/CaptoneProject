@@ -19,7 +19,7 @@ import KeyIcon from '@mui/icons-material/Key'
 import TabsData from '../../Components/Tabs'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import NotificationComponent from '../../Components/Notification'
-import { getDatabase, ref, onValue } from 'firebase/database'
+import { getDatabase, ref, onValue, set  } from 'firebase/database'
 import app from '../../Config/FirebaseConfig'
 const tabsData = [
     {
@@ -59,7 +59,39 @@ export default function NavbarManager() {
     const userString = localStorage.getItem('role')
     const userObject = JSON.parse(userString)
     const [isLoading, setIsLoading] = useState(false)
-    const [dataNotification ,setDataNotification] = useState([])
+    const [dataNotification, setDataNotification] = useState([])
+    const fetchDataFromDatabase = () => {
+        setIsLoading(true)
+        const db = getDatabase(app)
+        const dbRef = ref(db, 'managerNoti')
+
+        // Lắng nghe sự thay đổi trong dữ liệu
+        onValue(dbRef, (snapshot) => {
+            if (snapshot.exists()) {
+                setIsLoading(false)
+                const data = Object.entries(snapshot.val()).map(([id, value]) => ({ id, ...value }));
+                setDataNotification(data.reverse())
+                data.forEach((item) => {
+                    updateIsSeenForRecord(item.id);
+                });
+            } else {
+                setIsLoading(false)
+                console.log('Data does not exist')
+            }
+        })
+    }
+    const updateIsSeenForRecord = (id) => {
+        const db = getDatabase(); // Lấy tham chiếu đến database
+        const recordRef = ref(db, `managerNoti/${id}`); // Tham chiếu đến bản ghi cụ thể bằng id
+    
+        set(recordRef, { isSeen: true })
+            .then(() => {
+                console.log('isSeen updated successfully for record with id', id);
+            })
+            .catch((error) => {
+                console.error('Error updating isSeen for record with id', id, ':', error);
+            });
+    };
     useEffect(() => {
         if (userObject && userObject == 'Manager') {
         } else if (userObject && userObject == 'User') {
@@ -71,32 +103,16 @@ export default function NavbarManager() {
         } else {
             history.push('')
         }
-        const fetchDataFromDatabase = () => {
-            setIsLoading(true)
-            const db = getDatabase(app);
-            const dbRef = ref(db, 'leaveRequests/managerNoti');
 
-            // Lắng nghe sự thay đổi trong dữ liệu
-            onValue(dbRef, (snapshot) => {
-                if (snapshot.exists()) {
-                    setIsLoading(false)
-                    setDataNotification(Object.values(snapshot.val()));
-                } else {
-                    setIsLoading(false)
-                    console.log('Data does not exist');
-                }
-            });
-        };
+        fetchDataFromDatabase()
 
-        fetchDataFromDatabase();
-           
         return () => {
-            const db = getDatabase(app);
-            const dbRef = ref(db, 'leaveRequests/managerNoti');
-            onValue(dbRef, () => {}); // Pass empty function to remove listener
-        };
+            const db = getDatabase(app)
+            const dbRef = ref(db, 'leaveRequests/managerNoti')
+            onValue(dbRef, () => {}) // Pass empty function to remove listener
+        }
     }, [])
-   console.log("fetchRealDatabase ", dataNotification)
+    console.log('fetchRealDatabase ', dataNotification)
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget)
     }
@@ -198,7 +214,7 @@ export default function NavbarManager() {
                                 <span className="flex-1 ml-3 whitespace-nowrap">Report List</span>
                             </Link>
                         </li> */}
-                         <li className="cursor-pointer p-2">
+                        <li className="cursor-pointer p-2">
                             <Link
                                 to="/Manager/ManageLeave"
                                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
@@ -225,7 +241,7 @@ export default function NavbarManager() {
                                 <span className="flex-1 ml-3 whitespace-nowrap">Manage Worked</span>
                             </Link>
                         </li>
-                      
+
                         <li className="cursor-pointer p-2">
                             <Link
                                 to="/"
@@ -292,7 +308,12 @@ export default function NavbarManager() {
                         </div>
 
                         <div className="flex items-center">
-                        <NotificationComponent isLoading={isLoading} dataNotification={dataNotification} />
+                            <NotificationComponent
+                                role={userObject}
+                                isLoading={isLoading}
+                                dataNotification={dataNotification}
+                                UpdateIsSeenToTrue={updateIsSeenForRecord}
+                            />
                             <div className="flex items-center ">
                                 <div>
                                     <Tooltip title="Account settings">
@@ -344,8 +365,9 @@ export default function NavbarManager() {
                                     anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                                 >
                                     <div className=" px-5 py-2 cursor-default w-64">
-                                        <p>{employeeName && employeeName}   <strong>({role && role})</strong></p>
-                                      
+                                        <p>
+                                            {employeeName && employeeName} <strong>({role && role})</strong>
+                                        </p>
                                     </div>
                                     <hr className="mb-2" />
 
@@ -362,7 +384,6 @@ export default function NavbarManager() {
                                     </MenuItem>
                                 </Menu>
                             </div>
-                          
                         </div>
                     </div>
                 </div>
@@ -455,7 +476,7 @@ export default function NavbarManager() {
                                 <span className="ml-3">Manage Worked</span>
                             </NavLink>
                         </li>
-                       
+
                         <li className="cursor-pointer text-center mx-auto justify-center items-center">
                             <NavLink
                                 to="/Manager/TimeSheet"

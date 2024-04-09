@@ -10,14 +10,13 @@ import { Link } from 'react-router-dom'
 import { ApplyLeaveAction } from '../Redux/ApplyLeave/ApplyLeaveSlice'
 import { useDispatch } from 'react-redux'
 
-
 function getIconByType(type) {
     switch (type) {
-        case 'Request Leave':
+        case 'Leave':
             return <InsertChartOutlinedIcon style={{ width: '48px', height: '48px' }} />
-        case 'Request Overtime':
+        case 'Overtime':
             return <AddToPhotosIcon style={{ width: '48px', height: '48px' }} />
-        case 'Request Worked':
+        case 'Worked':
             return <CalendarMonthIcon style={{ width: '48px', height: '48px' }} />
         default:
             return null
@@ -26,9 +25,9 @@ function getIconByType(type) {
 
 function getLinkByType(role, type, id) {
     switch (type) {
-        case 'Request Leave':
+        case 'Leave':
             return role == 'Manager' ? `/Manager/ManageLeave` : '/Employee/ApplyLeave'
-        case 'Request Overtime':
+        case 'Overtime':
             return role == 'Manager' ? '/Manager/ManageOvertime' : '/Employee/Overtime'
         case 'Request Worked':
             return role == 'Manager' ? '/Manager/ManageWorked' : '/Employee/Worked'
@@ -131,10 +130,10 @@ const dataList = [
 ]
 const dataLoading = [{}, {}, {}, {}, {}]
 export default function NotificationComponent(props) {
-   
-    const {isLoading, dataNotification} = props
-   
-    console.log("fetchRealDatabase", isLoading, dataNotification)
+    const { isLoading, dataNotification, role, UpdateIsSeenToTrue } = props
+
+    console.log('fetchRealDatabase', isLoading, dataNotification)
+    let lengthIsSeen = dataNotification ? dataNotification.filter((obj) => obj.isSeen == false).length : 0
     const [isSeeAll, setIsSeeAll] = useState(false)
     const [anchorEl, setAnchorEl] = useState(null)
     const open = Boolean(anchorEl)
@@ -150,17 +149,14 @@ export default function NotificationComponent(props) {
     const dispatch = useDispatch()
     const handleChange = (newValue) => {
         console.log('RequestId da chay', newValue)
-        dispatch(ApplyLeaveAction.changeRequestId(newValue))
+        UpdateIsSeenToTrue(newValue.id)
+        dispatch(ApplyLeaveAction.changeRequestId(newValue.requestId))
     }
-   
-   
 
-
-    const countIsSeeTrue = dataList.filter((item) => item.isSee === true).length
     return (
         <div className="relative">
             <div className="rounded-full bg-red-500 h-5 w-5 absolute text-[14px] flex items-center justify-center z-10 -right-1">
-                {countIsSeeTrue}
+                {lengthIsSeen}
             </div>
             <div>
                 <Tooltip title="Notifications">
@@ -203,7 +199,7 @@ export default function NotificationComponent(props) {
                     {isLoading == true
                         ? dataLoading.map((item, index) => {
                               return (
-                                  <div className="grid grid-cols-5 w-full p-2">
+                                  <div key={index} className="grid grid-cols-5 w-full p-2">
                                       <div className="flex ">
                                           <Skeleton variant="circular" width={48} height={48} />
                                       </div>
@@ -213,7 +209,8 @@ export default function NotificationComponent(props) {
                                   </div>
                               )
                           })
-                        :dataNotification && dataNotification.map((item, index) => {
+                        : dataNotification &&
+                          dataNotification.map((item, index) => {
                               if (!isSeeAll && index >= 5) {
                                   return null
                               }
@@ -222,44 +219,55 @@ export default function NotificationComponent(props) {
                                       key={index}
                                       style={{
                                           marginBottom: '10px',
-                                          borderLeft: item.isSee ? '2px solid #3b82f6' : 'none',
+                                          borderLeft: item.isSeen == false ? '2px solid #3b82f6' : 'none',
                                       }}
                                   >
                                       <Link
                                           to={{
-                                              pathname: getLinkByType(
-                                                  'Manager',
-                                                  'Request Leave',
-                                                  '1290023b-0f82-40ab-975a-4c5cfd3ec189'
-                                              ),
+                                              pathname: getLinkByType(role, item.requestType, item.requestId),
                                           }}
                                           className="grid grid-cols-5"
-                                          onClick={() => handleChange(item.requestId)}
+                                          onClick={() => handleChange(item)}
                                       >
-                                          <div className="flex">{getIconByType('Request Leave')}</div>
+                                          <div className="flex">{getIconByType(item.requestType)}</div>
                                           <Typography
                                               variant="inherit"
                                               style={{ whiteSpace: 'normal' }}
                                               className="col-span-4"
                                           >
-                                              <strong> item.name </strong> <em>(Manager) </em> has {item.status} your{' '}
-                                              {item.type} from {formatDate(item.fromDate)} to {formatDate(item.toDate)}
+                                              <strong> {item.employeeSenderName} </strong> <em>(Manager) </em> has{' '}
+                                              {item.status} your Request {item.requestType}
+                                              {item.requestType === 'Overtime'
+                                                  ? ' on ' +
+                                                    formatDate(item.fromDate) +
+                                                    ' from ' +
+                                                    item.fromHour +
+                                                    'h' +
+                                                    ' to ' +
+                                                    item.toHour +
+                                                    'h'
+                                                  : item.requestType === 'Leave'
+                                                  ? ' from ' +
+                                                    formatDate(item.fromDate) +
+                                                    ' to ' +
+                                                    formatDate(item.toDate)
+                                                  : ''}
                                               <br />
-                                              <p
+                                              <span
                                                   className={
-                                                      //item.isSee == true
-                                                         //</Typography> ? 'text-blue-500 text-[12px]'  : 
-                                                         'text-[12px] text-gray-500'
+                                                      item.isSeen === false
+                                                          ? 'text-blue-500 text-[12px]'
+                                                          : 'text-[12px] text-gray-500'
                                                   }
                                               >
-                                                  {getTimeAgo(item.submitedDate)}
-                                              </p>
+                                                  {getTimeAgo(item.actionDate)}
+                                              </span>
                                           </Typography>
                                       </Link>
                                   </MenuItem>
                               )
                           })}
-                    {isSeeAll == false ? (
+                    {isSeeAll == false && dataNotification.length > 5 ? (
                         <div className="p-2 ">
                             <Button
                                 variant="contained"

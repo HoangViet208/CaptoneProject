@@ -385,7 +385,7 @@ export default function DashboardEmployee() {
                             </Button> */}
                         </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-5">
+                    <div className=" gap-5">
                         <div className="bg-white p-4">
                             <div className=" mt-4 text-center">
                                 <LineChart data={series} />

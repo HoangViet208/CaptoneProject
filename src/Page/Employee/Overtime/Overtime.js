@@ -55,6 +55,7 @@ import {
 } from '../../../Hook/useFormatDate'
 import {
     DeleteOvertimeAsyncApi,
+    GetTotalTimeOvertimeAsyncApi,
     PostOvertimeAsyncApi,
     PutOvertimeAsyncApi,
     getOvertimeByIdAsyncApi,
@@ -84,7 +85,7 @@ const columns = [
     { id: 'timeStart', label: 'Start Time', maxWidth: 150, align: 'center' },
     { id: 'timeEnd', label: 'End Time', maxWidth: 150, align: 'center' },
     { id: 'time', label: 'Time', maxWidth: 200, align: 'center' },
-    { id: 'statusReqeust', label: 'Request Status', minWidth: 100, align: 'center' },
+   // { id: 'statusReqeust', label: 'Request Status', minWidth: 100, align: 'center' },
     { id: 'status', label: 'Status', minWidth: 100, align: 'center' },
     { id: 'action', label: 'Actions', minWidth: 100, align: 'center' },
 ]
@@ -146,10 +147,11 @@ export default function Overtime() {
     const userStringEmployeeName = localStorage.getItem('employeeId')
     const employeeId = JSON.parse(userStringEmployeeName)
     //setting redux
-    const { OvertimeByEmployee, loading } = useSelector((state) => state.overTime)
+    const { OvertimeByEmployee, loading, totalOverTime } = useSelector((state) => state.overTime)
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(getOvertimeByIdAsyncApi(employeeId))
+        dispatch(GetTotalTimeOvertimeAsyncApi(employeeId))
         return () => {}
     }, [])
     const handleChangeStartTime = (newTime) => {
@@ -461,13 +463,13 @@ export default function Overtime() {
                 <button className="bg-orange-300  font-semibold py-1 px-4 rounded-xl">{item.workingStatus}</button>
             ),
             status:
-                item.status == 'Approved' ? (
+                item.statusRequest == 'Approved' ? (
                     <button className="bg-green-500 w-32 text-green-800 font-semibold py-1 px-2 rounded-xl">
                         Approved
                     </button>
-                ) : item.status == 'Rejected' ? (
+                ) : item.statusRequest == 'Rejected' ? (
                     <button className="bg-red-500 text-red-800  w-32 font-semibold py-1 px-2 rounded-xl">Reject</button>
-                ) : item.status == 'Cancel' ? (
+                ) : item.statusRequest == 'Cancel' ? (
                     <button className="bg-orange-500 text-orange-800  w-32 font-semibold py-1 px-2 rounded-xl">Cancel</button>
                 ) : (
                     <button className="bg-yellow-500 text-yellow-800  w-32 font-semibold py-1 px-2 rounded-xl">Pending</button>
@@ -567,7 +569,7 @@ export default function Overtime() {
                     <div className="my-2 w-full">
                         <div className="mb-1">
                             <strong className=" text-gray-500">
-                                Number of hours registered for compensatory leave
+                            Manager Approve
                             </strong>{' '}
                         </div>
                         <FormControl fullWidth>
@@ -585,7 +587,7 @@ export default function Overtime() {
                                     text: 'black',
                                 }}
                             >
-                                <span className="text-black">{leaveDays}</span>
+                                <span className="text-black">{totalOverTime && totalOverTime.managerName}</span>
                                 <span></span>
                             </Button>
                         </FormControl>
@@ -608,7 +610,7 @@ export default function Overtime() {
                                     text: 'black',
                                 }}
                             >
-                                <span className="text-black">{leaveDays}</span>
+                                <span className="text-black">{totalOverTime && totalOverTime.totalOvertimeHoursInMonth}</span>
                                 <span></span>
                             </Button>
                         </FormControl>
@@ -631,25 +633,30 @@ export default function Overtime() {
                                     text: 'black',
                                 }}
                             >
-                                <span className="text-black">{leaveDays}</span>
+                                <span className="text-black">{totalOverTime && totalOverTime.totalOvertimeHoursInYear}</span>
                                 <span></span>
                             </Button>
                         </FormControl>
                     </div>
-                    <div className="mb-2 w-full">
-                        <TextField
-                            onChange={(e) => setReason(e.target.value)}
-                            label={
-                                <span>
-                                    Reason <span style={{ color: 'red' }}>*</span>
-                                </span>
-                            }
-                            multiline
-                            className="w-full"
-                            rows={3}
-                            value={reason}
-                        />
-                    </div>
+                    <div className="my-2 mb-4 w-full">
+                            <div className="mb-1">
+                                <strong className=" text-gray-500">Leave Reason</strong>{' '}
+                                <i className="text-red-500">*</i>
+                            </div>
+                            <FormControl fullWidth>
+                                <TextField
+                                    multiline
+                                    rows={6}
+                                    id="outlined-basic"
+                                    size="small"
+                                    onChange={(e) => setReason(e.target.value)}
+                                    className="mt-2 w-full"
+                                    value={reason}
+                                    name="leaveReason"
+                                    variant="outlined"
+                                />
+                            </FormControl>
+                        </div>
                     <div className="mb-2 relative w-full">
                         <input
                             className="hidden w-full" // Ẩn input mặc định

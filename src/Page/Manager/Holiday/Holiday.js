@@ -75,8 +75,7 @@ const columns = [
     { id: 'title', label: 'Holiday Title', minWidth: 300, align: 'left' },
     { id: 'date', label: 'Holiday Date', minWidth: 150, align: 'left' },
     { id: 'day', label: 'Day', minWidth: 150, align: 'left' },
-
-    { id: 'departmentNames', label: 'Department Name', minWidth: 150, align: 'left' },
+    //  { id: 'departmentNames', label: 'Department Name', minWidth: 150, align: 'left' },
     { id: 'action', label: 'Actions', minWidth: 50, align: 'center' },
 ]
 
@@ -113,14 +112,9 @@ export default function Holiday() {
     const dataHolidaySession = ['Full day', 'Half Day - 1st Half', 'Half Day - 2st Half']
     const today = new Date()
     const initialValues = {
-        holidayDate: today.toISOString().split('T')[0],
-        holidayDateEnd: today.toISOString().split('T')[0],
-        holidayTitle: '',
-        departmentId: [],
         holidayDescription: '',
-        holidaySesion: 'Full day',
-        holidayType: 'Public Holiday',
-        holidayId: 0,
+        holidayTitle: '',
+        holidayId: '',
     }
     const [anchorEl, setAnchorEl] = React.useState(null)
     const handleClick = (event) => {
@@ -169,17 +163,11 @@ export default function Holiday() {
         validationSchema: Yup.object({
             holidayDescription: Yup.string().required(),
             holidayTitle: Yup.string().required(),
-            holidayDate: Yup.date().required(),
-
-            holidayDateEnd: Yup.date()
-                .required()
-
-                .when('holidayDate', (holidayDate, schema) => {
-                    return schema.min(holidayDate, 'End Date must be after Start Date')
-                }),
         }),
         onSubmit: (values) => {
             const idArray = selectedUser.map((item) => item.id)
+            const startDateStr = format(dateRange[0].startDate, 'yyyy/MM/dd')
+            const endDateStr = format(dateRange[0].endDate, 'yyyy/MM/dd')
             if (isAction == 1) {
                 setLoadingButton(true)
                 var idValuesArray = []
@@ -187,8 +175,6 @@ export default function Holiday() {
                 for (var i = 0; i < DepartmentList.length; i++) {
                     idValuesArray.push(DepartmentList[i].id)
                 }
-                const startDateStr = format(dateRange[0].startDate, 'yyyy/MM/dd')
-                const endDateStr = format(dateRange[0].endDate, 'yyyy/MM/dd')
                 console.log('chay', values.holidayDate, values.holidayDateEnd, idArray)
                 const body = {
                     departmentIds: idValuesArray,
@@ -217,13 +203,9 @@ export default function Holiday() {
                             })
                             seterrorSelect(false)
                             formik.setValues({
-                                holidayDate: today.toISOString().split('T')[0],
-                                holidayDateEnd: today.toISOString().split('T')[0],
                                 holidayTitle: '',
-                                holidaySesion: 'Full day',
-                                holidayType: 'Public Holiday',
                                 holidayDescription: '',
-                                holidayId: 0,
+                                holidayId: '',
                             })
                             dispatch(getHolidayAsyncApi())
                         }
@@ -232,37 +214,35 @@ export default function Holiday() {
                         setLoadingButton(false)
                     })
             } else if (isAction == 2) {
-                // let body = {
-                //     holidayId: values.holidayId,
-                //     name: values.holidayTitle,
-                //     startDate: values.holidayDate + 'T00:00:00.000Z',
-                //     endDate: values.holidayDateEnd + 'T00:00:00.000Z',
-                //     description: '',
-                // }
-                // dispatch(PutHolidayAsyncApi(body))
-                //     .then((response) => {
-                //         if (response.meta.requestStatus == 'fulfilled') {
-                //             setOpen(false)
-                //             setIsAction(0)
-                //             formik.setTouched({})
-                //             formik.setErrors({})
-                //             showSnackbar({
-                //                 severity: 'success',
-                //                 children: 'Update Holiday successfully',
-                //             })
-                //             formik.setValues({
-                //                 holidayDate: today.toISOString().split('T')[0],
-                //                 holidayDateEnd: today.toISOString().split('T')[0],
-                //                 holidayTitle: '',
-                //                 holidaySesion: 'Full day',
-                //                 holidayType: 'Public Holiday',
-                //                 holidayDescription: '',
-                //                 holidayId: 0,
-                //             })
-                //             dispatch(getHolidayAsyncApi())
-                //         }
-                //     })
-                //     .catch((error) => {})
+                const body = {
+                    holidayId: values.holidayId,
+                    startDate: startDateStr,
+                    endDate: endDateStr,
+                    holidayName: values.holidayTitle,
+                    description: values.holidayDescription,
+                    isRecurring: true,
+                    isDeleted: true,
+                }
+                dispatch(PutHolidayAsyncApi(body))
+                    .then((response) => {
+                        if (response.meta.requestStatus == 'fulfilled') {
+                            setOpen(false)
+                            setIsAction(0)
+                            formik.setTouched({})
+                            formik.setErrors({})
+                            showSnackbar({
+                                severity: 'success',
+                                children: 'Update Holiday successfully',
+                            })
+                            formik.setValues({
+                                holidayTitle: '',
+                                holidayDescription: '',
+                                holidayId: '',
+                            })
+                            dispatch(getHolidayAsyncApi())
+                        }
+                    })
+                    .catch((error) => {})
             }
         },
     })
@@ -329,13 +309,9 @@ export default function Holiday() {
                     formik.setTouched({})
                     formik.setErrors({})
                     formik.setValues({
-                        holidayDate: today.toISOString().split('T')[0],
-                        holidayDateEnd: today.toISOString().split('T')[0],
                         holidayTitle: '',
-                        holidaySesion: 'Full day',
-                        holidayType: 'Public Holiday',
                         holidayDescription: '',
-                        holidayId: 0,
+                        holidayId: '',
                     })
                 }
             })
@@ -349,39 +325,24 @@ export default function Holiday() {
     //     seterrorSelect(true)
     //     setSelectedUser(newValue)
     // }
-    console.log('a', formik.values)
+    console.log('nguuuu', dateRange, threeDaysLater)
     const handleClickOpenUpdate = (data) => {
+        console.log('nguuuu', data.startDate)
+        const parsedStartDate = parse(data.startDate, "yyyy-MM-dd'T'HH:mm:ss", new Date())
+        const parsedEndDate = parse(data.endDate, "yyyy-MM-dd'T'HH:mm:ss", new Date())
+        setDateRange([
+            {
+                startDate: parsedStartDate,
+                endDate: parsedEndDate,
+                key: 'selection',
+            },
+        ])
         setOpen(true)
         setIsAction(2)
-        // console.log('123145', data.startDate)
-        // const result = [...selectedUser]
-        // for (let i = 0; i < data.departmentIds.length; i++) {
-        //     const id = data.departmentIds[i]
-        //     const name = data.departmentNames[i]
-        //     // Tạo đối tượng mới và đưa vào mảng kết quả
-        //     const newValue = {
-        //         id: id,
-        //         name: name,
-        //     }
-        //     result.push(newValue)
-        // }
-        // setSelectedUser(result)
-        // setDateRange([
-        //     {
-        //         startDate: parse(data.startDate, 'yyyy/MM/dd', new Date()),
-        //         endDate: parse(data.endDate, 'yyyy/MM/dd', new Date()),
-        //         key: 'selection',
-        //     },
-        // ])
         formik.setValues({
-            //holidayDate: data.startDate.replace(/\//g, '-'),
-            // holidayDateEnd: data.endDate.replace(/\//g, '-'),
             holidayTitle: data.holidayName,
-            // departmentId: [],
             holidayDescription: data.description,
-            // holidaySesion: 'Full day',
-            //   holidayType: 'Public Holiday',
-            holidayId: data.id,
+            holidayId: data.holidayId,
         })
     }
     const handleClickOpenImport = () => {
@@ -401,14 +362,9 @@ export default function Holiday() {
         //fileInputRef.current.value = null
         setChosenFileName('Chosen file (.csv or .xlsx)')
         formik.setValues({
-            holidayDate: today.toISOString().split('T')[0],
-            holidayDateEnd: today.toISOString().split('T')[0],
             holidayTitle: '',
-            holidaySesion: 'Full day',
-            holidayType: 'Public Holiday',
             holidayDescription: '',
-
-            holidayId: 0,
+            holidayId: '',
         })
     }
     function handleDownloadExcelTemplate() {
@@ -477,30 +433,6 @@ export default function Holiday() {
         })
     }
     const createRows = () => {
-        const data = [
-            {
-                id: '1',
-                title: 'Giỗ tổ Hùng Vương',
-                date: '2023/07/28',
-                sesion: 'Full day',
-                type: 'Public Holiday',
-            },
-            {
-                id: '2',
-                title: 'Quốc Khánh',
-                date: '2023/09/02',
-                sesion: 'Full day',
-                type: 'Public Holiday',
-            },
-            {
-                id: '3',
-                title: 'Thánh Giống về trời',
-                date: '2023/07/29',
-                sesion: 'Full day',
-                type: 'Office Holiday',
-            },
-        ]
-
         return HolidayList.map((item, index) => ({
             ...item,
             day: calculateDays(item.startDate.slice(0, 10), item.endDate.slice(0, 10)),
@@ -513,8 +445,8 @@ export default function Holiday() {
                             <RemoveRedEyeIcon />
                         </IconButton>
                     </Tooltip>
-                 
-                    <Tooltip  onClick={() => handleClickOpenConfirm(item.holidayId) } title="Delete">
+
+                    <Tooltip onClick={() => handleClickOpenConfirm(item.holidayId)} title="Delete">
                         <IconButton>
                             <DeleteIcon />
                         </IconButton>
@@ -590,78 +522,7 @@ export default function Holiday() {
                             )}
                         </div>
                     </div>
-                    {/* <div className="my-4">
-                        <div className="mb-2">
-                            <strong className=" text-gray-500">Holiday Start Day</strong>
-                        </div>
-                        
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DesktopDatePicker
-                                error={formik.touched.holidayDate && formik.errors.holidayDate ? true : undefined}
-                                onChange={formik.handleChange}
-                                className="mt-2 w-full"
-                                value={formik.values.holidayDate}
-                                name="holidayDate"
-                                format="dd/MM/yyyy"
-                                inputVariant="outlined"
-                                TextFieldComponent={(props) => (
-                                    <TextField
-                                        {...props}
-                                        error={
-                                            formik.touched.holidayDate && formik.errors.holidayDate ? true : undefined
-                                        }
-                                        className="mt-2 w-full"
-                                        disabled={isAction === 1 ? false : true}
-                                        InputProps={{
-                                            ...props.InputProps,
-                                            readOnly: true,
-                                        }}
-                                    />
-                                )}
-                                inputProps={{
-                                    min: today.toISOString().split('T')[0], // Chặn ngày từ quá khứ
-                                }}
-                            />
-                        </LocalizationProvider>
-                    </div>
-                    <div className="my-4">
-                        <div className="mb-2">
-                            <strong className=" text-gray-500">Holiday End Date</strong>
-                        </div>
-                        <TextField
-                            id="outlined-basic"
-                            size="small"
-                            type="date"
-                            error={formik.touched.holidayDateEnd && formik.errors.holidayDateEnd ? true : undefined}
-                            onChange={formik.handleChange}
-                            className="mt-2 w-full"
-                            value={formik.values.holidayDateEnd}
-                            name="holidayDateEnd"
-                            variant="outlined"
-                            disabled={isAction == 1 ? false : true}
-                            inputProps={{
-                                min: today.toISOString().split('T')[0], // Chặn ngày từ quá khứ
-                            }}
-                        />
-                        {formik.errors.holidayDateEnd && formik.touched.holidayDateEnd && (
-                            <div className="text mt-1 text-red-600 font-semibold">{formik.errors.holidayDateEnd}</div>
-                        )}
-                    </div> */}
-                    {/* <div className="my-4">
-                        <div className="mb-2">
-                            <strong className=" text-gray-500">Department List</strong>
-                        </div>
-                        <MultiSelectData
-                            data={dataUser}
-                            defaultValueData={selectedUser}
-                            onChange={handleMultiSelectUserChange}
-                            placeholder="Select Deparment..."
-                            disabled={isAction == 1 ? false : true}
-                        />
-                        {formik.errors.departmentId && formik.touched.departmentId && (
-                            <div className="text mt-1 text-red-600 font-semibold">{formik.errors.departmentId}</div>
-                        )}
-                    </div> */}
+
                     <div className="my-4">
                         <div className="mb-2">
                             <strong className=" text-gray-500">Holiday Title</strong>
@@ -672,7 +533,6 @@ export default function Holiday() {
                             error={formik.touched.holidayTitle && formik.errors.holidayTitle ? true : undefined}
                             onChange={formik.handleChange}
                             className="mt-2 w-full"
-                            disabled={isAction == 1 ? false : true}
                             value={formik.values.holidayTitle}
                             name="holidayTitle"
                             variant="outlined"
@@ -690,7 +550,6 @@ export default function Holiday() {
                             size="small"
                             multiline
                             rows={4}
-                            disabled={isAction == 1 ? false : true}
                             error={
                                 formik.touched.holidayDescription && formik.errors.holidayDescription ? true : undefined
                             }
@@ -707,31 +566,28 @@ export default function Holiday() {
                         )}
                     </div>
                 </div>
-
-                {isAction == 1 && (
-                    <DialogActions>
-                        <div className="flex gap-5">
-                            <Button variant="contained" color="inherit" autoFocus>
-                                Cancel
-                            </Button>
-                            <LoadingButton
-                                //disabled={!errorSelect}
-                                startIcon={<AddIcon />}
-                                type="submit"
-                                loading={loadingButton}
-                                loadingPosition="start"
-                                color="info"
-                                variant="contained"
-                                sx={{
-                                    textAlign: 'center',
-                                }}
-                                autoFocus
-                            >
-                                Save changes
-                            </LoadingButton>
-                        </div>
-                    </DialogActions>
-                )}
+                <DialogActions>
+                    <div className="flex gap-5">
+                        <Button variant="contained" color="inherit" autoFocus>
+                            Cancel
+                        </Button>
+                        <LoadingButton
+                            //disabled={!errorSelect}
+                            startIcon={<AddIcon />}
+                            type="submit"
+                            loading={loadingButton}
+                            loadingPosition="start"
+                            color="info"
+                            variant="contained"
+                            sx={{
+                                textAlign: 'center',
+                            }}
+                            autoFocus
+                        >
+                            Save changes
+                        </LoadingButton>
+                    </div>
+                </DialogActions>
             </form>
         </Fragment>
     )

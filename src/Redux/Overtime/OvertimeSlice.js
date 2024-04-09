@@ -7,6 +7,7 @@ import GetOvertimeApi, {
     GetOvertimeTypeApi,
     GetWorkDateSettingByIdApi,
     CancelOvertimeApi,
+    GetTotalTimeOvertimeApi,
 } from '../../Api/OvertimeApi'
 
 const initialState = {
@@ -16,6 +17,7 @@ const initialState = {
     OvertimeTypeList: [],
     OvertimeByEmployee: [],
     WorkSetting: [],
+    totalOverTime: {},
 }
 
 const authSlice = createSlice({
@@ -27,6 +29,7 @@ const authSlice = createSlice({
             state.OvertimeList = []
             state.OvertimeTypeList = []
             state.WorkSetting = []
+            state.totalOverTime = {}
         },
         ChangeTab: (state, action) => {
             console.log('action', action)
@@ -68,6 +71,13 @@ const authSlice = createSlice({
                 state.OvertimeTypeList = action.payload
             })
             .addCase(GetOvertimeTypeAsyncApi.rejected, (state, action) => {})
+        builder
+            .addCase(GetTotalTimeOvertimeAsyncApi.pending, (state) => {})
+            .addCase(GetTotalTimeOvertimeAsyncApi.fulfilled, (state, action) => {
+                state.totalOverTime = action.payload
+            })
+            .addCase(GetTotalTimeOvertimeAsyncApi.rejected, (state, action) => {})
+
         builder
             .addCase(PostOvertimeAsyncApi.pending, (state) => {})
             .addCase(PostOvertimeAsyncApi.fulfilled, (state, action) => {})
@@ -124,6 +134,16 @@ export const GetOvertimeTypeAsyncApi = createAsyncThunk('OvertimeReducer/GetOver
         throw errors[0].errorMessage
     }
 })
+export const GetTotalTimeOvertimeAsyncApi = createAsyncThunk('OvertimeReducer/GetTotalTimeOvertimeApi', async (id) => {
+    try {
+        const response = await GetTotalTimeOvertimeApi(id)
+        return response
+    } catch (error) {
+        const json = error.response.data
+        const errors = json[''].errors
+        throw errors[0].errorMessage
+    }
+})
 export const getOvertimeByIdAsyncApi = createAsyncThunk('OvertimeReducer/getByIdAsyncApi', async (id) => {
     try {
         const response = await GetOvertimeByIdApi(id)
@@ -156,7 +176,7 @@ export const PutOvertimeAsyncApi = createAsyncThunk('OvertimeReducer/putAsyncApi
     }
 })
 
-export const CancelOvertimeAsyncApi = createAsyncThunk('OvertimeReducer/cancelAsyncApi', async ( body ) => {
+export const CancelOvertimeAsyncApi = createAsyncThunk('OvertimeReducer/cancelAsyncApi', async (body) => {
     try {
         const response = await CancelOvertimeApi(body)
         return response.data // Trả về dữ liệu từ response nếu thành công
