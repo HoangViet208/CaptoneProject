@@ -20,7 +20,7 @@ const initialState = {
     ApplyLeaveByEmployee: [],
     WorkSetting: [],
     AllRequestInEmployee: {},
-    RequestId: 0,
+    RequestIdNoti: 0,
 }
 
 const authSlice = createSlice({
@@ -33,7 +33,7 @@ const authSlice = createSlice({
             state.ApplyLeaveTypeList = ['Casual Leave', 'Sick Leave']
             state.WorkSetting = []
             state.AllRequestInEmployee = {}
-            state.RequestId = 0
+            state.RequestIdNoti = 0
         },
         ChangeTab: (state, action) => {
             console.log('action', action)
@@ -41,7 +41,7 @@ const authSlice = createSlice({
         },
         changeRequestId: (state, action) => {
             console.log('action', action)
-            state.RequestId = action.payload
+            state.RequestIdNoti = action.payload
         },
     },
     extraReducers: (builder) => {

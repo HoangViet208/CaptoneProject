@@ -157,7 +157,7 @@ export default function ManageLeave() {
         setPage(newPage)
     }
     //setting redux
-    const { ApplyLeaveList, ApplyLeaveTypeList, valueTabs, loading, RequestId } = useSelector(
+    const { ApplyLeaveList, ApplyLeaveTypeList, valueTabs, loading, RequestIdNoti } = useSelector(
         (state) => state.applyLeave
     )
     const dispatch = useDispatch()
@@ -209,9 +209,10 @@ export default function ManageLeave() {
         const userObject = JSON.parse(userString)
         return userObject || 'defaultRole' // Provide a default role if undefined
     })
+    console.log('RequestId ngu', RequestIdNoti)
     useEffect(() => {
-        if (RequestId != 0) {
-            dispatch(GetApplyLeaveByRequestIdAsyncApi(RequestId)).then((res) => {
+        if (RequestIdNoti != 0) {
+            dispatch(GetApplyLeaveByRequestIdAsyncApi(RequestIdNoti)).then((res) => {
                 if (res.meta.requestStatus == 'fulfilled') {
                     const newDate = res.payload.dateRange.map((item, index) => ({
                         title: formatDate(item.title),
@@ -237,8 +238,8 @@ export default function ManageLeave() {
             })
             setOpenModal(true)
         }
-        console.log('RequestId', RequestId)
-    }, [RequestId])
+      
+    }, [RequestIdNoti])
     useEffect(() => {
         // Update the userRole state whenever 'role' is changed in localStorage
         const handleStorageChange = () => {
@@ -922,7 +923,7 @@ export default function ManageLeave() {
                                         sx={{
                                             textAlign: 'center',
                                         }}
-                                        disabled={errorReject == true ? true : false}
+                            
                                         autoFocus
                                     >
                                         Reject

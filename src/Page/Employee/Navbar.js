@@ -18,6 +18,10 @@ import AccountBoxIcon from '@mui/icons-material/AccountBox'
 import KeyIcon from '@mui/icons-material/Key'
 import General from '../Manager/EmployeeDetail/General'
 import ChangePassword from '../Manager/Profile/ChangePassword'
+import { getDatabase, ref, onValue, set } from 'firebase/database'
+import app from '../../Config/FirebaseConfig'
+import NotificationComponent from '../../Components/Notification'
+
 const tabsData = [
     {
         label: 'General',
@@ -50,17 +54,68 @@ export default function Navbar() {
 
     const userString = localStorage.getItem('role')
     const userObject = JSON.parse(userString)
+
+    const employeeIdString = localStorage.getItem('employeeId')
+    const employeeId = JSON.parse(employeeIdString)
+
+    const [isLoading, setIsLoading] = useState(false)
+    const [dataNotification, setDataNotification] = useState([])
+
+console.log("employeeId", employeeId)
+
+    const fetchDataFromDatabase = () => {
+        setIsLoading(true)
+        const db = getDatabase(app)
+        const dbRef = ref(db, 'employeeNoti')
+
+        onValue(dbRef, (snapshot) => {
+            if (snapshot.exists()) {
+                setIsLoading(false)
+                const data = Object.entries(snapshot.val()).map(([id, value]) => {
+                    if (value.employeeSenderId == employeeId) {
+                        return { id, ...value };
+                    }
+                    return null; 
+                }).filter(item => item !== null);
+                setDataNotification(data)
+            } else {
+                setIsLoading(false)
+                console.log('Data does not exist')
+            }
+        })
+    }
+    function UpdateIsSeenToTrue(newValue) {
+        console.log('fetchRealDatabase da chay')
+
+        const db = getDatabase() // Lấy tham chiếu đến database
+        const recordRef = ref(db, `employeeNoti/${newValue.id}`) // Tham chiếu đến bản ghi cụ thể bằng id
+
+        set(recordRef, { ...newValue, isSeen: true })
+            .then(() => {
+                console.log('fetchRealDatabase isSeen updated successfully')
+            })
+            .catch((error) => {
+                console.error('fetchRealDatabase Error updating isSeen: ', error)
+            })
+    }
     useEffect(() => {
-        // if (userObject && userObject == 'Manager') {
-        //     history.push('/Manager/Employee')
-        // } else if (userObject && userObject == 'User') {
-        // } else if (userObject && userObject == 'HR') {
-        //     history.push('/Hr/ManageLeave')
-        // } else if (userObject && userObject == 'Admin') {
-        //     history.push('/Admin/Team')
-        // } else {
-        //     history.push('')
-        // }
+        if (userObject && userObject == 'Manager') {
+            history.push('/Manager/Employee')
+        } else if (userObject && userObject == 'User') {
+        } else if (userObject && userObject == 'HR') {
+            history.push('/Hr/ManageLeave')
+        } else if (userObject && userObject == 'Admin') {
+            history.push('/Admin/Team')
+        } else {
+            history.push('')
+        }
+        fetchDataFromDatabase()
+
+        return () => {
+            const db = getDatabase(app)
+            const dbRef = ref(db, 'leaveRequests/managerNoti')
+            onValue(dbRef, () => {}) // Pass empty function to remove listener
+        }
     }, [])
     const userStringRole = localStorage.getItem('role')
     const role = JSON.parse(userStringRole)
@@ -228,13 +283,19 @@ export default function Navbar() {
                         </div>
 
                         <div className="flex items-center">
-                            <div className="flex items-center ml-3">
+                            <NotificationComponent
+                                role={userObject}
+                                isLoading={isLoading}
+                                dataNotification={dataNotification}
+                                UpdateIsSeenToTrue={UpdateIsSeenToTrue}
+                            />
+                           <div className="flex items-center ">
                                 <div>
                                     <Tooltip title="Account settings">
                                         <IconButton
                                             onClick={handleClick}
                                             size="small"
-                                            sx={{ ml: 2 }}
+                                            sx={{ ml: 1 }}
                                             aria-controls={open ? 'account-menu' : undefined}
                                             aria-haspopup="true"
                                             aria-expanded={open ? 'true' : undefined}
@@ -278,9 +339,10 @@ export default function Navbar() {
                                     transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                                     anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                                 >
-                                    <div className="grid grid-rows-2 px-5 py-2 cursor-default">
-                                        <p>{employeeName && employeeName}</p>
-                                        <strong>({role && role})</strong>
+                                    <div className=" px-5 py-2 cursor-default w-64">
+                                        <p>
+                                            {employeeName && employeeName} <strong>({role && role})</strong>
+                                        </p>
                                     </div>
                                     <hr className="mb-2" />
 

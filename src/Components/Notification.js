@@ -149,15 +149,21 @@ export default function NotificationComponent(props) {
     const dispatch = useDispatch()
     const handleChange = (newValue) => {
         console.log('RequestId da chay', newValue)
-        UpdateIsSeenToTrue(newValue.id)
+        UpdateIsSeenToTrue(newValue)
+        setAnchorEl(null)
         dispatch(ApplyLeaveAction.changeRequestId(newValue.requestId))
     }
 
     return (
         <div className="relative">
-            <div className="rounded-full bg-red-500 h-5 w-5 absolute text-[14px] flex items-center justify-center z-10 -right-1">
-                {lengthIsSeen}
-            </div>
+            {lengthIsSeen > 0 ? (
+                <div className="rounded-full bg-red-500 h-5 w-5 absolute text-[14px] flex items-center justify-center z-10 -right-1">
+                    {lengthIsSeen}
+                </div>
+            ) : (
+                ''
+            )}
+
             <div>
                 <Tooltip title="Notifications">
                     <IconButton
@@ -235,8 +241,20 @@ export default function NotificationComponent(props) {
                                               style={{ whiteSpace: 'normal' }}
                                               className="col-span-4"
                                           >
-                                              <strong> {item.employeeSenderName} </strong> <em>(Manager) </em> has{' '}
-                                              {item.status} your Request {item.requestType}
+                                              {role == 'Manager' ? (
+                                                  <>
+                                                      {' '}
+                                                      <strong> {item.employeeSenderName} </strong> <em>(Employee) </em>
+                                                      has send {' '}
+                                                  </>
+                                              ) : (
+                                                  <>
+                                                      {' '}
+                                                      <strong> {item.employeeDeciderName} </strong> <em>(Manager) </em>
+                                                      has {item.status} your {' '}
+                                                  </>
+                                              )}
+                                               Request {item.requestType}
                                               {item.requestType === 'Overtime'
                                                   ? ' on ' +
                                                     formatDate(item.fromDate) +

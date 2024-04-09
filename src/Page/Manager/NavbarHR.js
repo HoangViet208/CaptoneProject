@@ -55,6 +55,7 @@ export default function NavbarHR() {
     const employeeName = JSON.parse(userStringEmployeeName)
     const userString = localStorage.getItem('role')
     const userObject = JSON.parse(userString)
+    
     useEffect(() => {
         if (userObject && userObject == 'Manager') {
             history.push('/Manager/Employee')

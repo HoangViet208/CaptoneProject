@@ -61,7 +61,9 @@ import {
 } from '../../../Hook/useFormatDate'
 import { useDispatch, useSelector } from 'react-redux'
 import {
+    ApplyLeaveAction,
     DeleteApplyLeaveAsyncApi,
+    GetApplyLeaveByRequestIdAsyncApi,
     GetApplyLeaveTypeAsyncApi,
     GetWorkDateSettingByIdAsyncApi,
     PostApplyLeaveAsyncApi,
@@ -109,10 +111,9 @@ const dataBreadcrumbs = breadcrumbIcons()
 export default function ApplyLeave() {
     const [openAccordionComponent, setOpenAccordionComponent] = useState(false)
     const handleopenAccordionComponent = () => {
-        if(formik.values.leaveType !== "") {
+        if (formik.values.leaveType !== '') {
             setOpenAccordionComponent(!openAccordionComponent)
         }
-  
     }
 
     const [loadingButton, setLoadingButton] = useState(false)
@@ -126,7 +127,7 @@ export default function ApplyLeave() {
     const handleClose = () => {
         setAnchorEl(null)
     }
-   
+
     const [errorEdit, SetErrorEdit] = useState(false)
     const [error, SetError] = useState()
     const [errorImport, seterrorImport] = useState(false)
@@ -172,9 +173,44 @@ export default function ApplyLeave() {
         },
     ])
     //setting redux
-    const { ApplyLeaveByEmployee, ApplyLeaveTypeList, WorkSetting, loading } = useSelector((state) => state.applyLeave)
+    const { ApplyLeaveByEmployee, ApplyLeaveTypeList, WorkSetting, loading, RequestIdNoti } = useSelector(
+        (state) => state.applyLeave
+    )
     const { AllEmployeeInDepartment } = useSelector((state) => state.department)
     const dispatch = useDispatch()
+    useEffect(() => {
+        if (RequestIdNoti != 0) {
+            dispatch(GetApplyLeaveByRequestIdAsyncApi(RequestIdNoti)).then((res) => {
+                if (res.meta.requestStatus == 'fulfilled') {
+                    const newDate = res.payload.dateRange.map((item, index) => ({
+                        title: formatDate(item.title),
+                        type: item.type,
+                    }))
+                    setReasonReject(res.payload.reasonReject)
+                    setIsAction(2)
+                    setStatusRequest(3)
+                    setLeaveDaysDate(newDate)
+                    setLeaveDays(res.payload.dateRange.length)
+                    setChosenFileName(res.payload.linkFile)
+                    setRequestId(res.payload.id)
+                    setDateRange([
+                        {
+                            startDate: parse(res.payload.startDate, 'yyyy/MM/dd', new Date()),
+                            endDate: parse(res.payload.endDate, 'yyyy/MM/dd', new Date()),
+                            key: 'selection',
+                        },
+                    ])
+                    formik.setValues({
+                        leaveReason: res.payload.reason,
+                        leaveType: res.payload.leaveTypeId,
+                        leaveDate: '',
+                    })
+                }
+            })
+            setOpen(true)
+        }
+        console.log('RequestId', RequestIdNoti)
+    }, [RequestIdNoti])
     useEffect(() => {
         dispatch(GetWorkDateSettingByIdAsyncApi(employeeId))
         dispatch(getApplyLeaveByIdAsyncApi(employeeId))
@@ -473,10 +509,16 @@ export default function ApplyLeave() {
         if (data.status != 0) {
             SetErrorEdit(true)
         }
+        if (data.status == 3) {
+            setStatusRequest(3)
+        }
+        if (data.status == 2) {
+            setStatusRequest(3)
+        }
         setReasonReject(data.reasonReject)
         setOpen(true)
         setRequestId(data.id)
-        setStatusRequest(data.status)
+      
         setIsAction(2)
         console.log('data', data.startDate, parse(data.startDate, 'dd/MM/yyyy', new Date()))
         const newDate = data.dateRange.map((item, index) => ({
@@ -517,6 +559,7 @@ export default function ApplyLeave() {
         fileInputRef.current.click()
     }
     const clickOpenFalse = (event) => {
+        dispatch(ApplyLeaveAction.changeRequestId(0))
         SetErrorEdit(false)
         setOpen(false)
         setRequestId()
@@ -1042,7 +1085,7 @@ export default function ApplyLeave() {
     console.log('search', dateRange)
     const handleDelete = () => {
         setLoadingButton(true)
-        dispatch(DeleteApplyLeaveAsyncApi({ idDelete, UserParseId}))
+        dispatch(DeleteApplyLeaveAsyncApi({ idDelete, UserParseId }))
             .then((response) => {
                 if (response.meta.requestStatus == 'fulfilled') {
                     dispatch(getApplyLeaveByIdAsyncApi(employeeId))

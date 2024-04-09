@@ -60,38 +60,39 @@ export default function NavbarManager() {
     const userObject = JSON.parse(userString)
     const [isLoading, setIsLoading] = useState(false)
     const [dataNotification, setDataNotification] = useState([])
+   
     const fetchDataFromDatabase = () => {
         setIsLoading(true)
         const db = getDatabase(app)
         const dbRef = ref(db, 'managerNoti')
 
-        // Lắng nghe sự thay đổi trong dữ liệu
         onValue(dbRef, (snapshot) => {
             if (snapshot.exists()) {
                 setIsLoading(false)
                 const data = Object.entries(snapshot.val()).map(([id, value]) => ({ id, ...value }));
-                setDataNotification(data.reverse())
-                data.forEach((item) => {
-                    updateIsSeenForRecord(item.id);
-                });
+                setDataNotification(data)
             } else {
                 setIsLoading(false)
                 console.log('Data does not exist')
             }
         })
     }
-    const updateIsSeenForRecord = (id) => {
-        const db = getDatabase(); // Lấy tham chiếu đến database
-        const recordRef = ref(db, `managerNoti/${id}`); // Tham chiếu đến bản ghi cụ thể bằng id
+    function UpdateIsSeenToTrue( newValue ) {
+        console.log("fetchRealDatabase da chay")
+       
+            const db = getDatabase(); // Lấy tham chiếu đến database
+            const recordRef = ref(db, `managerNoti/${newValue.id}`); // Tham chiếu đến bản ghi cụ thể bằng id
     
-        set(recordRef, { isSeen: true })
-            .then(() => {
-                console.log('isSeen updated successfully for record with id', id);
-            })
-            .catch((error) => {
-                console.error('Error updating isSeen for record with id', id, ':', error);
-            });
-    };
+            set(recordRef, { ...newValue, isSeen: true })
+                .then(() => {
+                    console.log('fetchRealDatabase isSeen updated successfully');
+
+                })
+                .catch((error) => {
+                    console.error('fetchRealDatabase Error updating isSeen: ', error);
+                });
+       
+    }
     useEffect(() => {
         if (userObject && userObject == 'Manager') {
         } else if (userObject && userObject == 'User') {
@@ -312,7 +313,7 @@ export default function NavbarManager() {
                                 role={userObject}
                                 isLoading={isLoading}
                                 dataNotification={dataNotification}
-                                UpdateIsSeenToTrue={updateIsSeenForRecord}
+                                UpdateIsSeenToTrue={UpdateIsSeenToTrue}
                             />
                             <div className="flex items-center ">
                                 <div>
