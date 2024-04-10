@@ -269,14 +269,13 @@ export default function NavbarHR() {
                             </Link>
                         </div>
 
-                        <div className="flex items-center">
-                            <div className="flex items-center ml-3">
+                        <div className="flex items-center ">
                                 <div>
                                     <Tooltip title="Account settings">
                                         <IconButton
                                             onClick={handleClick}
                                             size="small"
-                                            sx={{ ml: 2 }}
+                                            sx={{ ml: 1 }}
                                             aria-controls={open ? 'account-menu' : undefined}
                                             aria-haspopup="true"
                                             aria-expanded={open ? 'true' : undefined}
@@ -320,9 +319,10 @@ export default function NavbarHR() {
                                     transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                                     anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                                 >
-                                    <div className="grid grid-rows-2 px-5 py-2 cursor-default">
-                                        <p>{employeeName && employeeName}</p>
-                                        <strong>({role && role})</strong>
+                                    <div className=" px-5 py-2 cursor-default w-64">
+                                        <p>
+                                            {employeeName && employeeName} <strong>({role && role})</strong>
+                                        </p>
                                     </div>
                                     <hr className="mb-2" />
 
@@ -339,7 +339,6 @@ export default function NavbarHR() {
                                     </MenuItem>
                                 </Menu>
                             </div>
-                        </div>
                     </div>
                 </div>
             </nav>

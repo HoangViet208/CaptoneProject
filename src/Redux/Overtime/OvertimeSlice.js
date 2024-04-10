@@ -100,9 +100,9 @@ const authSlice = createSlice({
 export default authSlice.reducer
 export const OvertimeAction = authSlice.actions
 
-export const getOvertimeAsyncApi = createAsyncThunk('OvertimeReducer/getAsyncApi', async ({ name, status, date }) => {
+export const getOvertimeAsyncApi = createAsyncThunk('OvertimeReducer/getAsyncApi', async ({ name, status, date, id }) => {
     try {
-        const response = await GetOvertimeApi(name, status, date)
+        const response = await GetOvertimeApi(name, status, date, id)
         return response
     } catch (error) {
         const json = error.response.data

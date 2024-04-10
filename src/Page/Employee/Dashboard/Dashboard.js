@@ -201,7 +201,7 @@ export default function DashboardEmployee() {
             ? WorkSlotByEmployee.timeSlot.map((item, index) => ({
                   ...item,
                   number: index + 1,
-                  date: item.date && formatDate(item.date),
+                  date: <p> {item.date && formatDate(item.date)} {item.isOvertime ? "(Over Time)" : "(Worked)" } </p>,
                   startTime: item.startTime,
                   stopTime: item.stopTime,
                   duration: item.duration, // calculateDuration(item.startTime, item.stopTime),

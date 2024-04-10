@@ -255,7 +255,7 @@ export default function NotificationComponent(props) {
                                                   </>
                                               )}
                                                Request {item.requestType}
-                                              {item.requestType === 'Overtime'
+                                              {/* {item.requestType === 'Overtime'
                                                   ? ' on ' +
                                                     formatDate(item.fromDate) +
                                                     ' from ' +
@@ -269,7 +269,7 @@ export default function NotificationComponent(props) {
                                                     formatDate(item.fromDate) +
                                                     ' to ' +
                                                     formatDate(item.toDate)
-                                                  : ''}
+                                                  : ''} */}
                                               <br />
                                               <span
                                                   className={

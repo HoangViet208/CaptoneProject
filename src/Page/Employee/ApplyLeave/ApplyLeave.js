@@ -53,6 +53,7 @@ import Navbar from '../Navbar'
 //hooks
 import {
     calculateDays,
+    calculateTotalLeaveDays,
     formatDate,
     formattedDate,
     getDateRangeArray,
@@ -188,7 +189,7 @@ export default function ApplyLeave() {
                     }))
                     setReasonReject(res.payload.reasonReject)
                     setIsAction(2)
-                    setStatusRequest(3)
+                    setStatusRequest(res.payload.status)
                     setLeaveDaysDate(newDate)
                     setLeaveDays(res.payload.dateRange.length)
                     setChosenFileName(res.payload.linkFile)
@@ -485,10 +486,19 @@ export default function ApplyLeave() {
                                 : 'Full Day',
                     })
                 }
+             
+                const totalLeaveDate = newDate.filter((date) => date.type !== 'nonWorkingDay')
+                console.log("newDate", newDate, totalLeaveDate)
                 setLeaveDaysDate(newDate)
-                setLeaveDays(calculateDays(ranges.selection.startDate, ranges.selection.endDate))
+                setLeaveDays(calculateTotalLeaveDays(newDate))
             }
         }
+    }
+    const handleChangeLeaveDetail = (date, index) => {
+        const updatedDataList = [...leaveDaysDate]
+        updatedDataList[index].type = date
+        setLeaveDaysDate(updatedDataList)
+        setLeaveDays(calculateTotalLeaveDays(updatedDataList))
     }
     console.log('day', leaveDays, formik.values, ApplyLeaveByEmployee.length)
     const handleChangePage = (newPage) => {
@@ -506,19 +516,15 @@ export default function ApplyLeave() {
         setIsAction(1)
     }
     const handleClickOpenUpdate = (data) => {
+        console.log('AllEmployeeInDepartment status', data.status)
         if (data.status != 0) {
             SetErrorEdit(true)
         }
-        if (data.status == 3) {
-            setStatusRequest(3)
-        }
-        if (data.status == 2) {
-            setStatusRequest(3)
-        }
+        setStatusRequest(data.status)
         setReasonReject(data.reasonReject)
         setOpen(true)
         setRequestId(data.id)
-      
+
         setIsAction(2)
         console.log('data', data.startDate, parse(data.startDate, 'dd/MM/yyyy', new Date()))
         const newDate = data.dateRange.map((item, index) => ({
@@ -563,6 +569,7 @@ export default function ApplyLeave() {
         SetErrorEdit(false)
         setOpen(false)
         setRequestId()
+        setStatusRequest(-1)
         setIsAction(0)
         setSelectedImage()
         setOpenAccordionComponent(false)
@@ -609,7 +616,7 @@ export default function ApplyLeave() {
         return leaveType ? leaveType.name : null
     }
 
-    console.log('AllEmployeeInDepartment', AllEmployeeInDepartment)
+    console.log('AllEmployeeInDepartment', statusRequest)
     const viewModalContent = (
         <Fragment>
             <form onSubmit={formik.handleSubmit}>
@@ -621,7 +628,6 @@ export default function ApplyLeave() {
                             </div>
                             <FormControl fullWidth>
                                 <Select
-                                    id="outlined-basic"
                                     size="small"
                                     type="date"
                                     error={formik.touched.leaveType && formik.errors.leaveType ? true : undefined}
@@ -631,6 +637,7 @@ export default function ApplyLeave() {
                                     value={formik.values.leaveType}
                                     name="leaveType"
                                     variant="outlined"
+                                    disabled={statusRequest == 0 || statusRequest == -1 ? false : true}
                                 >
                                     {ApplyLeaveTypeList.map((item, index) => {
                                         return (
@@ -658,6 +665,7 @@ export default function ApplyLeave() {
                                     size="small"
                                     fullWidth
                                     onClick={handleClick}
+                                    disabled={statusRequest == 0 || statusRequest == -1 ? false : true}
                                     endAdornment={
                                         <InputAdornment position="end">
                                             <IconButton aria-label="toggle password visibility" edge="end">
@@ -726,16 +734,13 @@ export default function ApplyLeave() {
                                                         </strong>
                                                     ) : (
                                                         <CustomSelect
+                                                            disabled={statusRequest == 0 || statusRequest == -1 ? false : true}
                                                             labelId="demo-simple-select-label"
                                                             id="demo-simple-select"
                                                             className="outline-none text-blue-400"
                                                             variant="standard"
                                                             value={item.type}
-                                                            onChange={(e) => {
-                                                                const updatedDataList = [...leaveDaysDate]
-                                                                updatedDataList[index].type = e.target.value
-                                                                setLeaveDaysDate(updatedDataList)
-                                                            }}
+                                                            onChange={(e) => handleChangeLeaveDetail(e.target.value, index)}
                                                         >
                                                             <MenuItem value={'Full Day'}>Full Day</MenuItem>
                                                             <MenuItem value={'Morning'}>Morning</MenuItem>
@@ -757,7 +762,6 @@ export default function ApplyLeave() {
                         <div className="my-2">
                             <Button
                                 startIcon={<VisibilityIcon />}
-                                loadingPosition="start"
                                 variant="contained"
                                 color="error"
                                 sx={{
@@ -855,7 +859,8 @@ export default function ApplyLeave() {
                             </div>
                             <FormControl fullWidth>
                                 <Select
-                                    id="outlined-basic"
+                                    disabled={statusRequest == 0 || statusRequest == -1 ? false : true}
+                                    
                                     size="small"
                                     error={formik.touched.Substitute && formik.errors.Substitute ? true : undefined}
                                     onChange={formik.handleChange}
@@ -882,8 +887,9 @@ export default function ApplyLeave() {
                             <FormControl fullWidth>
                                 <TextField
                                     multiline
+                                    disabled={statusRequest == 0 || statusRequest == -1 ? false : true}
                                     rows={6}
-                                    id="outlined-basic"
+                                    
                                     size="small"
                                     error={formik.touched.leaveReason && formik.errors.leaveReason ? true : undefined}
                                     onChange={formik.handleChange}
@@ -904,7 +910,7 @@ export default function ApplyLeave() {
                             </div>
                             <input
                                 className="hidden w-full" // Ẩn input mặc định
-                                type="file"
+                                type={statusRequest == 0 ? 'file' : undefined}
                                 ref={fileInputRef}
                                 onChange={handleFileInputChange}
                             />
@@ -916,7 +922,7 @@ export default function ApplyLeave() {
                             </button>
                             <div>
                                 <button
-                                    onClick={(e) => handleBrowseButtonClick(e)}
+                                    onClick={ (e) => handleBrowseButtonClick(e)}
                                     className="cursor-pointer  block rounded-md h-10 text-left w-full pl-[90px] font-medium text-gray-600  border border-gray-300   bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
                                     variant="contained"
                                 >
@@ -936,7 +942,7 @@ export default function ApplyLeave() {
                                     </a>
                                 )}
                             </div>
-                            {statusRequest == 3 ? (
+                            {statusRequest == 3 || statusRequest == 2 ? (
                                 <div className="my-2">
                                     <div className="mb-1">
                                         <strong className=" text-gray-500">Reason Cancel Request</strong>{' '}
@@ -945,7 +951,7 @@ export default function ApplyLeave() {
                                         <TextField
                                             multiline
                                             rows={6}
-                                            id="outlined-basic"
+                                            
                                             size="small"
                                             disabled
                                             className="mt-2 w-full"
@@ -972,7 +978,6 @@ export default function ApplyLeave() {
                                 disabled={error || !errorImport || errorEdit}
                                 type="submit"
                                 loading={isLoading}
-                                loadingPosition="start"
                                 variant="contained"
                                 color="primary"
                                 sx={{

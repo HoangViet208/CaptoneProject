@@ -163,7 +163,7 @@ export default function ManageLeave() {
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(GetApplyLeaveTypeAsyncApi())
-        dispatch(getApplyLeaveAsyncApi({ name: search, status: valueTabs == 4 ? -1 : valueTabs }))
+        dispatch(getApplyLeaveAsyncApi({ name: search, status: valueTabs == 4 ? -1 : valueTabs, id: employeeId }))
         setPage(0)
         return () => {}
     }, [search, valueTabs])
@@ -328,7 +328,7 @@ export default function ManageLeave() {
             .then((response) => {
                 setLoadingButton(false)
                 if (response.meta.requestStatus == 'fulfilled') {
-                    dispatch(getApplyLeaveAsyncApi({ name: search, status: valueTabs == 4 ? -1 : valueTabs }))
+                    dispatch(getApplyLeaveAsyncApi({ name: search, status: valueTabs == 4 ? -1 : valueTabs, id: employeeId }))
                     showSnackbar({
                         severity: 'success',
                         children: 'Approved request',
@@ -383,7 +383,7 @@ export default function ManageLeave() {
             .then((response) => {
                 if (response.meta.requestStatus == 'fulfilled') {
                     setLoadingRJButton(false)
-                    dispatch(getApplyLeaveAsyncApi({ name: search, status: valueTabs == 4 ? -1 : valueTabs }))
+                    dispatch(getApplyLeaveAsyncApi({ name: search, status: valueTabs == 4 ? -1 : valueTabs, id: employeeId }))
                     showSnackbar({
                         severity: 'success',
                         children: 'Reject request',
@@ -413,6 +413,13 @@ export default function ManageLeave() {
             .catch((error) => {
                 setLoadingRJButton(false)
             })
+    }
+    console.log("newDate tổng" ,leaveDaysDate)
+    const handleChangeLeaveDetail = (date, index) => {
+        const updatedDataList = [...leaveDaysDate]
+        updatedDataList[index].type = date
+        setLeaveDaysDate(updatedDataList)
+        console.log("newDate change" ,leaveDaysDate, updatedDataList)
     }
     console.log('ApplyLeaveList', ApplyLeaveList)
     const createRows = () => {
@@ -484,6 +491,12 @@ export default function ManageLeave() {
     }
 
     const rows = createRows()
+
+    function getNameById(id) {
+        console.log('nguid', id)
+        const leaveType = ApplyLeaveTypeList.find((item) => item.id === id)
+        return leaveType ? leaveType.name : null
+    }
 
     const tabsData = [
         {
@@ -702,11 +715,7 @@ export default function ManageLeave() {
                                                                     className="outline-none text-blue-400"
                                                                     variant="standard"
                                                                     value={item.type}
-                                                                    onChange={(e) => {
-                                                                        const updatedDataList = [...leaveDaysDate]
-                                                                        updatedDataList[index].type = e.target.value
-                                                                        setLeaveDaysDate(updatedDataList)
-                                                                    }}
+                                                                    onChange={(e) => handleChangeLeaveDetail(e.target.value, index)}
                                                                 >
                                                                     <MenuItem value={'Full Day'}>Full Day</MenuItem>
                                                                     <MenuItem value={'Morning'}>Morning</MenuItem>
@@ -738,36 +747,38 @@ export default function ManageLeave() {
                                             alignItems: 'center',
                                             width: '100%',
                                         }}
+                                        onClick={handleopenAccordionComponent}
                                     >
                                         <span>Manage Leave</span>
                                         <span></span>
                                     </Button>
                                     <div className={openAccordionComponent == false ? 'hidden' : 'h-full'}>
-                                        <h2 className="text-center text-xl my-2">Leave Information</h2>
-                                        <div className="grid grid-cols-2 text-center ">
-                                            <div className="bg-yellow-500 ">Leave Type</div>
-                                            {/* <div className="bg-red-500 ">{selectedLeaveTypeName}</div> */}
-                                            <div className="bg-red-500 ">Sick Leave</div>
-                                        </div>
-                                        <div className="grid grid-cols-2 my-1 ">
-                                            <div className="text-left ">Standard Leave Days of Current Year</div>
-                                            <div className=" text-center ">365</div>
-                                        </div>
-                                        <div className="grid grid-cols-2 my-1 ">
-                                            <div className=" text-left">
-                                                Standard Leave Days Transferred from Previous Year
-                                            </div>
-                                            <div className=" text-center">0</div>
-                                        </div>
-                                        <div className="grid grid-cols-2 my-1 ">
-                                            <div className=" text-left">Total Used Leave Days in Previous Year</div>
-                                            <div className="text-center ">0</div>
-                                        </div>
-                                        <div className="grid grid-cols-2 my-1">
-                                            <div className="text-left ">Remaining Unused Leave Days</div>
-                                            <div className="text-center ">365</div>
-                                        </div>
+                                <h2 className="text-center text-xl my-2">Leave Information</h2>
+                                <div className="grid grid-cols-2 text-center ">
+                                    <div className="bg-yellow-500 ">Leave Type</div>
+                                    <div className="bg-red-500 ">
+                                        {formik.values.leaveType &&
+                                            ApplyLeaveTypeList &&
+                                            getNameById(formik.values.leaveType)}
                                     </div>
+                                </div>
+                                <div className="grid grid-cols-2 my-1 ">
+                                    <div className="text-left ">Standard Leave Days of Current Year</div>
+                                    <div className=" text-center ">365</div>
+                                </div>
+                                <div className="grid grid-cols-2 my-1 ">
+                                    <div className=" text-left">Standard Leave Days Transferred from Previous Year</div>
+                                    <div className=" text-center">0</div>
+                                </div>
+                                <div className="grid grid-cols-2 my-1 ">
+                                    <div className=" text-left">Total Used Leave Days in Previous Year</div>
+                                    <div className="text-center ">0</div>
+                                </div>
+                                <div className="grid grid-cols-2 my-1">
+                                    <div className="text-left ">Remaining Unused Leave Days</div>
+                                    <div className="text-center ">365</div>
+                                </div>
+                            </div>
                                 </div>
 
                                 <div className="my-2">
@@ -993,7 +1004,7 @@ export default function ManageLeave() {
                         severity: 'success',
                         children: 'Cancel request',
                     })
-                    dispatch(getApplyLeaveAsyncApi({ name: search, status: valueTabs == 4 ? -1 : valueTabs }))
+                    dispatch(getApplyLeaveAsyncApi({ name: search, status: valueTabs == 4 ? -1 : valueTabs, id: employeeId }))
                     setOpen(false)
                     setErrorReject(true)
                     setRejectReason("")

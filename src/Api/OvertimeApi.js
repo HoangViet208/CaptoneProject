@@ -2,10 +2,10 @@ import axios from 'axios'
 
 const API_URL = process.env.REACT_APP_API_URL
 
-const GetOvertimeApi = async (name, status, date) => {
+const GetOvertimeApi = async (name, status, date, id) => {
     try {
         const response = await axios.get(
-            `${API_URL}/RequestOverTime/get-all-request-over-time?nameSearch=${name}&status=${status}&month=${date}`
+            `${API_URL}/RequestOverTime/get-all-request-over-time?nameSearch=${name}&status=${status}&month=${date}&employeeId=${id}`
         )
         return response.data
     } catch (error) {

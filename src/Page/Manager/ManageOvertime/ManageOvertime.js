@@ -61,7 +61,7 @@ const columnsReject = [
     { id: 'dayAndTime', label: 'Date', minWidth: 150, align: 'left' },
     { id: 'files', label: 'File', minWidth: 100, align: 'left' },
     { id: 'applied', label: 'Applied On', minWidth: 50, align: 'center' },
-    { id: 'reason', label: 'Reason', minWidth: 50, align: 'center' },
+    { id: 'reasonReject', label: 'Reject Reason', minWidth: 50, align: 'center' },
 ]
 const columnsAll = [
     { id: 'number', label: 'Number', minWidth: 50, align: 'center' },
@@ -70,7 +70,7 @@ const columnsAll = [
     { id: 'files', label: 'File', minWidth: 50, align: 'left' },
     { id: 'applied', label: 'Applied On', minWidth: 50, align: 'center' },
     { id: 'status', label: 'Status', minWidth: 50, align: 'left' },
-    { id: 'reason', label: 'Reason', minWidth: 100, align: 'center' },
+    { id: 'reasonReject', label: 'Reject Reason', minWidth: 100, align: 'center' },
     { id: 'actionAll', label: 'Actions', minWidth: 50, maxWidth: 50, align: 'left' },
 ]
 
@@ -110,6 +110,7 @@ export default function ManageOvertime() {
                 name: search,
                 status: valueTabs == 4 ? -1 : valueTabs,
                 date: formatDateExact(selectedDate),
+                id: UserParseId
             })
         )
         return () => {}
@@ -209,6 +210,7 @@ export default function ManageOvertime() {
                             name: search,
                             status: valueTabs == 4 ? -1 : valueTabs,
                             date: formatDateExact(selectedDate),
+                            id: UserParseId
                         })
                     )
                     showSnackbar({
@@ -238,6 +240,7 @@ export default function ManageOvertime() {
                             name: search,
                             status: valueTabs == 4 ? -1 : valueTabs,
                             date: formatDateExact(selectedDate),
+                            id: UserParseId
                         })
                     )
                     showSnackbar({
@@ -270,6 +273,7 @@ export default function ManageOvertime() {
                             name: search,
                             status: valueTabs == 4 ? -1 : valueTabs,
                             date: formatDateExact(selectedDate),
+                            id: UserParseId
                         })
                     )
                     showSnackbar({

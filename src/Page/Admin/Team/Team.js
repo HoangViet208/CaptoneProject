@@ -431,6 +431,7 @@ export default function Team() {
                 clickOpenFalse={clickOpenFalse}
                 viewTitle={isAction == 1 ? 'Add Team' : isAction == 2 ? 'Update Team' : ''}
                 viewContent={viewModalContent}
+                size="md"
             />
 
             <div className="sm:ml-64 pt-12 h-screen bg-gray-50">

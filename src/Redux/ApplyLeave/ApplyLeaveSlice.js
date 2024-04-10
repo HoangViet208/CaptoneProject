@@ -126,9 +126,9 @@ const authSlice = createSlice({
 export default authSlice.reducer
 export const ApplyLeaveAction = authSlice.actions
 
-export const getApplyLeaveAsyncApi = createAsyncThunk('ApplyLeaveReducer/getAsyncApi', async ({ name, status }) => {
+export const getApplyLeaveAsyncApi = createAsyncThunk('ApplyLeaveReducer/getAsyncApi', async ({ name, status, id }) => {
     try {
-        const response = await GetApplyLeaveApi(name, status)
+        const response = await GetApplyLeaveApi(name, status, id)
         return response
     } catch (error) {
         const json = error.response.data

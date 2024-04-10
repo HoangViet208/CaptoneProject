@@ -84,15 +84,32 @@ export const calculateDays = (startDate, endDate) => {
     const startDateObject = new Date(startDate)
     const endDateObject = new Date(endDate)
 
-    // Tính số mili giây trong khoảng thời gian (bao gồm cả ngày bắt đầu và kết thúc)
     const timeDiff = endDateObject.getTime() - startDateObject.getTime() + 24 * 60 * 60 * 1000 // Thêm 1 ngày
 
-    // Chuyển đổi số mili giây thành số ngày (1 ngày = 86400000 mili giây)
+
     const daysDiff = timeDiff / (1000 * 60 * 60 * 24)
 
     // Số ngày trong khoảng thời gian (bao gồm cả ngày bắt đầu và kết thúc)
     return Math.abs(daysDiff) // Sử dụng Math.abs để đảm bảo kết quả luôn dương
 }
+export const calculateTotalLeaveDays = (leaveDaysDate) => {
+    let totalLeaveDays = 0;
+
+    leaveDaysDate.forEach(day => {
+        if (day.type === "nonWorkingDay") {
+            // Bỏ qua ngày nghỉ
+            return;
+        } else if (day.type === "Morning" || day.type === "Afternoon") {
+            // Nếu type là Morning hoặc Afternoon, thêm 0.5 ngày
+            totalLeaveDays += 0.5;
+        } else {
+            // Ngày là Full Day, thêm 1 ngày
+            totalLeaveDays += 1;
+        }
+    });
+
+    return totalLeaveDays;
+};
 
 export const getDayOfWeek = (dateString) => {
     const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']

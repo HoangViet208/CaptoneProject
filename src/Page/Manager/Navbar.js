@@ -61,6 +61,9 @@ export default function NavbarManager() {
     const [isLoading, setIsLoading] = useState(false)
     const [dataNotification, setDataNotification] = useState([])
    
+    const employeeIdString = localStorage.getItem('employeeId')
+    const employeeId = JSON.parse(employeeIdString)
+
     const fetchDataFromDatabase = () => {
         setIsLoading(true)
         const db = getDatabase(app)
@@ -69,7 +72,13 @@ export default function NavbarManager() {
         onValue(dbRef, (snapshot) => {
             if (snapshot.exists()) {
                 setIsLoading(false)
-                const data = Object.entries(snapshot.val()).map(([id, value]) => ({ id, ...value }));
+                
+                const data = Object.entries(snapshot.val()).map(([id, value]) => {
+                    if (value.employeeDeciderId == employeeId) {
+                        return { id, ...value };
+                    }
+                    return null; 
+                }).filter(item => item !== null);
                 setDataNotification(data)
             } else {
                 setIsLoading(false)

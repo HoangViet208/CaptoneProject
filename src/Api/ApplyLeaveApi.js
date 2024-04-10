@@ -2,10 +2,10 @@ import axios from 'axios'
 
 const API_URL = process.env.REACT_APP_API_URL
 
-const GetApplyLeaveApi = async (name, status) => {
+const GetApplyLeaveApi = async (name, status, id) => {
     try {
         const response = await axios.get(
-            `${API_URL}/RequestLeave/get-all-request-leave-of-all-employee?nameSearch=${name}&status=${status}`
+            `${API_URL}/RequestLeave/get-all-request-leave-of-all-employee?nameSearch=${name}&status=${status}&employeeId=${id}`
         )
         return response.data
     } catch (error) {
