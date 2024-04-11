@@ -53,7 +53,7 @@ BootstrapDialogTitle.propTypes = {
 }
 
 export default function PopupConfirm(props) {
-    const { open, clickOpenFalse, clickDelete, content, witdhModal, isError } = props
+    const { open, clickOpenFalse, clickDelete, content, witdhModal, isError, viewContent, viewTitle } = props
 
     const handleClose = () => {
         clickOpenFalse(false)
@@ -79,18 +79,29 @@ export default function PopupConfirm(props) {
                 }}
             >
                 <BootstrapDialogTitle className="text-gray-400" id="customized-dialog-title" onClose={handleClose}>
-                    Remove Confirm
+                    {viewTitle ? viewTitle : 'Remove Confirm'}
                 </BootstrapDialogTitle>
                 <DialogContent dividers>
-                    <h2 className="font-bold text-xl">Are you sure to remove this ?</h2>
-                    <p className="mb-5 text-gray-400">You can't undo this action once you removed this.</p>
-                    {content}
+                    {viewContent ? (
+                        viewContent
+                    ) : (
+                        <React.Fragment>
+                            <h2 className="font-bold text-xl">Are you sure to remove this ?</h2>
+                            <p className="mb-5 text-gray-400">You can't undo this action once you removed this.</p>
+                            {content}
+                        </React.Fragment>
+                    )}
                 </DialogContent>
                 <DialogActions className="my-2">
                     <Button variant="contained" color="inherit" onClick={handleClose}>
                         Cancel
                     </Button>
-                    <Button disabled={isError == true ? true : false} variant="contained" color="error" onClick={handledelete}>
+                    <Button
+                        disabled={isError == true ? true : false}
+                        variant="contained"
+                        color="error"
+                        onClick={handledelete}
+                    >
                         Remove
                     </Button>
                 </DialogActions>

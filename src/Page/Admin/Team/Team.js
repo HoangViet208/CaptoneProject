@@ -63,10 +63,10 @@ const columns = [
 ]
 const columnsModal = [
     { id: 'number', label: 'Number', minWidth: 50, maxWidth: 50, align: 'center' },
-    { id: 'email', label: 'Email', minWidth: 50, maxWidth: 100, align: 'left' },
-    { id: 'role', label: 'Role', minWidth: 50, maxWidth: 100, align: 'left' },
-    { id: 'info', label: 'Name', minWidth: 50, maxWidth: 100, align: 'left' },
-   
+    { id: 'email', label: 'Email', minWidth: 100, maxWidth: 200, align: 'left' },
+    { id: 'role', label: 'Role', minWidth: 100, maxWidth: 200, align: 'left' },
+    { id: 'info', label: 'Name', minWidth: 100, maxWidth: 200, align: 'left' },
+    { id: 'action', label: 'Actions', minWidth: 50, align: 'left' },
     // { id: 'manager', label: 'Manager', minWidth: 200, align: 'center' },
 ]
 
@@ -100,12 +100,12 @@ export default function Team() {
     //setting redux
     const { EmployeeList } = useSelector((state) => state.employee)
     const { DepartmentList, DepartmentDetail } = useSelector((state) => state.department)
+    const [teamData, setTeamData] = useState([])
     const dispatch = useDispatch()
     useEffect(() => {
-        dispatch(getDepartmentAsyncApi())
-        dispatch(getEmployeeAsyncApi({ roleId: 'c4345666-4d7b-11ee-be56-0242ac120002', departmentId: '', name: '' }))
+        dispatch(getDepartmentAsyncApi())   
         return () => {}
-    }, [])
+    }, [openConfirm])
     const initialValues = {
         name: '',
         managerName: '',
@@ -218,7 +218,13 @@ export default function Team() {
     const handleClickOpenUpdate = (data) => {
         setOpen(true)
         setIsAction(2)
-        dispatch(getDepartmentByIdAsyncApi(data.id)).then((res) => {})
+        dispatch(getDepartmentByIdAsyncApi(data.id)).then((response) => {
+            console.log("ngu ne", response.payload)
+            setTeamData(response.payload);
+        })
+        .catch((error) => {
+            console.error('Error fetching team data:', error);
+        });
         console.log('data', data)
         formik.setValues({
             name: data.name,
@@ -240,11 +246,18 @@ export default function Team() {
             managerName: '',
         })
     }
-
+     console.log("chay ne", teamData )
+     
     const handleClickOpenConfirm = (data) => {
         setOpenConfirm(true)
         setIdDelete(data)
     }
+    const handleClickDeleteMemberInTeam = (data, index) => {
+        const updatedDataList = [...teamData];
+        updatedDataList.splice(index, 1); 
+        setTeamData(updatedDataList);
+    }
+    
     const clickOpenFalseConfirm = (event) => {
         setOpenConfirm(false)
         setIdDelete()
@@ -277,7 +290,7 @@ export default function Team() {
             .catch((error) => {})
     }
     const createRowsModal = () => {
-        return DepartmentDetail.map((item, index) => ({
+        return teamData.map((item, index) => ({
             ...item,
 
             info: (
@@ -289,7 +302,14 @@ export default function Team() {
             ),
             email: item.email,
             number: index + 1,
-            role: item.roleName
+            role: item.roleName,
+            action:  <div className="flex gap-2 justify-center">
+            <Tooltip onClick={() => handleClickDeleteMemberInTeam(item.id, index)} title="Delete">
+                <IconButton>
+                    <DeleteIcon />
+                </IconButton>
+            </Tooltip>
+        </div>
         }))
     }
     const rowsModal = createRowsModal()
@@ -299,6 +319,7 @@ export default function Team() {
                 <div className=" gap-5 py-4 px-8 mb-5 lg:my-0">
                     <div className="my-2">
                         <TextField
+                            disabled={isAction == 2 ? true : false}
                             id="outlined-basic"
                             size="small"
                             error={formik.touched.name && formik.errors.name ? true : undefined}
@@ -324,6 +345,7 @@ export default function Team() {
                             rows={rowsModal}
                             columns={columnsModal}
                             page={pageModal}
+                            rowsPerPageOptions={[5, 25, 50]}
                             rowsPerPage={rowsPerPageModal}
                             handleChangePage={handleChangePageModal}
                             handleChangeRowsPerPage={handleChangeRowsPerPageModal}

@@ -110,7 +110,7 @@ export default function ManageOvertime() {
                 name: search,
                 status: valueTabs == 4 ? -1 : valueTabs,
                 date: formatDateExact(selectedDate),
-                id: UserParseId
+                id: UserParseId,
             })
         )
         return () => {}
@@ -210,7 +210,7 @@ export default function ManageOvertime() {
                             name: search,
                             status: valueTabs == 4 ? -1 : valueTabs,
                             date: formatDateExact(selectedDate),
-                            id: UserParseId
+                            id: UserParseId,
                         })
                     )
                     showSnackbar({
@@ -240,7 +240,7 @@ export default function ManageOvertime() {
                             name: search,
                             status: valueTabs == 4 ? -1 : valueTabs,
                             date: formatDateExact(selectedDate),
-                            id: UserParseId
+                            id: UserParseId,
                         })
                     )
                     showSnackbar({
@@ -266,14 +266,14 @@ export default function ManageOvertime() {
         }
         dispatch(CancelOvertimeAsyncApi(Updatedata))
             .then((response) => {
-                setLoadingRJButton(true)
+                setLoadingRJButton(false)
                 if (response.meta.requestStatus == 'fulfilled') {
                     dispatch(
                         getOvertimeAsyncApi({
                             name: search,
                             status: valueTabs == 4 ? -1 : valueTabs,
                             date: formatDateExact(selectedDate),
-                            id: UserParseId
+                            id: UserParseId,
                         })
                     )
                     showSnackbar({
@@ -286,7 +286,7 @@ export default function ManageOvertime() {
                 }
             })
             .catch((error) => {
-                setLoadingRJButton(true)
+                setLoadingRJButton(false)
             })
     }
     const createRows = () => {
@@ -523,7 +523,22 @@ export default function ManageOvertime() {
                 clickOpenFalse={clickOpenFalse}
                 clickDelete={valueTabs == 4 ? handleClickCancel : handleClickReject}
                 isError={errorReject}
-                content={RejectContent}
+                viewTitle={valueTabs == 4 ? 'Cancel Confirm' : 'Reject Confirm'}
+                viewContent={
+                    valueTabs == 4 ? (
+                        <Fragment >
+                            <h2 className="font-bold text-xl">Are you sure to cancel this ?</h2>
+                            <p className="mb-5 text-gray-400">You can't undo this action once you canceled this.</p>
+                           {RejectContent}
+                        </Fragment>
+                    ) : (
+                        <Fragment>
+                            <h2 className="font-bold text-xl">Are you sure to reject this ?</h2>
+                            <p className="mb-5 text-gray-400">You can't undo this action once you rejected this.</p>
+                        {RejectContent}
+                        </Fragment>
+                    )
+                }
             />
             <div className="sm:ml-64 pt-12 h-screen bg-gray-50">
                 <div className="px-12 py-6">

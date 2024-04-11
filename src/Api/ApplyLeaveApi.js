@@ -70,11 +70,23 @@ export const PutApplyLeaveApi = async (id, body) => {
         throw error
     }
 }
+
 export const PutCancelApprovedLeaveForHRApi = async (body) => {
     try {
         const response = await axios.patch(
             `${API_URL}/RequestLeave/cancel-approved-leave-request-for-hr`, body
             
+        )
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
+export const PutRejectLeaveApi = async (body) => {
+    try {
+        const response = await axios.patch(
+            `${API_URL}/RequestLeave/reject-leave-request`, body
         )
         return response.data
     } catch (error) {

@@ -9,6 +9,7 @@ import GetApplyLeaveApi, {
     PutApproveApplyLeaveApi,
     GetApplyLeaveByRequestIdApi,
     PutCancelApprovedLeaveForHRApi,
+    PutRejectLeaveApi,
 } from '../../Api/ApplyLeaveApi'
 import { GetAllRequestApi } from '../../Api/RequestApi'
 
@@ -113,6 +114,10 @@ const authSlice = createSlice({
             .addCase(PutCancelApprovedLeaveForHRAsyncApi.fulfilled, (state, action) => {})
             .addCase(PutCancelApprovedLeaveForHRAsyncApi.rejected, (state, action) => {})
         builder
+            .addCase(PutRejectLeaveAsyncApi.pending, (state) => {})
+            .addCase(PutRejectLeaveAsyncApi.fulfilled, (state, action) => {})
+            .addCase(PutRejectLeaveAsyncApi.rejected, (state, action) => {})
+        builder
             .addCase(PutApproveApplyLeaveAsyncApi.pending, (state) => {})
             .addCase(PutApproveApplyLeaveAsyncApi.fulfilled, (state, action) => {})
             .addCase(PutApproveApplyLeaveAsyncApi.rejected, (state, action) => {})
@@ -170,6 +175,7 @@ export const getApplyLeaveByIdAsyncApi = createAsyncThunk('ApplyLeaveReducer/get
         throw errors[0].errorMessage
     }
 })
+
 export const GetApplyLeaveByRequestIdAsyncApi = createAsyncThunk(
     'ApplyLeaveReducer/GetApplyLeaveByRequestIdApi',
     async (id) => {
@@ -231,6 +237,17 @@ export const PutCancelApprovedLeaveForHRAsyncApi = createAsyncThunk(
     }
 )
 
+export const PutRejectLeaveAsyncApi = createAsyncThunk('ApplyLeaveReducer/PutRejectLeaveApi', async (body) => {
+    try {
+        const response = await PutRejectLeaveApi(body)
+        return response.data // Trả về dữ liệu từ response nếu thành công
+    } catch (error) {
+        const json = error.response.data
+        const errors = json[''].errors
+        throw errors[0].errorMessage
+    }
+})
+
 export const PutApproveApplyLeaveAsyncApi = createAsyncThunk(
     'ApplyLeaveReducer/PutApproveApplyLeaveApi',
     async (data) => {
@@ -246,7 +263,7 @@ export const PutApproveApplyLeaveAsyncApi = createAsyncThunk(
 )
 export const DeleteApplyLeaveAsyncApi = createAsyncThunk('ApplyLeaveReducer/deleteAsyncApi', async (data) => {
     try {
-        const response = await DeleteApplyLeaveApi(data.idDelete , data.UserParseId)
+        const response = await DeleteApplyLeaveApi(data.idDelete, data.UserParseId)
         return response
     } catch (error) {
         const json = error.response.data

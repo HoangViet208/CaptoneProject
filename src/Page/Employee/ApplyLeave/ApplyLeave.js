@@ -224,7 +224,7 @@ export default function ApplyLeave() {
         leaveReason: '',
         leaveType: '',
         leaveDate: '',
-        Substitute: '',
+        substitute: '',
     }
     const formik = useFormik({
         initialValues: initialValues,
@@ -276,6 +276,7 @@ export default function ApplyLeave() {
                                 reason: values.leaveReason,
                                 linkFile: downloadURL,
                                 dateRange: transformedDates,
+                                supportEmployeeId:  values.substitute
                             }
                             const Updatedata = {
                                 id: RequestId,
@@ -285,6 +286,7 @@ export default function ApplyLeave() {
                                 reason: values.leaveReason,
                                 linkFile: downloadURL,
                                 dateRange: transformedDates,
+                                supportEmployeeId:  values.substitute
                             }
                             console.log('thanh cong', data, isAction)
                             if (isAction == 1) {
@@ -310,6 +312,7 @@ export default function ApplyLeave() {
                                                 leaveReason: '',
                                                 leaveType: '',
                                                 leaveDate: '',
+                                                substitute: '',
                                             })
                                             setDateRange([
                                                 {
@@ -356,6 +359,7 @@ export default function ApplyLeave() {
                                                 leaveReason: '',
                                                 leaveType: '',
                                                 leaveDate: '',
+                                                substitute: '',
                                             })
                                             setOpenAccordionComponent(false)
                                             setSelectedImage()
@@ -430,6 +434,7 @@ export default function ApplyLeave() {
                                 leaveReason: '',
                                 leaveType: '',
                                 leaveDate: '',
+                                Substitute: ' ',
                             })
                             setSelectedImage()
                             setDateRange([
@@ -452,7 +457,7 @@ export default function ApplyLeave() {
             }
         },
     })
-
+    
     const handleDateChange = (ranges) => {
         setDateRange([ranges.selection])
         setLeaveErorr()
@@ -546,6 +551,7 @@ export default function ApplyLeave() {
             leaveReason: data.reason,
             leaveType: data.leaveTypeId,
             leaveDate: '',
+            substitute: data.supportEmployeeId,
         })
     }
     const handleFileInputChange = (event) => {
@@ -581,6 +587,7 @@ export default function ApplyLeave() {
             leaveReason: '',
             leaveType: '',
             leaveDate: '',
+            substitute: '',
         })
         setDateRange([
             {
@@ -862,11 +869,11 @@ export default function ApplyLeave() {
                                     disabled={statusRequest == 0 || statusRequest == -1 ? false : true}
                                     
                                     size="small"
-                                    error={formik.touched.Substitute && formik.errors.Substitute ? true : undefined}
+                                    error={formik.touched.substitute && formik.errors.substitute ? true : undefined}
                                     onChange={formik.handleChange}
                                     className="mt-2 w-full"
-                                    value={formik.values.Substitute}
-                                    name="Substitute"
+                                    value={formik.values.substitute}
+                                    name="substitute"
                                     variant="outlined"
                                     IconComponent={() => <PersonIcon className="mr-3" />}
                                 >
@@ -910,7 +917,7 @@ export default function ApplyLeave() {
                             </div>
                             <input
                                 className="hidden w-full" // Ẩn input mặc định
-                                type={statusRequest == 0 ? 'file' : undefined}
+                                type={statusRequest == 0 || statusRequest == -1 ? 'file' : undefined}
                                 ref={fileInputRef}
                                 onChange={handleFileInputChange}
                             />
@@ -1112,6 +1119,7 @@ export default function ApplyLeave() {
                 setLoadingButton(false)
             })
     }
+    console.log('chay', formik.values.substitute)
     return (
         <div>
             <Navbar />

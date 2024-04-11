@@ -83,6 +83,18 @@ export const CancelOvertimeApi = async (body) => {
     }
 }
 
+export const RejectOvertimeApi = async (body) => {
+    try {
+        const response = await axios.patch(
+            `${API_URL}/RequestOverTime/cancel-approved-OT-request-for-hr`,
+            body
+        )
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
 export const DeleteOvertimeApi = async (requestId, employeeIdDecider) => {
     try {
         const response = await axios.delete(`${API_URL}/RequestOverTime/delete-nonapproved-OT-request-for-employee?requestId=${requestId}&employeeIdDecider=${employeeIdDecider}`)

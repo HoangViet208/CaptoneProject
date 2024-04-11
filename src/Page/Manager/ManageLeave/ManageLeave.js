@@ -50,6 +50,7 @@ import {
     PutApplyLeaveAsyncApi,
     PutApproveApplyLeaveAsyncApi,
     PutCancelApprovedLeaveForHRAsyncApi,
+    PutRejectLeaveAsyncApi,
     getApplyLeaveAsyncApi,
 } from '../../../Redux/ApplyLeave/ApplyLeaveSlice'
 import { useDispatch, useSelector } from 'react-redux'
@@ -375,11 +376,11 @@ export default function ManageLeave() {
     const handleClickReject = () => {
         setLoadingRJButton(true)
         const Updatedata = {
-            id: requestId,
-            status: 2,
-            reasonReject: rejectReason,
+            requestId: requestId,
+            reason: rejectReason,
+            employeeIdDecider: employeeId,
         }
-        dispatch(PutApplyLeaveAsyncApi({ id: employeeId, body: Updatedata }))
+        dispatch(PutRejectLeaveAsyncApi(Updatedata))
             .then((response) => {
                 if (response.meta.requestStatus == 'fulfilled') {
                     setLoadingRJButton(false)
