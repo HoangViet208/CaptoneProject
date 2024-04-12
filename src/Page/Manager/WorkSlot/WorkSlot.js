@@ -123,27 +123,27 @@ export default function WorkSlot() {
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(getDepartmentAsyncApi()).then((res) => {
-            dispatch(
-                GetWorkedSlotAsyncApi({
-                    id: res.payload[0].id,
-                    month: formatDateExact(currentMonth),
-                })
-            )
+            // dispatch(
+            //     GetWorkedSlotAsyncApi({
+            //         id: res.payload[0].id,
+            //         month: formatDateExact(currentMonth),
+            //     })
+            // )
             setDepartment(res.payload[0].id)
         })
 
         return () => {}
     }, [])
     useEffect(() => {
-            Department &&
-                    dispatch(
-                        GetWorkedSlotAsyncApi({
-                            id: Department,
-                            month: formatDateExact(currentMonth),
-                        })
-                    )
-                    setDepartment(Department)
-                
+        Department &&
+            dispatch(
+                GetWorkedSlotAsyncApi({
+                    id: Department,
+                    month: formatDateExact(currentMonth),
+                })
+            )
+        setDepartment(Department)
+
         return () => {}
     }, [currentMonth, Department])
 
@@ -266,12 +266,35 @@ export default function WorkSlot() {
             // Xử lý hiển thị các sự kiện khác
             return (
                 <div className="text-black">
-                    <b>{eventInfo.timeText}</b>
+                    {/* <b>{eventInfo.timeText}</b>
                     <div className="flex my-2 gap-2 bg-none items-center mx-auto ml-4">
-                        <button className="rounded-full bg-green-600 w-2 h-2"></button>
-                        <p className=" ">{eventInfo.event.title} </p>
-                        <p className=" ">{eventInfo.event.extendedProps.time}</p>
-                    </div>
+                        <button
+                            className={`rounded-full ${
+                                eventInfo.event.title == 'Working'
+                                    ? 'bg-green-600'
+                                    : eventInfo.event.title == 'Public Holiday'
+                                    ? 'bg-red-600'
+                                    : 'bg-gray-600'
+                            }   w-2 h-2`}
+                        ></button>
+                        <p className=" ">
+                            <strong>Title : </strong>
+                            {eventInfo.event.title}{' '}
+                        </p>
+                    </div> */}
+                    {eventInfo.event.title == 'Working' ? (
+                        <div className="flex bg-blue-500 p-2 rounded-md my-2 gap-2 bg-none items-center mx-auto">
+                            <p className="text-white">{eventInfo.event.extendedProps.time}</p>
+                        </div>
+                    ) : eventInfo.event.title == 'Public Holiday' ? (
+                        <div className="flex bg-red-500 p-2 rounded-md my-2 gap-2 bg-none items-center mx-auto ">
+                            <p className="text-white">{eventInfo.event.title}</p>
+                        </div>
+                    ) : (
+                        <div className="flex bg-gray-500 p-2 rounded-md my-2 gap-2 bg-none items-center mx-auto ">
+                            <p className="text-white">{eventInfo.event.title}</p>
+                        </div>
+                    )}
                 </div>
             )
         }
@@ -300,7 +323,7 @@ export default function WorkSlot() {
                             setLoadingButton(false)
                             dispatch(
                                 GetWorkedSlotAsyncApi({
-                                    id: res.payload[0].id,
+                                    id: Department,
                                     month: formatDateExact(currentMonth),
                                 })
                             )
@@ -334,7 +357,7 @@ export default function WorkSlot() {
                         <div className="sm:ml-[220px]">
                             <FormControl sx={{ width: 300, marginBottom: 4 }}>
                                 <InputLabel size="small" id="demo-simple-select-label">
-                                Team
+                                    Team
                                 </InputLabel>
                                 <Select
                                     size="small"
@@ -373,7 +396,6 @@ export default function WorkSlot() {
                             </LoadingButton>
                         </div>
                     </div>
-
                     <FullCalendar
                         ref={calendarRef}
                         plugins={[dayGridPlugin]}
@@ -386,7 +408,7 @@ export default function WorkSlot() {
                             center: 'title',
                             right: 'prev,next today',
                         }}
-                        height="80vh"
+                        height="100vh"
                         daysOfWeek={(0, 1)}
                         DayGrid={true}
                         TimeGrid={true}
@@ -398,6 +420,7 @@ export default function WorkSlot() {
                         eventBackgroundColor={'#ffffff'}
                         eventBorderColor={'#ffffff'}
                         className="custom-calendar"
+                       
                     />
                 </div>
             </div>

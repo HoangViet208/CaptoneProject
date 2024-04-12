@@ -17,6 +17,8 @@ import {
     FormControl,
     InputLabel,
     Popover,
+    FormControlLabel,
+    Checkbox,
 } from '@mui/material'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
@@ -157,14 +159,14 @@ export default function TimeSheet() {
     }
 
     async function handleDownloadExcelTemplate() {
-        const userStringEmployeeName = localStorage.getItem('employeeId')
-        const employeeId = JSON.parse(userStringEmployeeName)
-        const response = await dispatch(getEmployeeByIdAsyncApi(employeeId))
-
-        if (response.meta.requestStatus === 'fulfilled') {
+        // const userStringEmployeeName = localStorage.getItem('employeeId')
+        // const employeeId = JSON.parse(userStringEmployeeName)
+        // const response = await dispatch(getEmployeeByIdAsyncApi(employeeId))
+        //   console.log("response", response)
+        
             try {
                 const downloadResponse = await axios.get(
-                    `https://timekeepingsystem.azurewebsites.net/api/WorkSlotEmployee/export-excel-file?departmentId=${response.payload.departmentId}`,
+                    `https://timekeepingsystem.azurewebsites.net/api/WorkSlotEmployee/export-excel-file?departmentId=${Department}`,
                     {
                         responseType: 'blob', // Set the response type to blob
                     }
@@ -184,7 +186,7 @@ export default function TimeSheet() {
             } catch (error) {
                 console.error('Error:', error)
             }
-        }
+        
     }
     const clickOpenFalse = (event) => {
         setOpen(false)
@@ -194,6 +196,30 @@ export default function TimeSheet() {
             key: 'selection',
         })
     }
+    const initialViewStatus = {
+        isIn: true,
+        isOut: true,
+        isWork: true,
+        isOvertime: true,
+        isCoefficient: true,
+    }
+    const labels = {
+        isIn: 'Check In',
+        isOut: 'Check Out',
+        isWork: 'Active',
+        isOvertime: 'Overtime',
+        isCoefficient: 'Coefficient',
+    }
+
+    const [viewStatus, setViewStatus] = useState(initialViewStatus)
+    const handleCheckboxChange = (event) => {
+        const { name, checked } = event.target
+        setViewStatus((prevDateStatus) => ({
+            ...prevDateStatus,
+            [name]: checked,
+        }))
+    }
+    console.log('initialViewStatus', initialViewStatus, viewStatus, viewStatus.isWork)
     const handleClickOpen = () => {
         setOpen(true)
     }
@@ -272,7 +298,21 @@ export default function TimeSheet() {
                                         horizontal: 'left',
                                     }}
                                 >
-                                    a
+                                    <div className="flex flex-col py-3 px-4">
+                                        {Object.entries(viewStatus).map(([day, checked]) => (
+                                            <FormControlLabel
+                                                key={day}
+                                                control={
+                                                    <Checkbox
+                                                        name={day}
+                                                        checked={checked}
+                                                        onChange={handleCheckboxChange}
+                                                    />
+                                                }
+                                                label={labels[day]}
+                                            />
+                                        ))}
+                                    </div>
                                 </Popover>
                             </div>
                         </div>
@@ -365,35 +405,48 @@ export default function TimeSheet() {
                                                                         id="cha"
                                                                         className="min-w-[190px] border-[2px] border-red-300 border-dashed truncate"
                                                                     >
-                                                                        <div className="flex mx-2 mt-1">
+                                                                         <div className="mx-2 font-bold text-center mt-[1px] font-serif">
+                                                                            <div>Working</div>
+                                                                        </div>
+                                                                        <div className="flex  mx-2">
                                                                             <div>{getDayOfWeek(working.date)}</div>
                                                                             <div className="text-gray-400 ml-auto">
                                                                                 {getDateToMonth(working.date)}
                                                                             </div>
                                                                         </div>
+                                                                       
                                                                         <div className="transition ease-in-out hover:scale-110 m-2 delay-150 py-1 px-2 bg-red-100">
-                                                                            <div className="flex items-center">
-                                                                                <div className="text-gray-400 font-medium">
-                                                                                    {working.in}
+                                                                            {viewStatus.isIn == true ? (
+                                                                                <div className="flex items-center">
+                                                                                    <div className="text-gray-400 font-medium">
+                                                                                        {working.in}
+                                                                                    </div>
+                                                                                    <div
+                                                                                        id="in"
+                                                                                        className="uppercase text-xs text-gray-400 ml-auto"
+                                                                                    >
+                                                                                        in
+                                                                                    </div>
                                                                                 </div>
-                                                                                <div
-                                                                                    id="in"
-                                                                                    className="uppercase text-xs text-gray-400 ml-auto"
-                                                                                >
-                                                                                    in
+                                                                            ) : (
+                                                                                ''
+                                                                            )}
+                                                                            {viewStatus.isOut == true ? (
+                                                                                <div className="flex items-center">
+                                                                                    <div className="text-gray-400 font-medium">
+                                                                                        {working.out}
+                                                                                    </div>
+                                                                                    <div
+                                                                                        id="out"
+                                                                                        className="uppercase text-xs text-gray-400 ml-auto"
+                                                                                    >
+                                                                                        out
+                                                                                    </div>
                                                                                 </div>
-                                                                            </div>
-                                                                            <div className="flex items-center">
-                                                                                <div className="text-gray-400 font-medium">
-                                                                                    {working.out}
-                                                                                </div>
-                                                                                <div
-                                                                                    id="out"
-                                                                                    className="uppercase text-xs text-gray-400 ml-auto"
-                                                                                >
-                                                                                    out
-                                                                                </div>
-                                                                            </div>
+                                                                            ) : (
+                                                                                ''
+                                                                            )}
+                                                                            {viewStatus.isWork == true ? (
                                                                             <div className="flex items-center">
                                                                                 <div className="text-gray-400 font-medium">
                                                                                     {working.duration}
@@ -405,18 +458,11 @@ export default function TimeSheet() {
                                                                                     Work
                                                                                 </div>
                                                                             </div>
-                                                                            <div className="flex items-center">
-                                                                                <div className="text-gray-400 font-medium">
-                                                                                    {working.overTime}
-                                                                                </div>
-                                                                                <div
-                                                                                    id="active"
-                                                                                    className="uppercase text-xs text-gray-400 ml-auto"
-                                                                                >
-                                                                                    OverTime
-                                                                                </div>
-                                                                            </div>
-                                                                            <div className="flex items-center">
+                                                                            ) : (
+                                                                                ''
+                                                                            )}
+                                                                            {viewStatus.isCoefficient == true ? (
+                                                                                <div className="flex items-center">
                                                                                 <div className="text-gray-400 font-medium">
                                                                                     x1
                                                                                 </div>
@@ -427,6 +473,10 @@ export default function TimeSheet() {
                                                                                     Coefficients
                                                                                 </div>
                                                                             </div>
+                                                                            ) : (
+                                                                                ''
+                                                                            )}
+                                                                            
                                                                         </div>
                                                                     </div>
                                                                 )

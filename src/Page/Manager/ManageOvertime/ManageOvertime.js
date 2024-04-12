@@ -115,7 +115,7 @@ export default function ManageOvertime() {
                 name: search,
                 status: valueTabs == 4 ? -1 : valueTabs,
                 date: formatDateExact(selectedDate),
-                id: UserParseId,
+                id: userRole  == "Manager" ? UserParseId : "",
             })
         )
         return () => {}
@@ -215,7 +215,7 @@ export default function ManageOvertime() {
                             name: search,
                             status: valueTabs == 4 ? -1 : valueTabs,
                             date: formatDateExact(selectedDate),
-                            id: UserParseId,
+                            id: userRole  == "Manager" ? UserParseId : "",
                         })
                     )
                     showSnackbar({
@@ -245,7 +245,7 @@ export default function ManageOvertime() {
                             name: search,
                             status: valueTabs == 4 ? -1 : valueTabs,
                             date: formatDateExact(selectedDate),
-                            id: UserParseId,
+                            id: userRole  == "Manager" ? UserParseId : "",
                         })
                     )
                     showSnackbar({
@@ -278,7 +278,7 @@ export default function ManageOvertime() {
                             name: search,
                             status: valueTabs == 4 ? -1 : valueTabs,
                             date: formatDateExact(selectedDate),
-                            id: UserParseId,
+                            id: userRole  == "Manager" ? UserParseId : "",
                         })
                     )
                     showSnackbar({
@@ -545,6 +545,7 @@ export default function ManageOvertime() {
                     )
                 }
                 viewAction={valueTabs == 4 ? 'Cancel' : 'Reject'}
+                isLoading={loadingRJButton}
             />
             <div className="sm:ml-64 pt-12 h-screen bg-gray-50">
                 <div className="px-12 py-6">

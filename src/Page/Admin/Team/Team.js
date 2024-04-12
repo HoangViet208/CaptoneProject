@@ -279,6 +279,7 @@ export default function Team() {
     }
 
     const handleDelete = () => {
+        setLoadingButton(true)
         dispatch(DeleteDepartmentAsyncApi(idDelete))
             .then((response) => {
                 if (response.meta.requestStatus == 'fulfilled') {
@@ -289,6 +290,7 @@ export default function Team() {
                     })
                     setOpen(false)
                     setIsAction(0)
+                    setLoadingButton(false)
                     setOpenConfirm(false)
                     setIdDelete()
                     formik.setTouched({})
@@ -299,7 +301,9 @@ export default function Team() {
                     })
                 }
             })
-            .catch((error) => {})
+            .catch((error) => {
+                setLoadingButton(false)
+            })
     }
     const handleChangeMemberInTeam = (employeeId, index) => {
         const employee = EmployeeNotIncludeInAnyTeam.find((emp) => emp.id === employeeId)
@@ -572,7 +576,7 @@ export default function Team() {
     return (
         <div>
             <Navbar />
-            <PopupConfirm open={openConfirm} clickOpenFalse={clickOpenFalseConfirm} clickDelete={handleDelete} />
+            <PopupConfirm open={openConfirm} clickOpenFalse={clickOpenFalseConfirm} clickDelete={handleDelete} isLoading={loadingButton} />
             <PopupData
                 open={open}
                 clickOpenFalse={clickOpenFalse}

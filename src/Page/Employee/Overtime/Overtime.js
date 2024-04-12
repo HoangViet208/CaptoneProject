@@ -414,6 +414,7 @@ export default function Overtime() {
     const userId = localStorage.getItem('employeeId')
     const UserParseId = JSON.parse(userId)
     const handleDelete = async() => {
+     
         const db = getDatabase();
         const recordsRef = refRealtime(db, 'managerNoti');
         const snapshot = await get(recordsRef);
@@ -742,7 +743,7 @@ export default function Overtime() {
     return (
         <div>
             <Navbar />
-            <PopupConfirm open={openConfirm} clickOpenFalse={clickOpenFalseConfirm} clickDelete={handleDelete} />
+            <PopupConfirm open={openConfirm} clickOpenFalse={clickOpenFalseConfirm} clickDelete={handleDelete} isLoading={loadingButton} />
             <PopupAlert open={openAlert} clickOpenFalse={clickOpenFalseAlert} />
             <PopupData
                 open={openPopover}

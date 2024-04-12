@@ -782,7 +782,7 @@ export default function EmployeeAdmin() {
     return (
         <div>
             <Navbar />
-            <PopupConfirm open={openConfirm} clickOpenFalse={clickOpenFalseConfirm} clickDelete={handleDelete} />
+            <PopupConfirm open={openConfirm} clickOpenFalse={clickOpenFalseConfirm} clickDelete={handleDelete} isLoading={loadingButton} />
             <PopupData
                 open={open}
                 clickOpenFalse={clickOpenFalse}

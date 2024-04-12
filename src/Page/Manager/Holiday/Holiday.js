@@ -294,16 +294,18 @@ export default function Holiday() {
         setOpenConfirm(true)
     }
     const handleDelete = () => {
-        dispatch(DeleteHolidayAsyncApi([idDelete]))
+        setLoadingButton(true)
+        dispatch(DeleteHolidayAsyncApi(idDelete))
             .then((response) => {
                 if (response.meta.requestStatus == 'fulfilled') {
-                    dispatch(getDepartmentAsyncApi())
+                    dispatch(getHolidayAsyncApi())
                     showSnackbar({
                         severity: 'success',
                         children: 'Delete Successfully',
                     })
                     setOpen(false)
                     setIsAction(0)
+                    setLoadingButton(false)
                     setOpenConfirm(false)
                     seterrorSelect(false)
                     formik.setTouched({})
@@ -315,7 +317,9 @@ export default function Holiday() {
                     })
                 }
             })
-            .catch((error) => {})
+            .catch((error) => {
+                setLoadingButton(false)
+            })
     }
     const handleClickOpenAdd = () => {
         setOpen(true)
@@ -664,14 +668,14 @@ export default function Holiday() {
     return (
         <div>
             {userRole === 'Manager' ? <Navbar /> : <NavbarHR />}
-            <PopupConfirm open={openConfirm} clickOpenFalse={clickOpenFalseConfirm} clickDelete={handleDelete} />
+            <PopupConfirm open={openConfirm} clickOpenFalse={clickOpenFalseConfirm} clickDelete={handleDelete} isLoading={loadingButton} />
             <PopupData
                 open={open}
                 clickOpenFalse={clickOpenFalse}
                 viewTitle={isAction == 1 ? 'Add Holiday' : isAction == 2 ? 'Update Holiday' : ''}
                 viewContent={viewModalContent}
             />
-            <PopupConfirm open={openConfirm} clickOpenFalse={clickOpenFalseConfirm} clickDelete={handleDelete} />
+          
             <PopupData
                 size="xs"
                 open={openImport}

@@ -9,7 +9,7 @@ import DialogActions from '@mui/material/DialogActions'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 import Slide from '@mui/material/Slide'
-
+import LoadingButton from '@mui/lab/LoadingButton';
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="down" timeout={1000} ref={ref} {...props} />
 })
@@ -53,7 +53,7 @@ BootstrapDialogTitle.propTypes = {
 }
 
 export default function PopupConfirm(props) {
-    const { open, clickOpenFalse, clickDelete, content, witdhModal, isError, viewContent, viewTitle, viewAction } = props
+    const { open, clickOpenFalse, clickDelete, content, witdhModal, isError, viewContent, viewTitle, viewAction, isLoading } = props
 
     const handleClose = () => {
         clickOpenFalse(false)
@@ -96,14 +96,15 @@ export default function PopupConfirm(props) {
                     <Button variant="contained" color="inherit" onClick={handleClose}>
                         Cancel
                     </Button>
-                    <Button
+                    <LoadingButton
                         disabled={isError == true ? true : false}
+                        loading={isLoading}
                         variant="contained"
                         color="error"
                         onClick={handledelete}
                     >
                         {viewAction ? viewAction : "Remove"}  
-                    </Button>
+                    </LoadingButton>
                 </DialogActions>
             </BootstrapDialog>
         </div>

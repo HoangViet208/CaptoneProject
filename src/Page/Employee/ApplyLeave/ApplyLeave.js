@@ -1107,6 +1107,7 @@ export default function ApplyLeave() {
     console.log('search', dateRange)
 
     const handleDelete = async () => {
+     
         const db = getDatabase()
         const recordsRef = refRealtime(db, 'managerNoti')
         const snapshot = await get(recordsRef)
@@ -1133,6 +1134,7 @@ export default function ApplyLeave() {
                         children: 'Delete request successfully',
                     })
                     setOpenConfirm(false)
+                    setLoadingButton(false)
                 }
                 if (response.meta.requestStatus == 'rejected') {
                     showSnackbar({
@@ -1140,6 +1142,7 @@ export default function ApplyLeave() {
                         children: 'Workslot of dateRange not already',
                     })
                     setOpenConfirm(false)
+                    setLoadingButton(false)
                 }
             })
             .catch((error) => {
@@ -1150,7 +1153,7 @@ export default function ApplyLeave() {
     return (
         <div>
             <Navbar />
-            <PopupConfirm open={openConfirm} clickOpenFalse={clickOpenFalseConfirm} clickDelete={handleDelete} />
+            <PopupConfirm open={openConfirm} clickOpenFalse={clickOpenFalseConfirm} clickDelete={handleDelete} isLoading={loadingButton} />
             <PopupAlert open={openAlert} clickOpenFalse={clickOpenFalseAlert} />
             <PopupData
                 open={open}

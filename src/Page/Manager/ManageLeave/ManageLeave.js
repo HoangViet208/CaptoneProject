@@ -62,7 +62,6 @@ import { useFormik } from 'formik'
 import PopupData from '../../../Components/Popup'
 import { useLocation } from 'react-router-dom'
 
-
 const CustomSelect = styled(Select)`
     color: #60a5fa; // Đổi màu chữ thành xanh
     & select:focus {
@@ -139,6 +138,11 @@ export default function ManageLeave() {
     const handleopenAccordionComponent = () => {
         setOpenAccordionComponent(!openAccordionComponent)
     }
+    const [userRole, setUserRole] = useState(() => {
+        const userString = localStorage.getItem('role')
+        const userObject = JSON.parse(userString)
+        return userObject || 'defaultRole' // Provide a default role if undefined
+    })
     const [errorReject, setErrorReject] = useState(true)
     const [rejectReason, setRejectReason] = useState('')
     const rejectButtonRef = useRef(null)
@@ -166,7 +170,14 @@ export default function ManageLeave() {
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(GetApplyLeaveTypeAsyncApi())
-        dispatch(getApplyLeaveAsyncApi({ name: search, status: valueTabs == 4 ? -1 : valueTabs, id: employeeId }))
+
+        dispatch(
+            getApplyLeaveAsyncApi({
+                name: search,
+                status: valueTabs == 4 ? -1 : valueTabs,
+                id: userRole == 'Manager' ? employeeId : '',
+            })
+        )
         setPage(0)
         return () => {}
     }, [search, valueTabs])
@@ -185,7 +196,7 @@ export default function ManageLeave() {
     const clickOpenFalse = (event) => {
         setOpen(false)
         setErrorReject(true)
-        setRejectReason("")
+        setRejectReason('')
     }
 
     const searchData = (data) => {
@@ -207,11 +218,7 @@ export default function ManageLeave() {
             key: 'selection',
         },
     ])
-    const [userRole, setUserRole] = useState(() => {
-        const userString = localStorage.getItem('role')
-        const userObject = JSON.parse(userString)
-        return userObject || 'defaultRole' // Provide a default role if undefined
-    })
+
     console.log('RequestId ngu', RequestIdNoti)
     useEffect(() => {
         if (RequestIdNoti != 0) {
@@ -241,7 +248,6 @@ export default function ManageLeave() {
             })
             setOpenModal(true)
         }
-      
     }, [RequestIdNoti])
     useEffect(() => {
         // Update the userRole state whenever 'role' is changed in localStorage
@@ -272,7 +278,7 @@ export default function ManageLeave() {
         initialValues: initialValues,
     })
     const handleClickOpenUpdate = (data) => {
-        dispatch(GetLeaveTypeInfoAsyncApi({ employeeId: employeeId, LeaveTypeId:  data.leaveTypeId }))
+        dispatch(GetLeaveTypeInfoAsyncApi({ employeeId: employeeId, LeaveTypeId: data.leaveTypeId }))
         dispatch(GetApplyLeaveByRequestIdAsyncApi(data.id)).then((res) => {
             if (res.meta.requestStatus == 'fulfilled') {
                 const newDate = res.payload.dateRange.map((item, index) => ({
@@ -301,7 +307,7 @@ export default function ManageLeave() {
     }
     const clickOpenFalseModal = (event) => {
         setIsReject(false)
-        setRejectReason("")
+        setRejectReason('')
         setErrorReject(true)
         dispatch(ApplyLeaveAction.changeRequestId(0))
         setOpenModal(false)
@@ -332,7 +338,13 @@ export default function ManageLeave() {
             .then((response) => {
                 setLoadingButton(false)
                 if (response.meta.requestStatus == 'fulfilled') {
-                    dispatch(getApplyLeaveAsyncApi({ name: search, status: valueTabs == 4 ? -1 : valueTabs, id: employeeId }))
+                    dispatch(
+                        getApplyLeaveAsyncApi({
+                            name: search,
+                            status: valueTabs == 4 ? -1 : valueTabs,
+                            id: userRole == 'Manager' ? employeeId : '',
+                        })
+                    )
                     showSnackbar({
                         severity: 'success',
                         children: 'Approved request',
@@ -361,10 +373,10 @@ export default function ManageLeave() {
             })
     }
     const handleChangeReasonRejectInput = (e) => {
-        console.log("12345", e)
-        if(e == ""){
+        console.log('12345', e)
+        if (e == '') {
             setErrorReject(true)
-        }else{
+        } else {
             setErrorReject(false)
         }
         setRejectReason(e)
@@ -387,7 +399,13 @@ export default function ManageLeave() {
             .then((response) => {
                 if (response.meta.requestStatus == 'fulfilled') {
                     setLoadingRJButton(false)
-                    dispatch(getApplyLeaveAsyncApi({ name: search, status: valueTabs == 4 ? -1 : valueTabs, id: employeeId }))
+                    dispatch(
+                        getApplyLeaveAsyncApi({
+                            name: search,
+                            status: valueTabs == 4 ? -1 : valueTabs,
+                            id: userRole == 'Manager' ? employeeId : '',
+                        })
+                    )
                     showSnackbar({
                         severity: 'success',
                         children: 'Reject request',
@@ -395,7 +413,7 @@ export default function ManageLeave() {
                     setOpenModal(false)
                     setRequestId()
                     setErrorReject(true)
-                    setRejectReason("")
+                    setRejectReason('')
                     setIsReject(false)
                     setChosenFileName('Chosen file')
                     formik.setValues({
@@ -418,12 +436,12 @@ export default function ManageLeave() {
                 setLoadingRJButton(false)
             })
     }
-    console.log("newDate tổng" ,leaveDaysDate)
+    console.log('newDate tổng', leaveDaysDate)
     const handleChangeLeaveDetail = (date, index) => {
         const updatedDataList = [...leaveDaysDate]
         updatedDataList[index].type = date
         setLeaveDaysDate(updatedDataList)
-        console.log("newDate change" ,leaveDaysDate, updatedDataList)
+        console.log('newDate change', leaveDaysDate, updatedDataList)
     }
     console.log('ApplyLeaveList', ApplyLeaveList)
     const createRows = () => {
@@ -434,15 +452,13 @@ export default function ManageLeave() {
                 reasonReject: (
                     <Tooltip title={item.reasonReject}>
                         <span>
-                           {item.reasonReject.length > 5 ? item.reasonReject.slice(0, 5) + '...' : item.reasonReject}
+                            {item.reasonReject.length > 5 ? item.reasonReject.slice(0, 5) + '...' : item.reasonReject}
                         </span>
                     </Tooltip>
                 ),
                 reason: (
                     <Tooltip title={item.reason}>
-                        <div>
-                            {item.reason.length > 5 ? item.reason.slice(0, 5) + '...' : item.reason}
-                        </div>
+                        <div>{item.reason.length > 5 ? item.reason.slice(0, 5) + '...' : item.reason}</div>
                     </Tooltip>
                 ),
                 file: (
@@ -719,7 +735,9 @@ export default function ManageLeave() {
                                                                     className="outline-none text-blue-400"
                                                                     variant="standard"
                                                                     value={item.type}
-                                                                    onChange={(e) => handleChangeLeaveDetail(e.target.value, index)}
+                                                                    onChange={(e) =>
+                                                                        handleChangeLeaveDetail(e.target.value, index)
+                                                                    }
                                                                 >
                                                                     <MenuItem value={'Full Day'}>Full Day</MenuItem>
                                                                     <MenuItem value={'Morning'}>Morning</MenuItem>
@@ -757,32 +775,42 @@ export default function ManageLeave() {
                                         <span></span>
                                     </Button>
                                     <div className={openAccordionComponent == false ? 'hidden' : 'h-full'}>
-                                <h2 className="text-center text-xl my-2">Leave Information</h2>
-                                <div className="grid grid-cols-2 text-center ">
-                                    <div className="bg-yellow-500 ">Leave Type</div>
-                                    <div className="bg-red-500 ">
-                                        {formik.values.leaveType &&
-                                            ApplyLeaveTypeList &&
-                                            getNameById(formik.values.leaveType)}
+                                        <h2 className="text-center text-xl my-2">Leave Information</h2>
+                                        <div className="grid grid-cols-2 text-center ">
+                                            <div className="bg-yellow-500 ">Leave Type</div>
+                                            <div className="bg-red-500 ">
+                                                {formik.values.leaveType &&
+                                                    ApplyLeaveTypeList &&
+                                                    getNameById(formik.values.leaveType)}
+                                            </div>
+                                        </div>
+                                        <div className="grid grid-cols-2 my-1 ">
+                                            <div className="text-left ">Standard Leave Days of Current Year</div>
+                                            <div className=" text-center ">
+                                                {LeaveTypeInfo && LeaveTypeInfo.standardLeaveDays}
+                                            </div>
+                                        </div>
+                                        <div className="grid grid-cols-2 my-1 ">
+                                            <div className=" text-left">
+                                                Standard Leave Days Transferred from Previous Year
+                                            </div>
+                                            <div className=" text-center">
+                                                {LeaveTypeInfo && LeaveTypeInfo.carryOverDays}
+                                            </div>
+                                        </div>
+                                        <div className="grid grid-cols-2 my-1 ">
+                                            <div className=" text-left">Total Used Leave Days in current Year</div>
+                                            <div className="text-center ">
+                                                {LeaveTypeInfo && LeaveTypeInfo.totalUsedDays}
+                                            </div>
+                                        </div>
+                                        <div className="grid grid-cols-2 my-1">
+                                            <div className="text-left ">Remaining Unused Leave Days</div>
+                                            <div className="text-center ">
+                                                {LeaveTypeInfo && LeaveTypeInfo.remainingDays}
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="grid grid-cols-2 my-1 ">
-                                    <div className="text-left ">Standard Leave Days of Current Year</div>
-                                    <div className=" text-center ">{LeaveTypeInfo && LeaveTypeInfo.standardLeaveDays}</div>
-                                </div>
-                                <div className="grid grid-cols-2 my-1 ">
-                                    <div className=" text-left">Standard Leave Days Transferred from Previous Year</div>
-                                    <div className=" text-center">{LeaveTypeInfo && LeaveTypeInfo.carryOverDays}</div>
-                                </div>
-                                <div className="grid grid-cols-2 my-1 ">
-                                    <div className=" text-left">Total Used Leave Days in current Year</div>
-                                    <div className="text-center ">{LeaveTypeInfo && LeaveTypeInfo.totalUsedDays}</div>
-                                </div>
-                                <div className="grid grid-cols-2 my-1">
-                                    <div className="text-left ">Remaining Unused Leave Days</div>
-                                    <div className="text-center ">{LeaveTypeInfo && LeaveTypeInfo.remainingDays}</div>
-                                </div>
-                            </div>
                                 </div>
 
                                 <div className="my-2">
@@ -938,7 +966,6 @@ export default function ManageLeave() {
                                         sx={{
                                             textAlign: 'center',
                                         }}
-                            
                                         autoFocus
                                     >
                                         Reject
@@ -979,7 +1006,7 @@ export default function ManageLeave() {
                                             textAlign: 'center',
                                         }}
                                         autoFocus
-                                        disabled={errorReject == true ? true : false} 
+                                        disabled={errorReject == true ? true : false}
                                     >
                                         Submit
                                     </LoadingButton>
@@ -993,9 +1020,9 @@ export default function ManageLeave() {
             </form>
         </Fragment>
     )
-    
+
     const handleDelete = () => {
-      
+        setLoadingButton(true)
         dispatch(
             PutCancelApprovedLeaveForHRAsyncApi({
                 requestId: idDelete,
@@ -1009,17 +1036,24 @@ export default function ManageLeave() {
                         severity: 'success',
                         children: 'Cancel request',
                     })
-                    dispatch(getApplyLeaveAsyncApi({ name: search, status: valueTabs == 4 ? -1 : valueTabs, id: employeeId }))
+                    dispatch(
+                        getApplyLeaveAsyncApi({
+                            name: search,
+                            status: valueTabs == 4 ? -1 : valueTabs,
+                            id: userRole == 'Manager' ? employeeId : '',
+                        })
+                    )
                     setOpen(false)
                     setErrorReject(true)
-                    setRejectReason("")
+                    setRejectReason('')
+                    setLoadingButton(false)
                 }
                 if (response.meta.requestStatus == 'rejected') {
                     showSnackbar({
                         severity: 'error',
                         children: 'Cannot cancel leave for past dates',
                     })
-
+                    setLoadingButton(false)
                     setOpen(false)
                 }
             })
@@ -1044,6 +1078,7 @@ export default function ManageLeave() {
                 clickDelete={handleDelete}
                 isError={errorReject}
                 content={RejectContent}
+                isLoading={loadingButton}
             />
             <div className="sm:ml-64 pt-12 h-screen bg-gray-50">
                 <div className="px-12 py-6">

@@ -92,10 +92,9 @@ export const PutHolidayAsyncApi = createAsyncThunk('HolidayReducer/putAsyncApi',
         throw errors[0].errorMessage
     }
 })
-export const DeleteHolidayAsyncApi = createAsyncThunk('HolidayReducer/deleteAsyncApi', async (body) => {
+export const DeleteHolidayAsyncApi = createAsyncThunk('HolidayReducer/deleteAsyncApi', async (id) => {
     try {
-        console.log("ga", body)
-        const response = await DeleteHolidayApi(body)
+        const response = await DeleteHolidayApi(id)
         return response
     } catch (error) {
         const json = error.response.data
