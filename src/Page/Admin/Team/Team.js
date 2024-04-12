@@ -47,10 +47,11 @@ import {
     DeleteDepartmentAsyncApi,
     PostDepartmentAsyncApi,
     PutDepartmentAsyncApi,
+    PutTeamMemberAsyncApi,
     getDepartmentAsyncApi,
     getDepartmentByIdAsyncApi,
 } from '../../../Redux/Department/DepartmentSlice'
-import { getEmployeeAsyncApi } from '../../../Redux/Employee/employeeSlice'
+import { GetALLEmployeeNotIncludeInAnyTeamAsyncApi, getEmployeeAsyncApi } from '../../../Redux/Employee/employeeSlice'
 import { DeleteDepartmentApi } from '../../../Api/DepartmentApi'
 
 //reudex
@@ -85,9 +86,9 @@ export default function Team() {
 
     const showSnackbar = useSnackbar()
     const [page, setPage] = useState(0)
-    const [rowsPerPage, setRowsPerPage] = useState(5)
+    const [rowsPerPage, setRowsPerPage] = useState(10)
     const [pageModal, setPageModal] = useState(0)
-    const [rowsPerPageModal, setRowsPerPageModal] = useState(5)
+    const [rowsPerPageModal, setRowsPerPageModal] = useState(10)
     const [open, setOpen] = useState(false)
     const [openTeam, setOpenTeam] = useState(false)
     const [openConfirm, setOpenConfirm] = useState(false)
@@ -98,12 +99,18 @@ export default function Team() {
     const [click, SetClick] = useState(false)
     const [arrTeam, setArrTeam] = useState([{ id: 1, email: '', team: [{ name: '', role: '' }] }])
     //setting redux
-    const { EmployeeList } = useSelector((state) => state.employee)
+    const { EmployeeList, EmployeeNotTeam } = useSelector((state) => state.employee)
     const { DepartmentList, DepartmentDetail } = useSelector((state) => state.department)
     const [teamData, setTeamData] = useState([])
+    const [EmployeeNotIncludeInAnyTeam, setEmployeeNotIncludeInAnyTeam] = useState([])
     const dispatch = useDispatch()
     useEffect(() => {
-        dispatch(getDepartmentAsyncApi())   
+        dispatch(getDepartmentAsyncApi())
+        dispatch(GetALLEmployeeNotIncludeInAnyTeamAsyncApi()).then((res) => {
+            if (res.meta.requestStatus == 'fulfilled') {
+                setEmployeeNotIncludeInAnyTeam(res.payload)
+            }
+        })
         return () => {}
     }, [openConfirm])
     const initialValues = {
@@ -154,19 +161,23 @@ export default function Team() {
             } else if (isAction == 2) {
                 setLoadingButton(true)
 
+                const newTeamData = teamData
+                    .filter((member) => member.id !== '') // Lọc ra các đối tượng có id khác rỗng
+                    .map((member) => ({
+                        employeeId: member.id,
+                        roleName: member.roleName,
+                    }))
                 const body = {
-                    name: values.name,
-                    ManagerId: values.managerName,
-                    id: values.id,
-                    workTrackId: values.workTrackId,
-                    isDeleted: values.isDeleted,
+                    departmentId: values.id,
+                    departmentName: values.name,
+                    team: newTeamData,
                 }
-                dispatch(PutDepartmentAsyncApi(body))
+                dispatch(PutTeamMemberAsyncApi(body))
                     .then((response) => {
                         if (response.meta.requestStatus == 'fulfilled') {
                             dispatch(getDepartmentAsyncApi())
                             setLoadingButton(false)
-
+                            dispatch(GetALLEmployeeNotIncludeInAnyTeamAsyncApi())
                             showSnackbar({
                                 severity: 'success',
                                 children: 'Update successfully',
@@ -218,13 +229,18 @@ export default function Team() {
     const handleClickOpenUpdate = (data) => {
         setOpen(true)
         setIsAction(2)
-        dispatch(getDepartmentByIdAsyncApi(data.id)).then((response) => {
-            console.log("ngu ne", response.payload)
-            setTeamData(response.payload);
-        })
-        .catch((error) => {
-            console.error('Error fetching team data:', error);
-        });
+        dispatch(getDepartmentByIdAsyncApi(data.id))
+            .then((response) => {
+                console.log('ngu ne', response.payload)
+                const updatedData = response.payload.map((item) => ({
+                    ...item,
+                    isNew: false,
+                }))
+                setTeamData(updatedData)
+            })
+            .catch((error) => {
+                console.error('Error fetching team data:', error)
+            })
         console.log('data', data)
         formik.setValues({
             name: data.name,
@@ -236,6 +252,7 @@ export default function Team() {
     }
 
     const clickOpenFalse = (event) => {
+        setEmployeeNotIncludeInAnyTeam(EmployeeNotTeam)
         setOpen(false)
         setIsAction(0)
         setIdDelete()
@@ -246,18 +263,13 @@ export default function Team() {
             managerName: '',
         })
     }
-     console.log("chay ne", teamData )
-     
+    console.log('chay ne', teamData)
+
     const handleClickOpenConfirm = (data) => {
         setOpenConfirm(true)
         setIdDelete(data)
     }
-    const handleClickDeleteMemberInTeam = (data, index) => {
-        const updatedDataList = [...teamData];
-        updatedDataList.splice(index, 1); 
-        setTeamData(updatedDataList);
-    }
-    
+
     const clickOpenFalseConfirm = (event) => {
         setOpenConfirm(false)
         setIdDelete()
@@ -289,7 +301,73 @@ export default function Team() {
             })
             .catch((error) => {})
     }
+    const handleChangeMemberInTeam = (employeeId, index) => {
+        const employee = EmployeeNotIncludeInAnyTeam.find((emp) => emp.id === employeeId)
+        if (employee) {
+            const updatedDataList = [...teamData]
+            updatedDataList[index].firstName = employee.firstName
+            updatedDataList[index].lastName = employee.lastName
+            updatedDataList[index].email = employee.email
+            updatedDataList[index].id = employee.id
+            setTeamData(updatedDataList)
+        }
+    }
+
+    const handleChangeRoleMemberInTeam = (index, data) => {
+        const updatedDataList = [...teamData]
+        if (data === 'Manager') {
+            updatedDataList.forEach((item, i) => {
+                if (i !== index) {
+                    item.roleName = 'Employee'
+                }
+            })
+            updatedDataList[index].roleName = data
+        } else {
+            updatedDataList[index].roleName = data
+        }
+        setTeamData(updatedDataList)
+    }
+
+    const handleClickDeleteMemberInTeam = (data, index) => {
+        const updatedDataList = [...teamData]
+        updatedDataList.splice(index, 1)
+        setTeamData(updatedDataList)
+    }
+
+    const handleClickAddMemberInTeam = () => {
+        const isNewExists = teamData.some((item) => item.id == undefined)
+        const hasTrueIsNew = teamData.some((obj) => obj.isNew === true)
+        if (!isNewExists) {
+            if (hasTrueIsNew) {
+                const updateTeam = [...teamData]
+                const lastIndex = updateTeam.length - 1
+                updateTeam[lastIndex].isNew = false
+                setTeamData(updateTeam)
+                console.log('chay ne 3', updateTeam, lastIndex)
+            }
+            const updatedEmployeeList = [...EmployeeNotIncludeInAnyTeam]
+            const filteredEmployeeNotIncludeInAnyTeam = updatedEmployeeList.filter((employee) => {
+                return !teamData.some((teamMember) => teamMember.email === employee.email)
+            })
+            setEmployeeNotIncludeInAnyTeam(filteredEmployeeNotIncludeInAnyTeam)
+
+            const updatedDataList = [...teamData]
+            updatedDataList.push({
+                id: '',
+                email: '',
+                roleName: 'Employee',
+                firstName: '',
+                lastName: '',
+                isNew: true,
+            })
+            setTeamData(updatedDataList)
+        }
+    }
     const createRowsModal = () => {
+        // const filteredEmployeeNotIncludeInAnyTeam = EmployeeNotIncludeInAnyTeam.filter(employee => {
+        //     // Kiểm tra xem trường email của nhân viên có tồn tại trong teamData không
+        //     return !teamData.some(teamMember => teamMember.email === employee.email);
+        // });
         return teamData.map((item, index) => ({
             ...item,
 
@@ -300,27 +378,75 @@ export default function Team() {
                     <p className="font-bold">{item.firstName + ' ' + item.lastName}</p>
                 </div>
             ),
-            email: item.email,
+            email:
+                item.isNew == false ? (
+                    item.email
+                ) : (
+                    <FormControl fullWidth>
+                        <InputLabel size="small" id="demo-simple-select-label">
+                            Employee
+                        </InputLabel>
+                        <Select
+                            size="small"
+                            className="w-full"
+                            value={item.id} // Sử dụng employeeId làm value
+                            label="Employee"
+                            onChange={(e) => handleChangeMemberInTeam(e.target.value, index)}
+                            variant="outlined"
+                        >
+                            {EmployeeNotIncludeInAnyTeam.map((employee, index) => {
+                                return (
+                                    <MenuItem key={index} value={employee.id}>
+                                        {employee.email}
+                                    </MenuItem>
+                                )
+                            })}
+                        </Select>
+                    </FormControl>
+                ),
             number: index + 1,
-            role: item.roleName,
-            action:  <div className="flex gap-2 justify-center">
-            <Tooltip onClick={() => handleClickDeleteMemberInTeam(item.id, index)} title="Delete">
-                <IconButton>
-                    <DeleteIcon />
-                </IconButton>
-            </Tooltip>
-        </div>
+            role: (
+                <FormControl fullWidth>
+                    <InputLabel size="small" id="demo-simple-select-label">
+                        Role Name
+                    </InputLabel>
+                    <Select
+                        size="small"
+                        className="w-full"
+                        value={item.roleName}
+                        label="Role Name"
+                        onChange={(e) => handleChangeRoleMemberInTeam(index, e.target.value)}
+                        variant="outlined"
+                    >
+                        <MenuItem value="Manager">Manager</MenuItem>
+                        <MenuItem value="Employee">Employee</MenuItem>
+                    </Select>
+                </FormControl>
+            ),
+            action: (
+                <div className="flex gap-2 justify-center">
+                    <Tooltip onClick={() => handleClickDeleteMemberInTeam(item.id, index)} title="Delete">
+                        <IconButton>
+                            <DeleteIcon />
+                        </IconButton>
+                    </Tooltip>
+                </div>
+            ),
         }))
     }
+
     const rowsModal = createRowsModal()
     const viewModalContent = (
         <Fragment>
             <form onSubmit={formik.handleSubmit}>
                 <div className=" gap-5 py-4 px-8 mb-5 lg:my-0">
-                    <div className="my-2">
+                    {isAction == 2 && (
+                        <Button onClick={handleClickAddMemberInTeam} variant="contained" color="success">
+                            Add new Employee
+                        </Button>
+                    )}
+                    <div className="mb-2 mt-4">
                         <TextField
-                            disabled={isAction == 2 ? true : false}
-                            id="outlined-basic"
                             size="small"
                             error={formik.touched.name && formik.errors.name ? true : undefined}
                             className="w-full"
@@ -341,7 +467,7 @@ export default function Team() {
                     </div>
                     {isAction == 2 && (
                         <TableData
-                            tableHeight={220}
+                            tableHeight={400}
                             rows={rowsModal}
                             columns={columnsModal}
                             page={pageModal}
@@ -357,7 +483,6 @@ export default function Team() {
                                 Manager
                             </InputLabel>
                             <Select
-                                id="outlined-basic"
                                 size="small"
                                 error={formik.touched.managerName && formik.errors.managerName ? true : undefined}
                                 className="w-full"
@@ -481,7 +606,7 @@ export default function Team() {
                         <div>
                             <TableData
                                 tableHeight={460}
-                                rowsPerPageOptions={[5,25,50]}
+                                rowsPerPageOptions={[10, 25, 50]}
                                 rows={rows}
                                 columns={columns}
                                 page={page}

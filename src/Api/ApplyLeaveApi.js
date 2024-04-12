@@ -46,6 +46,15 @@ export const GetApplyLeaveTypeApi = async () => {
         throw error
     }
 }
+export const GetLeaveTypeInfoApi = async (employeeId , LeaveTypeId) => {
+    try {
+
+        const response = await axios.get(`${API_URL}/RequestLeave/get-leave-type-info-of-employee-by-id?employeeId=${employeeId}&leaveTypeId=${LeaveTypeId}`)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
 
 export const PostApplyLeaveApi = async (id, body) => {
     try {

@@ -53,7 +53,7 @@ BootstrapDialogTitle.propTypes = {
 }
 
 export default function PopupConfirm(props) {
-    const { open, clickOpenFalse, clickDelete, content, witdhModal, isError, viewContent, viewTitle } = props
+    const { open, clickOpenFalse, clickDelete, content, witdhModal, isError, viewContent, viewTitle, viewAction } = props
 
     const handleClose = () => {
         clickOpenFalse(false)
@@ -102,7 +102,7 @@ export default function PopupConfirm(props) {
                         color="error"
                         onClick={handledelete}
                     >
-                        Remove
+                        {viewAction ? viewAction : "Remove"}  
                     </Button>
                 </DialogActions>
             </BootstrapDialog>

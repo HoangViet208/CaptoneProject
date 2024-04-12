@@ -6,6 +6,7 @@ import GetDepartmentApi, {
     PutDepartmentApi,
     GetDepartmentWithoutApi,
     GetALLEmployeeInDepartmentApi,
+    UpdateTeamMemberApi,
 } from '../../Api/DepartmentApi'
 
 const initialState = {
@@ -60,6 +61,11 @@ const authSlice = createSlice({
             .addCase(PutDepartmentAsyncApi.fulfilled, (state, action) => {})
             .addCase(PutDepartmentAsyncApi.rejected, (state, action) => {})
         builder
+            .addCase(PutTeamMemberAsyncApi.pending, (state) => {})
+            .addCase(PutTeamMemberAsyncApi.fulfilled, (state, action) => {})
+            .addCase(PutTeamMemberAsyncApi.rejected, (state, action) => {})
+
+        builder
             .addCase(DeleteDepartmentAsyncApi.pending, (state) => {})
             .addCase(DeleteDepartmentAsyncApi.fulfilled, (state, action) => {})
             .addCase(DeleteDepartmentAsyncApi.rejected, (state, action) => {})
@@ -112,6 +118,16 @@ export const PostDepartmentAsyncApi = createAsyncThunk('DepartmentReducer/postAs
 export const PutDepartmentAsyncApi = createAsyncThunk('DepartmentReducer/putAsyncApi', async (body) => {
     try {
         const response = await PutDepartmentApi(body)
+        return response.data // Trả về dữ liệu từ response nếu thành công
+    } catch (error) {
+        const json = error.response.data
+        const errors = json[''].errors
+        throw errors[0].errorMessage
+    }
+})
+export const PutTeamMemberAsyncApi = createAsyncThunk('DepartmentReducer/putTeamMemberApi', async (body) => {
+    try {
+        const response = await UpdateTeamMemberApi(body)
         return response.data // Trả về dữ liệu từ response nếu thành công
     } catch (error) {
         const json = error.response.data

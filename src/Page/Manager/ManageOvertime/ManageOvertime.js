@@ -27,7 +27,12 @@ import PopupConfirm from '../../../Components/PopupConfirm'
 //hooks
 import { formatDate, formatDateExact } from '../../../Hook/useFormatDate'
 import { useDispatch, useSelector } from 'react-redux'
-import { CancelOvertimeAsyncApi, PutOvertimeAsyncApi, getOvertimeAsyncApi } from '../../../Redux/Overtime/OvertimeSlice'
+import {
+    CancelOvertimeAsyncApi,
+    PutOvertimeAsyncApi,
+    RejectOvertimeAsyncApi,
+    getOvertimeAsyncApi,
+} from '../../../Redux/Overtime/OvertimeSlice'
 import { useSnackbar } from '../../../Hook/useSnackbar'
 import NavbarHR from '../NavbarHR'
 import TableLoadData from '../../../Components/TableLoad'
@@ -228,10 +233,10 @@ export default function ManageOvertime() {
         setLoadingRJButton(true)
         const Updatedata = {
             requestId: requestId,
-            status: 2,
-            messageFromDecider: rejectReason,
+            employeeIdDecider: employeeId,
+            reason: rejectReason,
         }
-        dispatch(PutOvertimeAsyncApi({ id: employeeId, body: Updatedata }))
+        dispatch(RejectOvertimeAsyncApi(Updatedata))
             .then((response) => {
                 setLoadingRJButton(false)
                 if (response.meta.requestStatus == 'fulfilled') {
@@ -526,19 +531,20 @@ export default function ManageOvertime() {
                 viewTitle={valueTabs == 4 ? 'Cancel Confirm' : 'Reject Confirm'}
                 viewContent={
                     valueTabs == 4 ? (
-                        <Fragment >
+                        <Fragment>
                             <h2 className="font-bold text-xl">Are you sure to cancel this ?</h2>
                             <p className="mb-5 text-gray-400">You can't undo this action once you canceled this.</p>
-                           {RejectContent}
+                            {RejectContent}
                         </Fragment>
                     ) : (
                         <Fragment>
                             <h2 className="font-bold text-xl">Are you sure to reject this ?</h2>
                             <p className="mb-5 text-gray-400">You can't undo this action once you rejected this.</p>
-                        {RejectContent}
+                            {RejectContent}
                         </Fragment>
                     )
                 }
+                viewAction={valueTabs == 4 ? 'Cancel' : 'Reject'}
             />
             <div className="sm:ml-64 pt-12 h-screen bg-gray-50">
                 <div className="px-12 py-6">

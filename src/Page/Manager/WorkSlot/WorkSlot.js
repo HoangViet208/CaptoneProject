@@ -269,7 +269,7 @@ export default function WorkSlot() {
                     <b>{eventInfo.timeText}</b>
                     <div className="flex my-2 gap-2 bg-none items-center mx-auto ml-4">
                         <button className="rounded-full bg-green-600 w-2 h-2"></button>
-                        <p className=" ">Working Date </p>
+                        <p className=" ">{eventInfo.event.title} </p>
                         <p className=" ">{eventInfo.event.extendedProps.time}</p>
                     </div>
                 </div>

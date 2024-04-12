@@ -86,7 +86,7 @@ export const CancelOvertimeApi = async (body) => {
 export const RejectOvertimeApi = async (body) => {
     try {
         const response = await axios.patch(
-            `${API_URL}/RequestOverTime/cancel-approved-OT-request-for-hr`,
+            `${API_URL}/RequestOverTime/reject-request-over-time`,
             body
         )
         return response.data

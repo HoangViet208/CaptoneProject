@@ -9,7 +9,9 @@ import 'react-date-range/dist/theme/default.css'
 import './DateRangePickerCustomStyles.css'
 import { addDays, startOfDay, parse, set } from 'date-fns'
 //Firebase
-import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage'
+import { getDatabase, ref as refRealtime, query, equalTo, get, remove } from 'firebase/database'
+import { ref as refStorage, getDownloadURL, uploadBytesResumable } from 'firebase/storage'
+
 import { storage } from '../../../Config/FirebaseConfig'
 
 //Mui
@@ -66,6 +68,7 @@ import {
     DeleteApplyLeaveAsyncApi,
     GetApplyLeaveByRequestIdAsyncApi,
     GetApplyLeaveTypeAsyncApi,
+    GetLeaveTypeInfoAsyncApi,
     GetWorkDateSettingByIdAsyncApi,
     PostApplyLeaveAsyncApi,
     PutApplyLeaveAsyncApi,
@@ -174,9 +177,8 @@ export default function ApplyLeave() {
         },
     ])
     //setting redux
-    const { ApplyLeaveByEmployee, ApplyLeaveTypeList, WorkSetting, loading, RequestIdNoti } = useSelector(
-        (state) => state.applyLeave
-    )
+    const { ApplyLeaveByEmployee, ApplyLeaveTypeList, WorkSetting, loading, RequestIdNoti, LeaveTypeInfo } =
+        useSelector((state) => state.applyLeave)
     const { AllEmployeeInDepartment } = useSelector((state) => state.department)
     const dispatch = useDispatch()
     useEffect(() => {
@@ -256,7 +258,7 @@ export default function ApplyLeave() {
                 transformedDates = transformedDates.filter((date) => date.type !== 'nonWorkingDay')
                 const startDateStr = format(dateRange[0].startDate, 'yyyy/MM/dd')
                 const endDateStr = format(dateRange[0].endDate, 'yyyy/MM/dd')
-                const storageRef = ref(storage, `Package/${selectedImage.name}`)
+                const storageRef = refStorage(storage, `Package/${selectedImage.name}`)
                 const uploadTask = uploadBytesResumable(storageRef, selectedImage)
                 uploadTask.on(
                     'state_changed',
@@ -276,7 +278,7 @@ export default function ApplyLeave() {
                                 reason: values.leaveReason,
                                 linkFile: downloadURL,
                                 dateRange: transformedDates,
-                                supportEmployeeId:  values.substitute
+                                supportEmployeeId: values.substitute,
                             }
                             const Updatedata = {
                                 id: RequestId,
@@ -286,7 +288,7 @@ export default function ApplyLeave() {
                                 reason: values.leaveReason,
                                 linkFile: downloadURL,
                                 dateRange: transformedDates,
-                                supportEmployeeId:  values.substitute
+                                supportEmployeeId: values.substitute,
                             }
                             console.log('thanh cong', data, isAction)
                             if (isAction == 1) {
@@ -457,7 +459,7 @@ export default function ApplyLeave() {
             }
         },
     })
-    
+
     const handleDateChange = (ranges) => {
         setDateRange([ranges.selection])
         setLeaveErorr()
@@ -491,9 +493,9 @@ export default function ApplyLeave() {
                                 : 'Full Day',
                     })
                 }
-             
+
                 const totalLeaveDate = newDate.filter((date) => date.type !== 'nonWorkingDay')
-                console.log("newDate", newDate, totalLeaveDate)
+                console.log('newDate', newDate, totalLeaveDate)
                 setLeaveDaysDate(newDate)
                 setLeaveDays(calculateTotalLeaveDays(newDate))
             }
@@ -524,7 +526,9 @@ export default function ApplyLeave() {
         console.log('AllEmployeeInDepartment status', data.status)
         if (data.status != 0) {
             SetErrorEdit(true)
+            dispatch(GetLeaveTypeInfoAsyncApi({ employeeId: employeeId, LeaveTypeId:  data.leaveTypeId }))
         }
+     
         setStatusRequest(data.status)
         setReasonReject(data.reasonReject)
         setOpen(true)
@@ -553,6 +557,11 @@ export default function ApplyLeave() {
             leaveDate: '',
             substitute: data.supportEmployeeId,
         })
+    }
+    const handleChangeLeaveType = (formik, event) => {
+        const { name, value } = event.target
+        formik.setFieldValue(name, value)
+        dispatch(GetLeaveTypeInfoAsyncApi({ employeeId: employeeId, LeaveTypeId: value }))
     }
     const handleFileInputChange = (event) => {
         event.preventDefault()
@@ -639,7 +648,7 @@ export default function ApplyLeave() {
                                     type="date"
                                     error={formik.touched.leaveType && formik.errors.leaveType ? true : undefined}
                                     //onChange={handleLeaveTypeChange}
-                                    onChange={formik.handleChange}
+                                    onChange={(event) => handleChangeLeaveType(formik, event)}
                                     className="mt-2 w-full"
                                     value={formik.values.leaveType}
                                     name="leaveType"
@@ -741,13 +750,17 @@ export default function ApplyLeave() {
                                                         </strong>
                                                     ) : (
                                                         <CustomSelect
-                                                            disabled={statusRequest == 0 || statusRequest == -1 ? false : true}
+                                                            disabled={
+                                                                statusRequest == 0 || statusRequest == -1 ? false : true
+                                                            }
                                                             labelId="demo-simple-select-label"
                                                             id="demo-simple-select"
                                                             className="outline-none text-blue-400"
                                                             variant="standard"
                                                             value={item.type}
-                                                            onChange={(e) => handleChangeLeaveDetail(e.target.value, index)}
+                                                            onChange={(e) =>
+                                                                handleChangeLeaveDetail(e.target.value, index)
+                                                            }
                                                         >
                                                             <MenuItem value={'Full Day'}>Full Day</MenuItem>
                                                             <MenuItem value={'Morning'}>Morning</MenuItem>
@@ -794,19 +807,19 @@ export default function ApplyLeave() {
                                 </div>
                                 <div className="grid grid-cols-2 my-1 ">
                                     <div className="text-left ">Standard Leave Days of Current Year</div>
-                                    <div className=" text-center ">365</div>
+                                    <div className=" text-center ">{LeaveTypeInfo && LeaveTypeInfo.standardLeaveDays}</div>
                                 </div>
                                 <div className="grid grid-cols-2 my-1 ">
                                     <div className=" text-left">Standard Leave Days Transferred from Previous Year</div>
-                                    <div className=" text-center">0</div>
+                                    <div className=" text-center">{LeaveTypeInfo && LeaveTypeInfo.carryOverDays}</div>
                                 </div>
                                 <div className="grid grid-cols-2 my-1 ">
-                                    <div className=" text-left">Total Used Leave Days in Previous Year</div>
-                                    <div className="text-center ">0</div>
+                                    <div className=" text-left">Total Used Leave Days in current Year</div>
+                                    <div className="text-center ">{LeaveTypeInfo && LeaveTypeInfo.totalUsedDays}</div>
                                 </div>
                                 <div className="grid grid-cols-2 my-1">
                                     <div className="text-left ">Remaining Unused Leave Days</div>
-                                    <div className="text-center ">365</div>
+                                    <div className="text-center ">{LeaveTypeInfo && LeaveTypeInfo.remainingDays}</div>
                                 </div>
                             </div>
                         </div>
@@ -867,7 +880,6 @@ export default function ApplyLeave() {
                             <FormControl fullWidth>
                                 <Select
                                     disabled={statusRequest == 0 || statusRequest == -1 ? false : true}
-                                    
                                     size="small"
                                     error={formik.touched.substitute && formik.errors.substitute ? true : undefined}
                                     onChange={formik.handleChange}
@@ -896,7 +908,6 @@ export default function ApplyLeave() {
                                     multiline
                                     disabled={statusRequest == 0 || statusRequest == -1 ? false : true}
                                     rows={6}
-                                    
                                     size="small"
                                     error={formik.touched.leaveReason && formik.errors.leaveReason ? true : undefined}
                                     onChange={formik.handleChange}
@@ -929,7 +940,7 @@ export default function ApplyLeave() {
                             </button>
                             <div>
                                 <button
-                                    onClick={ (e) => handleBrowseButtonClick(e)}
+                                    onClick={(e) => handleBrowseButtonClick(e)}
                                     className="cursor-pointer  block rounded-md h-10 text-left w-full pl-[90px] font-medium text-gray-600  border border-gray-300   bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
                                     variant="contained"
                                 >
@@ -958,7 +969,6 @@ export default function ApplyLeave() {
                                         <TextField
                                             multiline
                                             rows={6}
-                                            
                                             size="small"
                                             disabled
                                             className="mt-2 w-full"
@@ -1095,7 +1105,24 @@ export default function ApplyLeave() {
     const userId = localStorage.getItem('employeeId')
     const UserParseId = JSON.parse(userId)
     console.log('search', dateRange)
-    const handleDelete = () => {
+
+    const handleDelete = async () => {
+        const db = getDatabase()
+        const recordsRef = refRealtime(db, 'managerNoti')
+        const snapshot = await get(recordsRef)
+        snapshot.forEach((childSnapshot) => {
+            const record = childSnapshot.val()
+            if (record.requestId === idDelete) {
+                const recordRef = refRealtime(db, `managerNoti/${childSnapshot.key}`)
+                remove(recordRef)
+                    .then(() => {
+                        console.log(`Record with requestId ${idDelete} deleted successfully`)
+                    })
+                    .catch((error) => {
+                        console.error(`Error deleting record with requestId ${idDelete}: `, error)
+                    })
+            }
+        })
         setLoadingButton(true)
         dispatch(DeleteApplyLeaveAsyncApi({ idDelete, UserParseId }))
             .then((response) => {

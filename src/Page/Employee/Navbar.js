@@ -101,7 +101,7 @@ console.log("employeeId", employeeId)
     useEffect(() => {
         if (userObject && userObject == 'Manager') {
             history.push('/Manager/Employee')
-        } else if (userObject && userObject == 'User') {
+        } else if (userObject && userObject == 'Employee') {
         } else if (userObject && userObject == 'HR') {
             history.push('/Hr/ManageLeave')
         } else if (userObject && userObject == 'Admin') {

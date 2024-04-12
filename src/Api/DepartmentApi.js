@@ -61,5 +61,13 @@ export const GetALLEmployeeInDepartmentApi = async (id) => {
         throw error
     }
 }
+export const UpdateTeamMemberApi = async (body) => {
+    try {
+        const response = await axios.put(`${API_URL}/Department/update-teammember-role-info-of-department`, body)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
 
 export default GetDepartmentApi

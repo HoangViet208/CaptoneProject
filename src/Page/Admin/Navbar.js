@@ -55,16 +55,16 @@ export default function NavbarAdmin() {
     const userString = localStorage.getItem('role')
     const userObject = JSON.parse(userString)
     useEffect(() => {
-        // if (userObject && userObject == 'Manager') {
-        //     history.push('/Manager/Employee')
-        // } else if (userObject && userObject == 'User') {
-        //     history.push('/Employee/Dashboard')
-        // } else if (userObject && userObject == 'HR') {
-        //     history.push('/Hr/ManageLeave')
-        // } else if (userObject && userObject == 'Admin') {
-        // } else {
-        //     history.push('')
-        // }
+        if (userObject && userObject == 'Manager') {
+            history.push('/Manager/Employee')
+        } else if (userObject && userObject == 'Employee') {
+            history.push('/Employee/Dashboard')
+        } else if (userObject && userObject == 'HR') {
+            history.push('/Hr/ManageLeave')
+        } else if (userObject && userObject == 'Admin') {
+        } else {
+            history.push('')
+        }
     }, [])
     let history = useHistory()
     const handleCloseOut = () => {

@@ -15,7 +15,8 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import dayjs, { Dayjs } from 'dayjs'
 
 //Firebase
-import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage'
+import {  getDatabase, ref as refRealtime, query, equalTo, get, remove } from 'firebase/database';
+import { ref as refStorage, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import { storage } from '../../../Config/FirebaseConfig'
 
 //Mui
@@ -253,7 +254,7 @@ export default function Overtime() {
         const newDate = formatDateExact(selectedDate)
         const timeStart = FormatDateToTime(selectedStartTime)
         const endTime = FormatDateToTime(selectedEndTime)
-        const storageRef = ref(storage, `Package/${selectedImage.name}`)
+        const storageRef = refStorage(storage, `Package/${selectedImage.name}`)
         const uploadTask = uploadBytesResumable(storageRef, selectedImage)
         console.log('mnr', formatDateExact(date), selectedStartTime, timeStart)
         uploadTask.on(
@@ -358,7 +359,7 @@ export default function Overtime() {
                 })
         } else if (click == true) {
             setLoadingButton(true)
-            const storageRef = ref(storage, `Package/${selectedImage.name}`)
+            const storageRef = refStorage(storage, `Package/${selectedImage.name}`)
             const uploadTask = uploadBytesResumable(storageRef, selectedImage)
             uploadTask.on(
                 'state_changed',
@@ -412,7 +413,23 @@ export default function Overtime() {
     }
     const userId = localStorage.getItem('employeeId')
     const UserParseId = JSON.parse(userId)
-    const handleDelete = () => {
+    const handleDelete = async() => {
+        const db = getDatabase();
+        const recordsRef = refRealtime(db, 'managerNoti');
+        const snapshot = await get(recordsRef);
+        snapshot.forEach((childSnapshot) => {
+            const record = childSnapshot.val();
+            if (record.requestId === idDelete) {
+                const recordRef = refRealtime(db, `managerNoti/${childSnapshot.key}`);
+                remove(recordRef)
+                    .then(() => {
+                        console.log(`Record with requestId ${idDelete} deleted successfully`);
+                    })
+                    .catch((error) => {
+                        console.error(`Error deleting record with requestId ${idDelete}: `, error);
+                    });
+            }
+        });
         setLoadingButton(true)
         dispatch(DeleteOvertimeAsyncApi({ idDelete, employeeId }))
             .then((response) => {
@@ -485,7 +502,7 @@ export default function Overtime() {
                     <Tooltip title="Delete">
                         <IconButton
                             onClick={
-                                item.statusRequest == 0 ? () => handleClickOpenConfirm(item.id) : handleClickOpenAlert
+                                item.statusRequest == "Pending" ? () => handleClickOpenConfirm(item.id) : handleClickOpenAlert
                             }
                         >
                             <DeleteIcon />

@@ -10,6 +10,7 @@ import GetApplyLeaveApi, {
     GetApplyLeaveByRequestIdApi,
     PutCancelApprovedLeaveForHRApi,
     PutRejectLeaveApi,
+    GetLeaveTypeInfoApi,
 } from '../../Api/ApplyLeaveApi'
 import { GetAllRequestApi } from '../../Api/RequestApi'
 
@@ -22,6 +23,7 @@ const initialState = {
     WorkSetting: [],
     AllRequestInEmployee: {},
     RequestIdNoti: 0,
+    LeaveTypeInfo: {},
 }
 
 const authSlice = createSlice({
@@ -35,6 +37,7 @@ const authSlice = createSlice({
             state.WorkSetting = []
             state.AllRequestInEmployee = {}
             state.RequestIdNoti = 0
+            state.LeaveTypeInfo = {}
         },
         ChangeTab: (state, action) => {
             console.log('action', action)
@@ -102,6 +105,13 @@ const authSlice = createSlice({
             })
             .addCase(GetApplyLeaveTypeAsyncApi.rejected, (state, action) => {})
         builder
+            .addCase(GetLeaveTypeInfoAsyncApi.pending, (state) => {})
+            .addCase(GetLeaveTypeInfoAsyncApi.fulfilled, (state, action) => {
+                state.LeaveTypeInfo = action.payload
+            })
+            .addCase(GetLeaveTypeInfoAsyncApi.rejected, (state, action) => {})
+
+        builder
             .addCase(PostApplyLeaveAsyncApi.pending, (state) => {})
             .addCase(PostApplyLeaveAsyncApi.fulfilled, (state, action) => {})
             .addCase(PostApplyLeaveAsyncApi.rejected, (state, action) => {})
@@ -165,6 +175,21 @@ export const GetApplyLeaveTypeAsyncApi = createAsyncThunk('ApplyLeaveReducer/Get
         throw errors[0].errorMessage
     }
 })
+
+export const GetLeaveTypeInfoAsyncApi = createAsyncThunk(
+    'ApplyLeaveReducer/GetLeaveTypeInfoApi',
+    async ({employeeId, LeaveTypeId}) => {
+        try {
+            const response = await GetLeaveTypeInfoApi(employeeId, LeaveTypeId)
+            return response
+        } catch (error) {
+            const json = error.response.data
+            const errors = json[''].errors
+            throw errors[0].errorMessage
+        }
+    }
+)
+
 export const getApplyLeaveByIdAsyncApi = createAsyncThunk('ApplyLeaveReducer/getByIdAsyncApi', async (id) => {
     try {
         const response = await GetApplyLeaveByIdApi(id)

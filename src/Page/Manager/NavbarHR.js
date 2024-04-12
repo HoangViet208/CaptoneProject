@@ -59,7 +59,7 @@ export default function NavbarHR() {
     useEffect(() => {
         if (userObject && userObject == 'Manager') {
             history.push('/Manager/Employee')
-        } else if (userObject && userObject == 'User') {
+        } else if (userObject && userObject == 'Employee') {
             history.push('/Employee/Dashboard')
         } else if (userObject && userObject == 'HR') {
      

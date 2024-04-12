@@ -63,7 +63,7 @@ export default function NavbarManager() {
    
     const employeeIdString = localStorage.getItem('employeeId')
     const employeeId = JSON.parse(employeeIdString)
-
+    console.log("employeeId", employeeId)
     const fetchDataFromDatabase = () => {
         setIsLoading(true)
         const db = getDatabase(app)
@@ -74,11 +74,13 @@ export default function NavbarManager() {
                 setIsLoading(false)
                 
                 const data = Object.entries(snapshot.val()).map(([id, value]) => {
+         
                     if (value.employeeDeciderId == employeeId) {
                         return { id, ...value };
                     }
                     return null; 
                 }).filter(item => item !== null);
+                console.log("employeeId tung cai", data)
                 setDataNotification(data)
             } else {
                 setIsLoading(false)
@@ -104,7 +106,7 @@ export default function NavbarManager() {
     }
     useEffect(() => {
         if (userObject && userObject == 'Manager') {
-        } else if (userObject && userObject == 'User') {
+        } else if (userObject && userObject == 'Employee') {
             history.push('/Employee/Dashboard')
         } else if (userObject && userObject == 'HR') {
             history.push('/Hr/ManageLeave')

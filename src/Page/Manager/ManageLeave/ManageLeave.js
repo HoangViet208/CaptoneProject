@@ -47,6 +47,7 @@ import {
     ApplyLeaveAction,
     GetApplyLeaveByRequestIdAsyncApi,
     GetApplyLeaveTypeAsyncApi,
+    GetLeaveTypeInfoAsyncApi,
     PutApplyLeaveAsyncApi,
     PutApproveApplyLeaveAsyncApi,
     PutCancelApprovedLeaveForHRAsyncApi,
@@ -60,6 +61,7 @@ import TableLoadData from '../../../Components/TableLoad'
 import { useFormik } from 'formik'
 import PopupData from '../../../Components/Popup'
 import { useLocation } from 'react-router-dom'
+
 
 const CustomSelect = styled(Select)`
     color: #60a5fa; // Đổi màu chữ thành xanh
@@ -158,7 +160,7 @@ export default function ManageLeave() {
         setPage(newPage)
     }
     //setting redux
-    const { ApplyLeaveList, ApplyLeaveTypeList, valueTabs, loading, RequestIdNoti } = useSelector(
+    const { ApplyLeaveList, ApplyLeaveTypeList, valueTabs, loading, RequestIdNoti, LeaveTypeInfo } = useSelector(
         (state) => state.applyLeave
     )
     const dispatch = useDispatch()
@@ -270,6 +272,7 @@ export default function ManageLeave() {
         initialValues: initialValues,
     })
     const handleClickOpenUpdate = (data) => {
+        dispatch(GetLeaveTypeInfoAsyncApi({ employeeId: employeeId, LeaveTypeId:  data.leaveTypeId }))
         dispatch(GetApplyLeaveByRequestIdAsyncApi(data.id)).then((res) => {
             if (res.meta.requestStatus == 'fulfilled') {
                 const newDate = res.payload.dateRange.map((item, index) => ({
@@ -765,19 +768,19 @@ export default function ManageLeave() {
                                 </div>
                                 <div className="grid grid-cols-2 my-1 ">
                                     <div className="text-left ">Standard Leave Days of Current Year</div>
-                                    <div className=" text-center ">365</div>
+                                    <div className=" text-center ">{LeaveTypeInfo && LeaveTypeInfo.standardLeaveDays}</div>
                                 </div>
                                 <div className="grid grid-cols-2 my-1 ">
                                     <div className=" text-left">Standard Leave Days Transferred from Previous Year</div>
-                                    <div className=" text-center">0</div>
+                                    <div className=" text-center">{LeaveTypeInfo && LeaveTypeInfo.carryOverDays}</div>
                                 </div>
                                 <div className="grid grid-cols-2 my-1 ">
-                                    <div className=" text-left">Total Used Leave Days in Previous Year</div>
-                                    <div className="text-center ">0</div>
+                                    <div className=" text-left">Total Used Leave Days in current Year</div>
+                                    <div className="text-center ">{LeaveTypeInfo && LeaveTypeInfo.totalUsedDays}</div>
                                 </div>
                                 <div className="grid grid-cols-2 my-1">
                                     <div className="text-left ">Remaining Unused Leave Days</div>
-                                    <div className="text-center ">365</div>
+                                    <div className="text-center ">{LeaveTypeInfo && LeaveTypeInfo.remainingDays}</div>
                                 </div>
                             </div>
                                 </div>
@@ -990,8 +993,9 @@ export default function ManageLeave() {
             </form>
         </Fragment>
     )
-
+    
     const handleDelete = () => {
+      
         dispatch(
             PutCancelApprovedLeaveForHRAsyncApi({
                 requestId: idDelete,

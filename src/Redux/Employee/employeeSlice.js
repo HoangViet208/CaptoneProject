@@ -4,11 +4,13 @@ import GetEmployeeApi, {
     DeleteEmployeeApi,
     PostEmployeeApi,
     PutEmployeeApi,
+    GetALLEmployeeNotIncludeInAnyTeamApi,
 } from '../../Api/EmployeeApi'
 
 const initialState = {
     EmployeeList: [],
     EmployeeDetail: {},
+    EmployeeNotTeam: [],
 }
 
 const authSlice = createSlice({
@@ -18,6 +20,7 @@ const authSlice = createSlice({
         clearEmployee: (state, action) => {
             state.EmployeeDetail = {}
             state.EmployeeList = []
+            state.EmployeeNotIncludeInAnyTeam = []
         },
     },
     extraReducers: (builder) => {
@@ -27,6 +30,13 @@ const authSlice = createSlice({
                 state.EmployeeList = action.payload
             })
             .addCase(getEmployeeAsyncApi.rejected, (state, action) => {})
+        builder
+            .addCase(GetALLEmployeeNotIncludeInAnyTeamAsyncApi.pending, (state) => {})
+            .addCase(GetALLEmployeeNotIncludeInAnyTeamAsyncApi.fulfilled, (state, action) => {
+                state.EmployeeNotTeam = action.payload
+            })
+            .addCase(GetALLEmployeeNotIncludeInAnyTeamAsyncApi.rejected, (state, action) => {})
+
         builder
             .addCase(getEmployeeByIdAsyncApi.pending, (state) => {})
             .addCase(getEmployeeByIdAsyncApi.fulfilled, (state, action) => {
@@ -74,6 +84,19 @@ export const getEmployeeByIdAsyncApi = createAsyncThunk('EmployeeReducer/getById
         throw errors[0].errorMessage
     }
 })
+export const GetALLEmployeeNotIncludeInAnyTeamAsyncApi = createAsyncThunk(
+    'EmployeeReducer/getALLEmployeeNotIncludeInAnyTeamApi',
+    async () => {
+        try {
+            const response = await GetALLEmployeeNotIncludeInAnyTeamApi()
+            return response
+        } catch (error) {
+            const json = error.response.data
+            const errors = json[''].errors
+            throw errors[0].errorMessage
+        }
+    }
+)
 export const PostEmployeeAsyncApi = createAsyncThunk('EmployeeReducer/postAsyncApi', async (body) => {
     try {
         const response = await PostEmployeeApi(body)

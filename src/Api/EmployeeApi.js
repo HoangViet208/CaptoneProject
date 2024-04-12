@@ -47,4 +47,13 @@ export const DeleteEmployeeApi = async (id) => {
     }
 }
 
+export const GetALLEmployeeNotIncludeInAnyTeamApi = async () => {
+    try {
+        const response = await axios.get(`${API_URL}/Employee/get-employee-not-include-in-any-team`)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
 export default GetEmployeeApi

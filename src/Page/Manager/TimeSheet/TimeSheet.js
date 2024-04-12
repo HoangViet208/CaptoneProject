@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 
 //date-picker-range
 import { DateRangePicker } from 'react-date-range'
@@ -6,10 +6,18 @@ import 'react-date-range/dist/styles.css'
 import 'react-date-range/dist/theme/default.css'
 import dayjs from 'dayjs'
 //mui
-import { Button, Stack, Avatar, Autocomplete, TextField,  Select,
+import {
+    Button,
+    Stack,
+    Avatar,
+    Autocomplete,
+    TextField,
+    Select,
     MenuItem,
-    FormControl, InputLabel,
-     } from '@mui/material'
+    FormControl,
+    InputLabel,
+    Popover,
+} from '@mui/material'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker'
@@ -49,45 +57,31 @@ const breadcrumbIcons = () => {
 
 const dataBreadcrumbs = breadcrumbIcons()
 
-const dataList = [
-    {
-        name: 'Việt',
-        working: [
-            { out: '7:00', in: '7:00', work: '7:00', active: '7:00', date: '2023/08/12', overTime: '3:00' },
-            { out: '7:00', in: '7:00', work: '7:00', active: '7:00', date: '2023/08/12', overTime: '0:00' },
-            { out: '7:00', in: '7:00', work: '7:00', active: '7:00', date: '2023/08/12', overTime: '0:00' },
-            { out: '7:00', in: '7:00', work: '7:00', active: '7:00', date: '2023/08/12', overTime: '0:00' },
-            { out: '7:00', in: '7:00', work: '7:00', active: '7:00', date: '2023/08/12', overTime: '3:00' },
-            { out: '7:00', in: '7:00', work: '7:00', active: '7:00', date: '2023/08/12', overTime: '0:00' },
-            { out: '7:00', in: '7:00', work: '7:00', active: '7:00', date: '2023/08/12', overTime: '3:00' },
-            { out: '7:00', in: '7:00', work: '7:00', active: '7:00', date: '2023/08/12', overTime: '0:00' },
-            { out: '7:00', in: '7:00', work: '7:00', active: '7:00', date: '2023/08/12', overTime: '0:00' },
-            { out: '7:00', in: '7:00', work: '7:00', active: '7:00', date: '2023/08/12', overTime: '3:00' },
-        ],
-    },
-    {
-        name: 'Đạt',
-        working: [
-            { out: '00:00', in: '7:00', work: '7:00', active: '7:00', date: '2023/08/12', overTime: '0:00' },
-            { out: '7:00', in: '7:00', work: '7:00', active: '7:00', date: '2023/08/12', overTime: '3:00' },
-        ],
-    },
-]
-
 export default function TimeSheet() {
+    const [anchorEl, setAnchorEl] = React.useState(null)
+
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget)
+    }
+
+    const handleClose = () => {
+        setAnchorEl(null)
+    }
+    const openPopover = Boolean(anchorEl)
+    const id = openPopover ? 'simple-popover' : undefined
     const [open, setOpen] = useState()
     const [selectedDateRange, setSelectedDateRange] = useState({
         startDate: new Date(),
         endDate: new Date(),
         key: 'selection',
     })
-    const [Department, setDepartment] = useState('')
+    const [Department, setDepartment] = useState('AllTeam')
     //setting redux
     const { DepartmentList } = useSelector((state) => state.department)
     const [userRole, setUserRole] = useState(() => {
         const userString = localStorage.getItem('role')
         const userObject = JSON.parse(userString)
-        return userObject || 'defaultRole' 
+        return userObject || 'defaultRole'
     })
 
     useEffect(() => {
@@ -109,42 +103,42 @@ export default function TimeSheet() {
     const { EmployeeList } = useSelector((state) => state.employee)
     const dispatch = useDispatch()
     useEffect(() => {
-        dispatch(getDepartmentAsyncApi()).then((res) => {    
-            setDepartment(res.payload[0].id)
-        })
+        dispatch(getDepartmentAsyncApi())
         return () => {}
     }, [])
     useEffect(() => {
         const { format, parse } = require('date-fns')
         const userStringEmployeeName = localStorage.getItem('employeeId')
         const employeeId = JSON.parse(userStringEmployeeName)
-   
-        
-         userRole === 'Manager' ? Department && dispatch(getEmployeeByIdAsyncApi(employeeId)).then((response) => {
-            if (response.meta.requestStatus == 'fulfilled') {
-                console.log('effect', response)
-                dispatch(
-                    GetWorkedSlotByIdDepartmentAsyncApi({
-                        id: response.payload.departmentId,
-                        //  id: '4752ec79-a7e7-427e-9eb4-c8e96744278f',
-                        startTime: format(selectedDateRange.startDate, 'yyyy/MM/dd'),
-                        endTime: format(selectedDateRange.endDate, 'yyyy/MM/dd'),
-                    })
-                )
-            }
-        })  : 
-        Department && dispatch(
-            GetWorkedSlotByIdDepartmentAsyncApi({
-                id: Department,
-                //  id: '4752ec79-a7e7-427e-9eb4-c8e96744278f',
-                startTime: format(selectedDateRange.startDate, 'yyyy/MM/dd'),
-                endTime: format(selectedDateRange.endDate, 'yyyy/MM/dd'),
-            })
-        )
-        
+
+        userRole === 'Manager'
+            ? Department &&
+              dispatch(getEmployeeByIdAsyncApi(employeeId)).then((response) => {
+                  if (response.meta.requestStatus == 'fulfilled') {
+                      console.log('effect', response)
+                      dispatch(
+                          GetWorkedSlotByIdDepartmentAsyncApi({
+                              id: response.payload.departmentId,
+                              //  id: '4752ec79-a7e7-427e-9eb4-c8e96744278f',
+                              startTime: format(selectedDateRange.startDate, 'yyyy/MM/dd'),
+                              endTime: format(selectedDateRange.endDate, 'yyyy/MM/dd'),
+                          })
+                      )
+                  }
+              })
+            : Department &&
+              dispatch(
+                  GetWorkedSlotByIdDepartmentAsyncApi({
+                      id: Department == 'AllTeam' ? '' : Department,
+                      //  id: '4752ec79-a7e7-427e-9eb4-c8e96744278f',
+                      startTime: format(selectedDateRange.startDate, 'yyyy/MM/dd'),
+                      endTime: format(selectedDateRange.endDate, 'yyyy/MM/dd'),
+                  })
+              )
+
         return () => {}
     }, [selectedDateRange, Department])
-    
+
     const handleChangeDepartment = (event) => {
         setDepartment(event.target.value)
     }
@@ -210,9 +204,7 @@ export default function TimeSheet() {
         setSelectedDate(newDate)
     }
     const topName = ['khoa', 'việt', 'tài']
-    const viewModalContent = (
-        <DateRangePicker ranges={[selectedDateRange]} onChange={handleDateRangeChange} minDate={new Date()} />
-    )
+    const viewModalContent = <DateRangePicker ranges={[selectedDateRange]} onChange={handleDateRangeChange} />
     const viewModalAction = (
         <Button autoFocus onClick={handleClickSave}>
             Save changes
@@ -269,35 +261,53 @@ export default function TimeSheet() {
                                 >
                                     Export
                                 </Button>
-                                <FilterListIcon className="" />
-                            </div>
-                            
-                        </div>
-                        { userRole === 'Manager' ? `` :  userRole === 'HR' ?  <div className="">
-                            <FormControl sx={{ width: 300, marginBottom: 4 }}>
-                                <InputLabel size="small" id="demo-simple-select-label">
-                                    Team
-                                </InputLabel>
-                                <Select
-                                    size="small"
-                                    className="bg-white"
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    value={Department}
-                                    label="Team"
-                                    onChange={handleChangeDepartment}
+                                <FilterListIcon aria-describedby={id} onClick={handleClick} className="" />
+                                <Popover
+                                    id={id}
+                                    open={openPopover}
+                                    anchorEl={anchorEl}
+                                    onClose={handleClose}
+                                    anchorOrigin={{
+                                        vertical: 'bottom',
+                                        horizontal: 'left',
+                                    }}
                                 >
-                                    {DepartmentList.map((item, index) => {
-                                        return (
-                                            <MenuItem key={index} value={item.id}>
-                                                {item.name}
-                                            </MenuItem>
-                                        )
-                                    })}
-                                </Select>
-                            </FormControl>
-                        </div> : ``}
-                       
+                                    a
+                                </Popover>
+                            </div>
+                        </div>
+                        {userRole === 'Manager' ? (
+                            ``
+                        ) : userRole === 'HR' ? (
+                            <div className="">
+                                <FormControl sx={{ width: 300, marginBottom: 4 }}>
+                                    <InputLabel size="small" id="demo-simple-select-label">
+                                        Team
+                                    </InputLabel>
+                                    <Select
+                                        size="small"
+                                        className="bg-white"
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                        value={Department}
+                                        label="Team"
+                                        onChange={handleChangeDepartment}
+                                    >
+                                        <MenuItem value={'AllTeam'}>All Team</MenuItem>
+                                        {DepartmentList.map((item, index) => {
+                                            return (
+                                                <MenuItem key={index} value={item.id}>
+                                                    {item.name}
+                                                </MenuItem>
+                                            )
+                                        })}
+                                    </Select>
+                                </FormControl>
+                            </div>
+                        ) : (
+                            ``
+                        )}
+
                         {/* <div className="my-4 flex gap-5">
                             <Autocomplete
                                 disablePortal
@@ -340,7 +350,9 @@ export default function TimeSheet() {
                                                             alt={item.name}
                                                             sx={{ width: 40, height: 40 }}
                                                         />
-                                                        <p className="">{item.name}({item.id})</p>
+                                                        <p className="">
+                                                            {item.name}({item.id})
+                                                        </p>
                                                     </div>
                                                 </td>
                                                 <td id="scroll" className="py-5 px-2 border-r-2">
@@ -406,7 +418,7 @@ export default function TimeSheet() {
                                                                             </div>
                                                                             <div className="flex items-center">
                                                                                 <div className="text-gray-400 font-medium">
-                                                                                    {working.overTime}
+                                                                                    x1
                                                                                 </div>
                                                                                 <div
                                                                                     id="Coefficients"

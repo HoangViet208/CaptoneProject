@@ -23,7 +23,7 @@ function Login() {
         if (userObject && userObject == 'Manager') {
             history.push('/Manager/Employee')
         }
-        if (userObject && userObject == 'User') {
+        if (userObject && userObject == 'Employee') {
             history.push('/Employee/Dashboard')
         }
         if (userObject && userObject == 'HR') {
@@ -59,7 +59,7 @@ function Login() {
                 localStorage.setItem('employeeId', JSON.stringify(response.payload.employeeId))
                 localStorage.setItem('employeeName', JSON.stringify(response.payload.employeeName))
                 localStorage.setItem('avatar', JSON.stringify(response.payload.avatar))
-                if (response.payload.role == 'User') {
+                if (response.payload.role == 'Employee') {
                     history.push('/Employee/Dashboard')
                 } else if (response.payload.role == 'Manager') {
                     history.push('/Manager/Employee')
