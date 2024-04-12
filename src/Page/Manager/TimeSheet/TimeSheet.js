@@ -391,7 +391,7 @@ export default function TimeSheet() {
                                                             sx={{ width: 40, height: 40 }}
                                                         />
                                                         <p className="">
-                                                            {item.name}({item.id})
+                                                            {item.name} ({item.teamName})
                                                         </p>
                                                     </div>
                                                 </td>
@@ -406,7 +406,7 @@ export default function TimeSheet() {
                                                                         className="min-w-[190px] border-[2px] border-red-300 border-dashed truncate"
                                                                     >
                                                                          <div className="mx-2 font-bold text-center mt-[1px] font-serif">
-                                                                            <div>Working</div>
+                                                                            <div>{working.isOvertime == true ? "Overtime" : "Working" }</div>
                                                                         </div>
                                                                         <div className="flex  mx-2">
                                                                             <div>{getDayOfWeek(working.date)}</div>
