@@ -19,8 +19,9 @@ import KeyIcon from '@mui/icons-material/Key'
 import TabsData from '../../Components/Tabs'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import NotificationComponent from '../../Components/Notification'
-import { getDatabase, ref, onValue, set  } from 'firebase/database'
+import { getDatabase, ref, onValue, set } from 'firebase/database'
 import app from '../../Config/FirebaseConfig'
+import TodayIcon from '@mui/icons-material/Today'
 const tabsData = [
     {
         label: 'General',
@@ -60,10 +61,10 @@ export default function NavbarManager() {
     const userObject = JSON.parse(userString)
     const [isLoading, setIsLoading] = useState(false)
     const [dataNotification, setDataNotification] = useState([])
-   
+
     const employeeIdString = localStorage.getItem('employeeId')
     const employeeId = JSON.parse(employeeIdString)
-    console.log("employeeId", employeeId)
+    console.log('employeeId', employeeId)
     const fetchDataFromDatabase = () => {
         setIsLoading(true)
         const db = getDatabase(app)
@@ -72,15 +73,16 @@ export default function NavbarManager() {
         onValue(dbRef, (snapshot) => {
             if (snapshot.exists()) {
                 setIsLoading(false)
-                
-                const data = Object.entries(snapshot.val()).map(([id, value]) => {
-         
-                    if (value.employeeDeciderId == employeeId) {
-                        return { id, ...value };
-                    }
-                    return null; 
-                }).filter(item => item !== null);
-                console.log("employeeId tung cai", data)
+
+                const data = Object.entries(snapshot.val())
+                    .map(([id, value]) => {
+                        if (value.employeeDeciderId == employeeId) {
+                            return { id, ...value }
+                        }
+                        return null
+                    })
+                    .filter((item) => item !== null)
+                console.log('employeeId tung cai', data)
                 setDataNotification(data)
             } else {
                 setIsLoading(false)
@@ -88,21 +90,19 @@ export default function NavbarManager() {
             }
         })
     }
-    function UpdateIsSeenToTrue( newValue ) {
-        console.log("fetchRealDatabase da chay")
-       
-            const db = getDatabase(); // Lấy tham chiếu đến database
-            const recordRef = ref(db, `managerNoti/${newValue.id}`); // Tham chiếu đến bản ghi cụ thể bằng id
-    
-            set(recordRef, { ...newValue, isSeen: true })
-                .then(() => {
-                    console.log('fetchRealDatabase isSeen updated successfully');
+    function UpdateIsSeenToTrue(newValue) {
+        console.log('fetchRealDatabase da chay')
 
-                })
-                .catch((error) => {
-                    console.error('fetchRealDatabase Error updating isSeen: ', error);
-                });
-       
+        const db = getDatabase() // Lấy tham chiếu đến database
+        const recordRef = ref(db, `managerNoti/${newValue.id}`) // Tham chiếu đến bản ghi cụ thể bằng id
+
+        set(recordRef, { ...newValue, isSeen: true })
+            .then(() => {
+                console.log('fetchRealDatabase isSeen updated successfully')
+            })
+            .catch((error) => {
+                console.error('fetchRealDatabase Error updating isSeen: ', error)
+            })
     }
     useEffect(() => {
         if (userObject && userObject == 'Manager') {
@@ -190,6 +190,15 @@ export default function NavbarManager() {
                                 <span className="ml-3">Dashboard</span>
                             </Link>
                         </li> */}
+                        <li className="cursor-pointer p-2">
+                            <Link
+                                to="/Manager/Scheduling"
+                                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
+                            >
+                                <TodayIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                <span className="flex-1 ml-3 whitespace-nowrap">Worked Time</span>
+                            </Link>
+                        </li>
                         <li className="cursor-pointer p-2">
                             <Link
                                 to="/Manager/Employee"
@@ -428,6 +437,18 @@ export default function NavbarManager() {
                                 <span className="ml-3 text-lg">Dashboard</span>
                             </Link>
                         </li> */}
+                        <li className="cursor-pointer text-center mx-auto justify-center items-center">
+                            <NavLink
+                                to="/Manager/WorkedTime"
+                                className="flex items-center gap-2 p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
+                                activeStyle={{
+                                    background: '#dbeafe',
+                                }}
+                            >
+                                <TodayIcon className="ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                <span className="ml-3">Worked Time</span>
+                            </NavLink>
+                        </li>
                         <li className="cursor-pointer text-center mx-auto justify-center items-center">
                             <NavLink
                                 to="/Manager/Employee"

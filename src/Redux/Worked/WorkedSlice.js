@@ -165,16 +165,19 @@ export const GetWorkedTypeAsyncApi = createAsyncThunk('WorkedReducer/GetWorkedTy
         throw errors[0].errorMessage
     }
 })
-export const getWorkedByIdAsyncApi = createAsyncThunk('WorkedReducer/getByIdAsyncApi', async (id) => {
-    try {
-        const response = await GetWorkedByIdApi(id)
-        return response
-    } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+export const getWorkedByIdAsyncApi = createAsyncThunk(
+    'WorkedReducer/getByIdAsyncApi',
+    async ({ id, isWorkLate, isLeaveSoon, isNotCheckIn, isNotCheckOut }) => {
+        try {
+            const response = await GetWorkedByIdApi(id,isWorkLate,isLeaveSoon,isNotCheckIn,isNotCheckOut)
+            return response
+        } catch (error) {
+            const json = error.response.data
+            const errors = json[''].errors
+            throw errors[0].errorMessage
+        }
     }
-})
+)
 export const PostWorkedAsyncApi = createAsyncThunk('WorkedReducer/postAsyncApi', async ({ id, body }) => {
     try {
         console.log('thanh cong1', id, body)

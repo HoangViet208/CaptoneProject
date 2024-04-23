@@ -32,3 +32,19 @@ export const GetWorkedSlotExcelApi = async (id) => {
         throw error
     }
 }
+export const GetWorkedSlotForPersonalApi = async (id, month) => {
+    try {
+        const response = await axios.get(`${API_URL}/WorkSlot/get-workslot-of-department-in-one-month-for-personal?month=${month}&employeeId=${id}`) 
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+export const GetWorkedSlotForTeamApi = async (teamId, month, employeeId) => {
+    try {
+        const response = await axios.get(`${API_URL}/WorkSlot/get-workslot-of-department-in-one-month-for-team?departmentId=${teamId}&month=${month}&employeeId=${employeeId}`) 
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}

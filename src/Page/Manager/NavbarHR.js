@@ -19,6 +19,7 @@ import ChangePassword from './Profile/ChangePassword'
 import TabsData from '../../Components/Tabs'
 import PopupData from '../../Components/Popup'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
+import TodayIcon from '@mui/icons-material/Today'
 const tabsData = [
     {
         label: 'General',
@@ -55,14 +56,13 @@ export default function NavbarHR() {
     const employeeName = JSON.parse(userStringEmployeeName)
     const userString = localStorage.getItem('role')
     const userObject = JSON.parse(userString)
-    
+
     useEffect(() => {
         if (userObject && userObject == 'Manager') {
             history.push('/Manager/Employee')
         } else if (userObject && userObject == 'Employee') {
             history.push('/Employee/Dashboard')
         } else if (userObject && userObject == 'HR') {
-     
         } else if (userObject && userObject == 'Admin') {
             history.push('/Admin/Team')
         } else {
@@ -127,11 +127,29 @@ export default function NavbarHR() {
                     <ul className="space-y-2 font-medium cursor-pointer">
                         <li className="cursor-pointer p-2">
                             <Link
+                                to="/Hr/Scheduling"
+                                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
+                            >
+                                <TodayIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                <span className="flex-1 ml-3 whitespace-nowrap">Worked Time</span>
+                            </Link>
+                        </li>
+                        <li className="cursor-pointer p-2">
+                            <Link
                                 to="/Hr/Employee"
                                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
                             >
                                 <BadgeIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
                                 <span className="flex-1 ml-3 whitespace-nowrap">Employee</span>
+                            </Link>
+                        </li>
+                        <li className="cursor-pointer p-2">
+                            <Link
+                                to="/Hr/WorkedTime"
+                                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
+                            >
+                                <TodayIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                <span className="flex-1 ml-3 whitespace-nowrap">Worked Time</span>
                             </Link>
                         </li>
                         <li className="cursor-pointer p-2">
@@ -270,75 +288,75 @@ export default function NavbarHR() {
                         </div>
 
                         <div className="flex items-center ">
-                                <div>
-                                    <Tooltip title="Account settings">
-                                        <IconButton
-                                            onClick={handleClick}
-                                            size="small"
-                                            sx={{ ml: 1 }}
-                                            aria-controls={open ? 'account-menu' : undefined}
-                                            aria-haspopup="true"
-                                            aria-expanded={open ? 'true' : undefined}
-                                        >
-                                            <Avatar sx={{ width: 32, height: 32 }}>{avatar && avatar.charAt(0)}</Avatar>
-                                        </IconButton>
-                                    </Tooltip>
-                                </div>
-                                <Menu
-                                    anchorEl={anchorEl}
-                                    id="account-menu"
-                                    open={open}
-                                    onClose={handleClose}
-                                    onClick={handleClose}
-                                    PaperProps={{
-                                        elevation: 0,
-                                        sx: {
-                                            overflow: 'visible',
-                                            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-                                            mt: 1.5,
-                                            '& .MuiAvatar-root': {
-                                                width: 32,
-                                                height: 32,
-                                                ml: -0.5,
-                                                mr: 1,
-                                            },
-                                            '&:before': {
-                                                content: '""',
-                                                display: 'block',
-                                                position: 'absolute',
-                                                top: 0,
-                                                right: 14,
-                                                width: 10,
-                                                height: 10,
-                                                bgcolor: 'background.paper',
-                                                transform: 'translateY(-50%) rotate(45deg)',
-                                                zIndex: 0,
-                                            },
-                                        },
-                                    }}
-                                    transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                                    anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-                                >
-                                    <div className=" px-5 py-2 cursor-default w-64">
-                                        <p>
-                                            {employeeName && employeeName} <strong>({role && role})</strong>
-                                        </p>
-                                    </div>
-                                    <hr className="mb-2" />
-
-                                    <MenuItem onClick={handleClickOpenAdd}>
-                                        <Avatar /> Profile
-                                    </MenuItem>
-                                    <Divider />
-
-                                    <MenuItem onClick={handleCloseOut}>
-                                        <ListItemIcon>
-                                            <LogoutIcon fontSize="small" />
-                                        </ListItemIcon>
-                                        Logout
-                                    </MenuItem>
-                                </Menu>
+                            <div>
+                                <Tooltip title="Account settings">
+                                    <IconButton
+                                        onClick={handleClick}
+                                        size="small"
+                                        sx={{ ml: 1 }}
+                                        aria-controls={open ? 'account-menu' : undefined}
+                                        aria-haspopup="true"
+                                        aria-expanded={open ? 'true' : undefined}
+                                    >
+                                        <Avatar sx={{ width: 32, height: 32 }}>{avatar && avatar.charAt(0)}</Avatar>
+                                    </IconButton>
+                                </Tooltip>
                             </div>
+                            <Menu
+                                anchorEl={anchorEl}
+                                id="account-menu"
+                                open={open}
+                                onClose={handleClose}
+                                onClick={handleClose}
+                                PaperProps={{
+                                    elevation: 0,
+                                    sx: {
+                                        overflow: 'visible',
+                                        filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                                        mt: 1.5,
+                                        '& .MuiAvatar-root': {
+                                            width: 32,
+                                            height: 32,
+                                            ml: -0.5,
+                                            mr: 1,
+                                        },
+                                        '&:before': {
+                                            content: '""',
+                                            display: 'block',
+                                            position: 'absolute',
+                                            top: 0,
+                                            right: 14,
+                                            width: 10,
+                                            height: 10,
+                                            bgcolor: 'background.paper',
+                                            transform: 'translateY(-50%) rotate(45deg)',
+                                            zIndex: 0,
+                                        },
+                                    },
+                                }}
+                                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                            >
+                                <div className=" px-5 py-2 cursor-default w-64">
+                                    <p>
+                                        {employeeName && employeeName} <strong>({role && role})</strong>
+                                    </p>
+                                </div>
+                                <hr className="mb-2" />
+
+                                <MenuItem onClick={handleClickOpenAdd}>
+                                    <Avatar /> Profile
+                                </MenuItem>
+                                <Divider />
+
+                                <MenuItem onClick={handleCloseOut}>
+                                    <ListItemIcon>
+                                        <LogoutIcon fontSize="small" />
+                                    </ListItemIcon>
+                                    Logout
+                                </MenuItem>
+                            </Menu>
+                        </div>
                     </div>
                 </div>
             </nav>
@@ -370,6 +388,18 @@ export default function NavbarHR() {
                                 <span className="ml-3 text-lg">Dashboard</span>
                             </Link>
                         </li> */}
+                        <li className="cursor-pointer text-center mx-auto justify-center items-center">
+                            <NavLink
+                                to="/Manager/WorkedTime"
+                                className="flex items-center gap-2 p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
+                                activeStyle={{
+                                    background: '#dbeafe',
+                                }}
+                            >
+                                <TodayIcon className="ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                <span className="ml-3">Worked Time</span>
+                            </NavLink>
+                        </li>
                         <li className="cursor-pointer text-center mx-auto justify-center items-center">
                             <NavLink
                                 to="/Hr/Employee"

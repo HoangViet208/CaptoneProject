@@ -3,11 +3,15 @@ import {
     GetWorkedSlotByIdDepartmentApi,
     GetWorkedSlotByIdEmployeeApi,
     GetWorkedSlotExcelApi,
+    GetWorkedSlotForPersonalApi,
+    GetWorkedSlotForTeamApi,
 } from '../../Api/WorkSlotEmployeeApi'
 
 const initialState = {
     WorkSlotByEmployee: [],
     WorkSlotByDepartment: [],
+    WorkslotForPersonal: [],
+    WorkslotForTeam: [],
 }
 
 const authSlice = createSlice({
@@ -56,6 +60,29 @@ const authSlice = createSlice({
             .addCase(GetWorkedSlotExcelAsyncApi.rejected, (state, action) => {
                 state.loading = false
             })
+        builder
+            .addCase(GetWorkedSlotForTeamAsyncApi.pending, (state) => {
+                state.loading = true
+             
+            })
+            .addCase(GetWorkedSlotForTeamAsyncApi.fulfilled, (state, action) => {
+                state.loading = false
+                state.WorkslotForTeam = action.payload
+            })
+            .addCase(GetWorkedSlotForTeamAsyncApi.rejected, (state, action) => {
+                state.loading = false
+            })
+        builder
+            .addCase(GetWorkedSlotForPersonalAsyncApi.pending, (state) => {
+                state.loading = true
+            })
+            .addCase(GetWorkedSlotForPersonalAsyncApi.fulfilled, (state, action) => {
+                state.loading = false
+                state.WorkslotForPersonal = action.payload
+            })
+            .addCase(GetWorkedSlotForPersonalAsyncApi.rejected, (state, action) => {
+                state.loading = false
+            })
     },
 })
 
@@ -91,6 +118,34 @@ export const GetWorkedSlotExcelAsyncApi = createAsyncThunk(
     async (id) => {
         try {
             const response = await GetWorkedSlotExcelApi(id)
+            return response
+        } catch (error) {
+            const json = error.response.data
+            const errors = json[''].errors
+            throw errors[0].errorMessage
+        }
+    }
+)
+
+export const GetWorkedSlotForPersonalAsyncApi = createAsyncThunk(
+    'WorkSlotEmployeeedReducer/GetWorkedSlotForPersonalApi',
+    async ({ id, month }) => {
+        try {
+            const response = await GetWorkedSlotForPersonalApi(id, month)
+            return response
+        } catch (error) {
+            const json = error.response.data
+            const errors = json[''].errors
+            throw errors[0].errorMessage
+        }
+    }
+)
+
+export const GetWorkedSlotForTeamAsyncApi = createAsyncThunk(
+    'WorkSlotEmployeeedReducer/GetWorkedSlotForTeamApi',
+    async ({ teamId, month, employeeId }) => {
+        try {
+            const response = await GetWorkedSlotForTeamApi(teamId, month, employeeId)
             return response
         } catch (error) {
             const json = error.response.data

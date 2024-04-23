@@ -30,7 +30,8 @@ import {
     DialogActions,
     Tooltip,
     IconButton,
-    InputLabel,
+    FormControlLabel,
+    Checkbox,
 } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
 //Icon
@@ -114,12 +115,20 @@ export default function Worked() {
         setAnchorEl(event.currentTarget)
     }
 
+    const [anchorElFilter, setAnchorElFilter] = React.useState(null)
+
+    const handleClickFilter = (event) => {
+        setAnchorElFilter(event.currentTarget)
+    }
+
     const [error, SetError] = useState()
     const [errorImport, seterrorImport] = useState(false)
     const [chosenFileName, setChosenFileName] = useState('Chosen file')
     const fileInputRef = useRef(null)
     const openPopover = Boolean(anchorEl)
+    const openPopoverFilter = Boolean(anchorElFilter)
     const id = openPopover ? 'simple-popover' : undefined
+    const idFilter = openPopover ? 'simple-popover' : undefined
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(5)
     const [open, setOpen] = useState(false)
@@ -140,14 +149,47 @@ export default function Worked() {
     const userStringEmployeeName = localStorage.getItem('employeeId')
     const employeeId = JSON.parse(userStringEmployeeName)
     const showSnackbar = useSnackbar()
+    const initialViewStatus = {
+        isWorkLate: false,
+        isLeaveSoon: false,
+        isNotCheckIn: false,
+        isNotCheckOut: false,
+    }
+    const labels = {
+        isWorkLate: 'Work Late',
+        isLeaveSoon: 'Leave Soon',
+        isNotCheckIn: 'Not Check In',
+        isNotCheckOut: 'Not Check Out',
+    }
+
+    const [viewStatus, setViewStatus] = useState(initialViewStatus)
+    console.log('initialViewStatus', viewStatus)
+    const handleCheckboxChange = (event) => {
+        const { name, checked } = event.target
+        setViewStatus((prevDateStatus) => ({
+            ...prevDateStatus,
+            [name]: checked,
+        }))
+    }
     //setting redux
     const { WorkedByEmployee, loading } = useSelector((state) => state.worked)
 
     const dispatch = useDispatch()
     useEffect(() => {
-        dispatch(getWorkedByIdAsyncApi(employeeId))
+        dispatch(
+            getWorkedByIdAsyncApi({
+                id: employeeId,
+                isWorkLate: viewStatus.isWorkLate,
+                isLeaveSoon: viewStatus.isLeaveSoon,
+                isNotCheckIn: viewStatus.isNotCheckIn,
+                isNotCheckOut: viewStatus.isNotCheckOut,
+            })
+        )
         return () => {}
-    }, [])
+    }, [viewStatus])
+    const handleCloseFilter = () => {
+        setAnchorElFilter(null)
+    }
     const handleClose = () => {
         setAnchorEl(null)
         setIsAction(0)
@@ -516,6 +558,31 @@ export default function Worked() {
                         <IconBreadcrumbs data={dataBreadcrumbs} />
                         <div className="ml-auto uppercase"></div>
                     </div>
+                    <div className="float-right mr-8 -mt-5">
+                        <FilterListIcon aria-describedby={idFilter} onClick={handleClickFilter} className="" />
+                        <Popover
+                            id={idFilter}
+                            open={openPopoverFilter}
+                            anchorEl={anchorElFilter}
+                            onClose={handleCloseFilter}
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                            }}
+                        >
+                            <div className="flex flex-col py-3 px-4">
+                                {Object.entries(viewStatus).map(([day, checked]) => (
+                                    <FormControlLabel
+                                        key={day}
+                                        control={
+                                            <Checkbox name={day} checked={checked} onChange={handleCheckboxChange} />
+                                        }
+                                        label={labels[day]}
+                                    />
+                                ))}
+                            </div>
+                        </Popover>
+                    </div>
                     <div className="bg-white p-4">
                         <div>
                             {loading == true ? (
@@ -523,7 +590,7 @@ export default function Worked() {
                             ) : (
                                 <TableData
                                     tableHeight={470}
-                                    rowsPerPageOptions={[5,25,50]}
+                                    rowsPerPageOptions={[5, 25, 50]}
                                     rows={rows}
                                     columns={columns}
                                     page={page}

@@ -384,15 +384,16 @@ export default function TimeSheet() {
                                         return (
                                             <tr key={index}>
                                                 <td className="py-5 border-r-2 px-2">
-                                                    <div className="flex gap-2 items-center ">
+                                                    <div className="flex flex-col gap-2 items-center ">
                                                         <Avatar
                                                             src={item.avatar}
                                                             alt={item.name}
                                                             sx={{ width: 40, height: 40 }}
                                                         />
                                                         <p className="">
-                                                            {item.name} ({item.teamName})
+                                                            {item.name} ({item.teamName}        )
                                                         </p>
+                                                        <p>{item.employeeNumber} </p>
                                                     </div>
                                                 </td>
                                                 <td id="scroll" className="py-5 px-2 border-r-2">

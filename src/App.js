@@ -26,6 +26,8 @@ import DashboardEmployee from './Page/Employee/Dashboard/Dashboard'
 import WorkSlot from './Page/Manager/WorkSlot/WorkSlot'
 import Wifi from './Page/Admin/Wifi/Wifi'
 import GenerationData from './Page/GenerationData/GenerationData'
+import Scheduling from './Page/Employee/Scheduling/Scheduling'
+import SchedulingHRandManagament from './Page/Manager/Scheduling/Scheduling'
 
 export const history = createBrowserHistory()
 
@@ -41,6 +43,7 @@ function App() {
                 {/* <Route path="/Admin/RiskEmployeeSettings" exact component={RiskEmployeeSettings} /> */}
                 <Route path="/Admin/TrackSettings" exact component={TrackSettings} />
                 {/*Manager*/}
+                <Route path="/Manager/WorkedTime" exact component={SchedulingHRandManagament} />
                 <Route path="/Profile" exact component={Profile} />
                 <Route path="/Manager/Employee" exact component={Employee} />
                 <Route path="/Manager/Employee/Detail/:id" render={(props) => <EmployeeDetail {...props} />} />
@@ -52,6 +55,7 @@ function App() {
                 <Route path="/Manager/ManageOvertime" exact component={ManageOvertime} />
                 <Route path="/Manager/ManageWorked" exact component={ManageWorked} />
                 {/*HR*/}
+                <Route path="/Hr/WorkedTime" exact component={SchedulingHRandManagament} />
                 <Route path="/Hr/Employee" exact component={Employee} />
                 <Route path="/Hr/Employee/Detail/:id" render={(props) => <EmployeeDetail {...props} />} />
                 <Route path="/Hr/Workslot" exact component={WorkSlot} />
@@ -62,7 +66,7 @@ function App() {
                 <Route path="/Hr/TimeSheet" exact component={TimeSheet} />
                 <Route path="/Hr/TrackSettings" exact component={TrackSettings} />
                 {/*Employee*/}
-
+                <Route path="/Employee/WorkedTime" exact component={Scheduling} />
                 <Route path="/Employee/Dashboard" exact component={DashboardEmployee} />
                 <Route path="/Employee/ApplyLeave" exact component={ApplyLeave} />
                 <Route path="/Employee/Overtime" exact component={Overtime} />

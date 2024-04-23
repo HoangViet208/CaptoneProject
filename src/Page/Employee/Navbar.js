@@ -21,6 +21,7 @@ import ChangePassword from '../Manager/Profile/ChangePassword'
 import { getDatabase, ref, onValue, set } from 'firebase/database'
 import app from '../../Config/FirebaseConfig'
 import NotificationComponent from '../../Components/Notification'
+import TodayIcon from '@mui/icons-material/Today';
 
 const tabsData = [
     {
@@ -192,6 +193,15 @@ console.log("employeeId", employeeId)
                         </li>
                         <li className="cursor-pointer p-2">
                             <Link
+                                to="/Employee/Worked"
+                                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
+                            >
+                                <TodayIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                <span className="flex-1 ml-3 whitespace-nowrap">Worked Time</span>
+                            </Link>
+                        </li>
+                        <li className="cursor-pointer p-2">
+                            <Link
                                 to="/Employee/ApplyLeave"
                                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
                             >
@@ -217,7 +227,7 @@ console.log("employeeId", employeeId)
                                 <span className="flex-1 ml-3 whitespace-nowrap">Request Worked</span>
                             </Link>
                         </li>
-
+                        
                         <li className="cursor-pointer p-2">
                             <Link
                                 to="/"
@@ -392,6 +402,18 @@ console.log("employeeId", employeeId)
                             >
                                 <DashboardIcon className="ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
                                 <span className="ml-3">Dashboard</span>
+                            </NavLink>
+                        </li>
+                        <li className="cursor-pointer text-center mx-auto justify-center items-center">
+                            <NavLink
+                                to="/Employee/WorkedTime"
+                                className="flex items-center gap-2 p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
+                                activeStyle={{
+                                    background: '#dbeafe',
+                                }}
+                            >
+                                <TodayIcon className="ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                <span className="ml-3">Worked Time</span>
                             </NavLink>
                         </li>
                         <li className="cursor-pointer text-center mx-auto justify-center items-center">

@@ -14,13 +14,17 @@ import {
     InputLabel,
     Stack
 } from '@mui/material'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker'
+import dayjs from 'dayjs'
 //Icon
 //date-picker-range
 import { DateRangePicker } from 'react-date-range'
 import 'react-date-range/dist/styles.css'
 import 'react-date-range/dist/theme/default.css'
-import dayjs from 'dayjs'
-import { calculateTime, formatDate, formattedDate, getDayOfWeek } from '../../../Hook/useFormatDate'
+
+import { calculateTime, formatDate, formatDateExact, formattedDate, getDayOfWeek } from '../../../Hook/useFormatDate'
 import EventAvailableIcon from '@mui/icons-material/EventAvailable'
 import PopupData from '../../../Components/Popup'
 import { useDispatch, useSelector } from 'react-redux'
@@ -115,14 +119,16 @@ export default function AllRequest() {
     const [open, setOpen] = useState()
     const [leaveRequests, setLeaveRequests] = useState([])
     const [overtimeRequests, setOvertimeRequests] = useState([])
-    
+    const [selectedDate, setSelectedDate] = useState(dayjs())
+  
     const param = useParams()
+    const IdEmployee = param.id
     const { AllRequestInEmployee, ApplyLeaveList, ApplyLeaveTypeList, valueTabs  } = useSelector((state) => state.applyLeave)
     const { WorkedList } = useSelector((state) => state.worked)
     const dispatch = useDispatch()
     useEffect(() => {
-        dispatch(GetApplyLeaveTypeAsyncApi())
-        dispatch(GetAllRequestAsyncApi(param.id))
+        const newDate = formatDateExact(selectedDate)
+        dispatch(GetAllRequestAsyncApi({id: IdEmployee,date: newDate }))
             .then((response) => {
                 if (response.meta.requestStatus == 'fulfilled') {
                     setLeaveRequests(response.payload.leaveRequests)
@@ -136,7 +142,7 @@ export default function AllRequest() {
             console.log('ApplyLeaveList  da chay')
             dispatch(ApplyLeaveAction.clearApplyLeave())
         }
-    }, [])
+    }, [selectedDate])
     useEffect(() => {
         const userStringEmployeeName = localStorage.getItem('employeeId')
         const employeeId = JSON.parse(userStringEmployeeName)
@@ -145,6 +151,7 @@ export default function AllRequest() {
     }, [])
     console.log('AllRequestInEmployee', AllRequestInEmployee)
     //action Leave
+ 
     const [pageLeave, setPageLeave] = useState(0)
     const [rowsPerPageLeave, setRowsPerPageLeave] = useState(10)
     const handleChangePageLeave = (newPage) => {
@@ -153,6 +160,9 @@ export default function AllRequest() {
     const handleChangeRowsPerPageLeave = (event) => {
         setRowsPerPageLeave(+event.target.value)
         setPageLeave(0)
+    }
+    const handleDateChange = (newDate) => {
+        setSelectedDate(newDate)
     }
     const [openModal, setOpenModal] = useState(false)
     const [dateRange, setDateRange] = useState([
@@ -923,7 +933,7 @@ export default function AllRequest() {
             />
             <div className="flex w-full">
                 <div className="ml-auto">
-                    <Stack direction="row" spacing={2}>
+                  {/* <Stack direction="row" spacing={2}>
                         <Button
                             onClick={handleClickOpen}
                             variant="outlined"
@@ -944,7 +954,32 @@ export default function AllRequest() {
                                   ' - ' +
                                   formattedDate(selectedDateRange.endDate)}
                         </Button>
-                    </Stack>
+                    </Stack> */}
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DesktopDatePicker
+                                label="Month"
+                                size="small"
+                                openTo="month"
+                                views={['year', 'month']}
+                                value={selectedDate}
+                                onChange={handleDateChange}
+                                inputFormat="DD/MM/YYYY "
+                                // onChange={() => 1}
+                                renderInput={(params) => (
+                                    <TextField
+                                        size="small"
+                                        // error={
+                                        //     formik.errors.rentFrom &&
+                                        //         formik.touched.rentFrom
+                                        //         ? true
+                                        //         : undefined
+                                        // }
+                                        {...params}
+                                    />
+                                )}
+                            />
+                        </LocalizationProvider>
+                   
                 </div>
             </div>
             <div className="mt-2 -ml-4">

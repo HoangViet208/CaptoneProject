@@ -13,10 +13,14 @@ const GetWorkedApi = async (name, status, date) => {
     }
 }
 
-export const GetWorkedByIdApi = async (id) => {
+export const GetWorkedByIdApi = async (id,isWorkLate,isLeaveSoon,isNotCheckIn,isNotCheckOut) => {
     try {
         const response = await axios.get(
-            `${API_URL}/RequestWorkTime/get-workslot-lack-time-of-employee?employeeId=${id}`
+            `${API_URL}/RequestWorkTime/get-workslot-lack-time-of-employee?employeeId=${id}
+            &isWorkLate=${isWorkLate}
+            &isLeaveSoon=${isLeaveSoon}
+            &isNotCheckIn=${isNotCheckIn}
+            &isNotCheckOut=${isNotCheckOut}`
         )
         return response.data
     } catch (error) {

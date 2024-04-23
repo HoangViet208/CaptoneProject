@@ -215,9 +215,10 @@ export const GetApplyLeaveByRequestIdAsyncApi = createAsyncThunk(
     }
 )
 
-export const GetAllRequestAsyncApi = createAsyncThunk('ApplyLeaveReducer/GetAllRequestApi', async (id) => {
+export const GetAllRequestAsyncApi = createAsyncThunk('ApplyLeaveReducer/GetAllRequestApi', async ({id,date}) => {
     try {
-        const response = await GetAllRequestApi(id)
+        console.log("nguqua", id ,date)
+        const response = await GetAllRequestApi(id, date)
         return response
     } catch (error) {
         const json = error.response.data
