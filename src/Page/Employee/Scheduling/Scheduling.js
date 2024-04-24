@@ -35,7 +35,6 @@ import Navbar from '../Navbar'
 import PopupData from '../../../Components/Popup'
 import { formatDateExact, formattedDate } from '../../../Hook/useFormatDate'
 
-
 //style
 //style
 import './Style.css'
@@ -50,7 +49,6 @@ import { getDepartmentAsyncApi } from '../../../Redux/Department/DepartmentSlice
 import { useSnackbar } from '../../../Hook/useSnackbar'
 import { GetWorkedSlotForPersonalAsyncApi } from '../../../Redux/WorkSlotEmployee/WorkSlotEmployeeSlice'
 
-
 const breadcrumbIcons = () => {
     const data = [
         { title: 'Dashboard', icon: <DashboardIcon />, url: '/', status: true },
@@ -62,6 +60,7 @@ const breadcrumbIcons = () => {
 const dataBreadcrumbs = breadcrumbIcons()
 
 export default function Scheduling() {
+    const [loadingData, setLoadingData] = useState(true)
     const [open, setOpen] = useState()
     const [selectedDateRange, setSelectedDateRange] = useState({
         startDate: new Date(),
@@ -73,35 +72,35 @@ export default function Scheduling() {
     const [messageAlert, setMessageAlert] = useState('')
     const [alert, setAlert] = useState('')
 
-    let callbackFunctionAlert = (childData) => {
-        setAlert(childData)
-    }
-
-    let callbackFunctionPopup = (childData) => {
-        setOpen(childData)
-    }
-    let callbackFunctionPopup1 = (childData) => {
-        setOpen1(childData)
-    }
     const moment = require('moment')
-    const [currentMonth, setCurrentMonth] = useState(null) 
+    const [currentMonth, setCurrentMonth] = useState(null)
 
     const [userDad, setUserDad] = useState({})
-   
+
     const [Department, setDepartment] = useState('')
     //setting redux
     const { WorkedSlot, loading, WorkslotForPersonal } = useSelector((state) => state.WorkSlotEmployee)
-  
+
     const dispatch = useDispatch()
     const userStringEmployeeName = localStorage.getItem('employeeId')
     const employeeId = JSON.parse(userStringEmployeeName)
     useEffect(() => {
-        currentMonth &&   dispatch(
+        setLoadingData(true)
+        currentMonth &&
+            dispatch(
                 GetWorkedSlotForPersonalAsyncApi({
                     month: formatDateExact(currentMonth),
                     id: employeeId,
                 })
             )
+            .then((response) => {
+                if (response.meta.requestStatus == 'fulfilled') {
+                    setLoadingData(false)
+                }
+            })
+            .catch((error) => {
+                setLoadingData(false)
+            })
         return () => {}
     }, [currentMonth])
 
@@ -184,7 +183,7 @@ export default function Scheduling() {
             start: '2023-09-09',
         },
     ]
-    
+
     const newEvents = WorkslotForPersonal.map((item, index) => {
         return {
             start: item.date,
@@ -222,31 +221,22 @@ export default function Scheduling() {
                 </div>
             )
         } else {
-            // Xử lý hiển thị các sự kiện khác
             return (
                 <div className="text-black">
-                    {/* <b>{eventInfo.timeText}</b>
-                    <div className="flex my-2 gap-2 bg-none items-center mx-auto ml-4">
-                        <button
-                            className={`rounded-full ${
-                                eventInfo.event.title == 'Working'
-                                    ? 'bg-green-600'
-                                    : eventInfo.event.title == 'Public Holiday'
-                                    ? 'bg-red-600'
-                                    : 'bg-gray-600'
-                            }   w-2 h-2`}
-                        ></button>
-                        <p className=" ">
-                            <strong>Title : </strong>
-                            {eventInfo.event.title}{' '}
-                        </p>
-                    </div> */}
                     {eventInfo.event.title == 'Working' ? (
                         <div className="flex bg-blue-500 p-2 rounded-md my-2 gap-2 bg-none items-center mx-auto">
                             <p className="text-white">{eventInfo.event.extendedProps.time}</p>
                         </div>
-                    ) : eventInfo.event.title == 'Public Holiday' ? (
-                        <div className="flex bg-red-500 p-2 rounded-md my-2 gap-2 bg-none items-center mx-auto ">
+                    ) : eventInfo.event.title == 'Overtime' ? (
+                        <div className="flex bg-orange-500 p-2 rounded-md my-2 gap-2 bg-none items-center mx-auto ">
+                            <p className="text-white">{eventInfo.event.extendedProps.time}</p>
+                        </div>
+                    ) : eventInfo.event.title == 'Overtime' ? (
+                        <div className="flex bg-orange-500 p-2 rounded-md my-2 gap-2 bg-none items-center mx-auto ">
+                            <p className="text-white">{eventInfo.event.title}</p>
+                        </div>
+                    ) : eventInfo.event.title == 'Leave' ? (
+                        <div className="flex bg-emerald-500 p-2 rounded-md my-2 gap-2 bg-none items-center mx-auto ">
                             <p className="text-white">{eventInfo.event.title}</p>
                         </div>
                     ) : (
@@ -309,14 +299,20 @@ export default function Scheduling() {
             />
 
             <Navbar />
-
-            <div className="sm:ml-64  pt-20 bg-gray-50">
+            <div className="text-xl mb-5 sm:ml-64  pt-20 ">
+                <div className="flex">
+                    <div className="ml-4 flex  items-center gap-1">
+                        <button className="h-6 w-6 bg-blue-500"></button> :<p>Working Date</p>
+                    </div>
+                    <div className="ml-4 flex  items-center gap-1">
+                        <button className="h-6 w-6 bg-orange-500"></button> :<p>Overtime</p>
+                    </div>
+                </div>
+            </div>
+            <div className="sm:ml-64 bg-gray-50">
                 <div className="w-full py-8 px-5 bg-white relative ">
                     <div className="  xl:flex mb-2 w-full  absolute right-[200px] top-[32px]">
-                        <div className="text-2xl font-bold sm:ml-64 ">
-                          Work Slot
-                        </div>
-                      
+                        <div className="text-2xl font-bold sm:ml-64 ">Work Slot</div>
                     </div>
                     <FullCalendar
                         ref={calendarRef}
@@ -330,7 +326,7 @@ export default function Scheduling() {
                             center: 'title',
                             right: 'prev,next today',
                         }}
-                        height="100vh"
+                        height="150vh"
                         daysOfWeek={(0, 1)}
                         DayGrid={true}
                         TimeGrid={true}
@@ -342,7 +338,6 @@ export default function Scheduling() {
                         eventBackgroundColor={'#ffffff'}
                         eventBorderColor={'#ffffff'}
                         className="custom-calendar"
-                       
                     />
                 </div>
             </div>

@@ -10,6 +10,7 @@ import SwipeableViews from 'react-swipeable-views'
 import { useDispatch } from 'react-redux'
 import { ApplyLeaveAction } from '../Redux/ApplyLeave/ApplyLeaveSlice'
 import { OvertimeAction } from '../Redux/Overtime/OvertimeSlice'
+import { WorkedAction } from '../Redux/Worked/WorkedSlice'
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props
@@ -51,8 +52,8 @@ export default function TabsData(props) {
     const dispatch = useDispatch()
     const handleChange = (event, newValue) => {
         setValue(newValue)
-        changeTab == "OverTime" ?  dispatch(OvertimeAction.ChangeTab(newValue)) :  dispatch(ApplyLeaveAction.ChangeTab(newValue))
-       
+        changeTab == "OverTime" ?  dispatch(OvertimeAction.ChangeTab(newValue)) : changeTab == "Leave" ?  dispatch(ApplyLeaveAction.ChangeTab(newValue))
+       : dispatch(WorkedAction.ChangeTab(newValue))
     }
     const handleChangeIndex = (index) => {
         setValue(index)

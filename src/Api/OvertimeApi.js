@@ -104,6 +104,14 @@ export const DeleteOvertimeApi = async (requestId, employeeIdDecider) => {
     }
 }
 
+export const GetOvertimeByRequestIdApi = async (id) => {
+    try {
+        const response = await axios.get(`${API_URL}/RequestOverTime/get-request-overtime-by-request-id?requestId=${id}`)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
 
 
 export default GetOvertimeApi

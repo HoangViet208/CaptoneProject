@@ -328,7 +328,15 @@ export default function Worked() {
 
                                 setReason()
                                 setSelectedImage()
-                                dispatch(getWorkedByIdAsyncApi(employeeId))
+                                dispatch(
+                                    getWorkedByIdAsyncApi({
+                                        id: employeeId,
+                                        isWorkLate: viewStatus.isWorkLate,
+                                        isLeaveSoon: viewStatus.isLeaveSoon,
+                                        isNotCheckIn: viewStatus.isNotCheckIn,
+                                        isNotCheckOut: viewStatus.isNotCheckOut,
+                                    })
+                                )
                                 SetClick(false)
                             }
                         })

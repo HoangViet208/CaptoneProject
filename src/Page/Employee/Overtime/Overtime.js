@@ -56,7 +56,9 @@ import {
 } from '../../../Hook/useFormatDate'
 import {
     DeleteOvertimeAsyncApi,
+    GetOvertimeByRequestIdAsyncApi,
     GetTotalTimeOvertimeAsyncApi,
+    OvertimeAction,
     PostOvertimeAsyncApi,
     PutOvertimeAsyncApi,
     getOvertimeByIdAsyncApi,
@@ -108,11 +110,12 @@ export default function Overtime() {
     const today = new Date()
     const threeDaysLater = addDays(today, 3)
     const handleClick = (event) => {
-        setAnchorEl(event.currentTarget)
+        setOpen(true)
         setIsAction(1)
+        setSelectedDate(today)
         const startTime = formatTimeToDate('18:00')
         const endTime = formatTimeToDate('20:00')
-
+        setStatusRequest("Pending")
         setSelectedStartTime(startTime)
         setSelectedEndTime(endTime)
 
@@ -138,6 +141,7 @@ export default function Overtime() {
     const [leaveDays, setLeaveDays] = useState(0)
     const [IdRequest, setIdRequest] = useState()
     const [reason, setReason] = useState('')
+    const [statusRequest, setStatusRequest] = useState('')
     const [leaveDaysDate, setLeaveDaysDate] = useState([])
     const [date, setDate] = useState(null)
     const DaysLater = addDays(today, 2)
@@ -148,8 +152,35 @@ export default function Overtime() {
     const userStringEmployeeName = localStorage.getItem('employeeId')
     const employeeId = JSON.parse(userStringEmployeeName)
     //setting redux
-    const { OvertimeByEmployee, loading, totalOverTime } = useSelector((state) => state.overTime)
+    const { OvertimeByEmployee, loading, totalOverTime, RequestIdNoti } = useSelector((state) => state.overTime)
     const dispatch = useDispatch()
+    useEffect(() => {
+        if (RequestIdNoti != 0) {
+            dispatch(GetOvertimeByRequestIdAsyncApi(RequestIdNoti)).then((res) => {
+                if (res.meta.requestStatus == 'fulfilled') {
+                     
+                    setIdRequest(res.payload.id)
+                
+                    setOpen(true)
+                    setIsAction(2)
+                    const startTime = formatTimeToDate(res.payload.timeStart)
+                    const endTime = formatTimeToDate(res.payload.timeEnd)
+                    console.log(1234, startTime, endTime, res.payload.timeLate)
+                    setSelectedStartTime(startTime)
+                    setSelectedEndTime(endTime)
+                    setReason(res.payload.reason)
+                    setChosenFileName(res.payload.linkFile)
+                    seterrorImport(true)
+                    setDate(parse(res.payload.date, 'yyyy/MM/dd', new Date()))
+                    console.log('res.payload', res.payload)
+                  
+                  
+                }
+            })
+            setOpen(true)
+        }
+        console.log('RequestId', RequestIdNoti)
+    }, [RequestIdNoti])
     useEffect(() => {
         dispatch(getOvertimeByIdAsyncApi(employeeId))
         dispatch(GetTotalTimeOvertimeAsyncApi(employeeId))
@@ -181,17 +212,18 @@ export default function Overtime() {
     const handleDateChange = (date) => {
         setSelectedDate(date)
     }
+    console.log('selectedDate123', statusRequest)
     const handleClickOpenUpdate = (data, event) => {
         if (data.statusRequest != 0) {
             SetErrorEdit(true)
         }
-        console.log('selectedDate', data.date)
+      
         if (data.date) {
             // Đặt giá trị đã chuyển đổi vào selectedDate
             setSelectedDate(data.date)
         }
         setIdRequest(data.id)
-        setAnchorEl(event.currentTarget)
+        setStatusRequest(data.statusRequest)
         setOpen(true)
         setIsAction(2)
         const startTime = formatTimeToDate(data.timeStart)
@@ -295,6 +327,7 @@ export default function Overtime() {
                                 setReason()
                                 setSelectedImage()
                                 setSelectedDate()
+                                setOpen(false)
                                 dispatch(getOvertimeByIdAsyncApi(employeeId))
                                 SetClick(false)
                             }
@@ -337,7 +370,7 @@ export default function Overtime() {
                     if (response.meta.requestStatus == 'fulfilled') {
                         setAnchorEl(null)
                         setLoadingButton(false)
-
+                        setOpen(false)
                         showSnackbar({
                             severity: 'success',
                             children: 'Update Request Successfully',
@@ -387,7 +420,7 @@ export default function Overtime() {
                                 console.log('Response', response.meta.requestStatus == 'fulfilled')
                                 if (response.meta.requestStatus == 'fulfilled') {
                                     setAnchorEl(null)
-
+                                    setOpen(false)
                                     showSnackbar({
                                         severity: 'success',
                                         children: 'Update Request Successfully',
@@ -457,7 +490,8 @@ export default function Overtime() {
             })
     }
     const handleClose = () => {
-        setAnchorEl(null)
+        dispatch(OvertimeAction.changeRequestId(0))
+        setOpen(false)
         setChosenFileName('Chosen file')
         setIsAction(0)
         setSelectedStartTime()
@@ -529,6 +563,7 @@ export default function Overtime() {
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DemoContainer components={['DatePicker']}>
                                 <DatePicker
+                                    disabled={statusRequest == "Pending" ? false : true}
                                     className="w-full"
                                     label={
                                         <span>
@@ -549,6 +584,7 @@ export default function Overtime() {
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <DemoContainer components={['TimePicker']}>
                                 <TimePicker
+                                    disabled={statusRequest == "Pending" ? false : true}
                                     className="w-full"
                                     label={
                                         <span>
@@ -568,6 +604,7 @@ export default function Overtime() {
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <DemoContainer components={['TimePicker']}>
                                 <TimePicker
+                                    disabled={statusRequest == "Pending" ? false : true}
                                     className="w-full"
                                     label={
                                         <span>
@@ -663,6 +700,7 @@ export default function Overtime() {
                             </div>
                             <FormControl fullWidth>
                                 <TextField
+                                    disabled={statusRequest == "Pending" ? false : true}
                                     multiline
                                     rows={6}
                                     id="outlined-basic"
@@ -690,7 +728,7 @@ export default function Overtime() {
                         </button>
                         <div>
                             <button
-                                onClick={handleBrowseButtonClick}
+                                onClick={statusRequest == "Pending" ? handleBrowseButtonClick : undefined}
                                 className="cursor-pointer w-full  block rounded-md h-10 text-left  pl-[90px] font-medium text-gray-600  border border-gray-300   bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
                                 variant="contained"
                             >
@@ -746,7 +784,7 @@ export default function Overtime() {
             <PopupConfirm open={openConfirm} clickOpenFalse={clickOpenFalseConfirm} clickDelete={handleDelete} isLoading={loadingButton} />
             <PopupAlert open={openAlert} clickOpenFalse={clickOpenFalseAlert} />
             <PopupData
-                open={openPopover}
+                open={open}
                 clickOpenFalse={handleClose}
                 viewTitle={isAction == 1 ? 'Apply Overtime' : isAction == 2 ? 'Edit Overtime' : ''}
                 viewContent={viewModalContent}

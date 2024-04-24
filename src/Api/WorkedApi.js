@@ -105,7 +105,24 @@ export const PutWorkedApi = async (id, body) => {
 }
 export const PutApproveWorkedApi = async (id) => {
     try {
-        const response = await axios.patch(`${API_URL}/RequestWorkTime/approve-work-time-request?employeeId=${id}`)
+        const response = await axios.patch(`${API_URL}/RequestWorkTime/approve-work-time-request?requestId=${id}`)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
+export const PutRejectWorkedApi = async (body) => {
+    try {
+        const response = await axios.patch(`${API_URL}/RequestWorkTime/reject-work-time-request`, body)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+export const PutCancelWorkedApi = async (body) => {
+    try {
+        const response = await axios.patch(`${API_URL}/RequestWorkTime/cancel-approved-work-time-request`, body)
         return response.data
     } catch (error) {
         throw error
@@ -114,7 +131,7 @@ export const PutApproveWorkedApi = async (id) => {
 
 export const DeleteWorkedApi = async (id) => {
     try {
-        const response = await axios.delete(`${API_URL}/Workeds/${id}`)
+        const response = await axios.delete(`${API_URL}/RequestWorkTime/delete-work-time-request?requestId=${id}`)
         return response.data
     } catch (error) {
         throw error

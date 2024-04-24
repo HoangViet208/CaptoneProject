@@ -408,7 +408,7 @@ export default function WorkSlot() {
                             center: 'title',
                             right: 'prev,next today',
                         }}
-                        height="100vh"
+                        height="150vh"
                         daysOfWeek={(0, 1)}
                         DayGrid={true}
                         TimeGrid={true}

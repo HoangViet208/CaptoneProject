@@ -11,6 +11,8 @@ import GetWorkedApi, {
     PostWorkedSlotEmployeeApi,
     PostWorkEmployeeByDepartmentApi,
     PutApproveWorkedApi,
+    PutRejectWorkedApi,
+    PutCancelWorkedApi,
 } from '../../Api/WorkedApi'
 
 const initialState = {
@@ -111,6 +113,14 @@ const authSlice = createSlice({
             .addCase(PutApproveWorkedAsyncApi.fulfilled, (state, action) => {})
             .addCase(PutApproveWorkedAsyncApi.rejected, (state, action) => {})
         builder
+            .addCase(PutRejectWorkedAsyncApi.pending, (state) => {})
+            .addCase(PutRejectWorkedAsyncApi.fulfilled, (state, action) => {})
+            .addCase(PutRejectWorkedAsyncApi.rejected, (state, action) => {})
+        builder
+            .addCase(PutCancelWorkedAsyncApi.pending, (state) => {})
+            .addCase(PutCancelWorkedAsyncApi.fulfilled, (state, action) => {})
+            .addCase(PutCancelWorkedAsyncApi.rejected, (state, action) => {})
+        builder
             .addCase(DeleteWorkedAsyncApi.pending, (state) => {})
             .addCase(DeleteWorkedAsyncApi.fulfilled, (state, action) => {})
             .addCase(DeleteWorkedAsyncApi.rejected, (state, action) => {})
@@ -169,7 +179,7 @@ export const getWorkedByIdAsyncApi = createAsyncThunk(
     'WorkedReducer/getByIdAsyncApi',
     async ({ id, isWorkLate, isLeaveSoon, isNotCheckIn, isNotCheckOut }) => {
         try {
-            const response = await GetWorkedByIdApi(id,isWorkLate,isLeaveSoon,isNotCheckIn,isNotCheckOut)
+            const response = await GetWorkedByIdApi(id, isWorkLate, isLeaveSoon, isNotCheckIn, isNotCheckOut)
             return response
         } catch (error) {
             const json = error.response.data
@@ -249,9 +259,29 @@ export const PutApproveWorkedAsyncApi = createAsyncThunk('WorkedReducer/PutAppro
         throw errors[0].errorMessage
     }
 })
-export const DeleteWorkedAsyncApi = createAsyncThunk('WorkedReducer/deleteAsyncApi', async (body) => {
+export const PutRejectWorkedAsyncApi = createAsyncThunk('WorkedReducer/PutRejectWorkedApi', async (body) => {
     try {
-        const response = await DeleteWorkedApi(body)
+        const response = await PutRejectWorkedApi(body)
+        return response
+    } catch (error) {
+        const json = error.response.data
+        const errors = json[''].errors
+        throw errors[0].errorMessage
+    }
+})
+export const PutCancelWorkedAsyncApi = createAsyncThunk('WorkedReducer/PutCancelWorkedApi', async (body) => {
+    try {
+        const response = await PutCancelWorkedApi(body)
+        return response
+    } catch (error) {
+        const json = error.response.data
+        const errors = json[''].errors
+        throw errors[0].errorMessage
+    }
+})
+export const DeleteWorkedAsyncApi = createAsyncThunk('WorkedReducer/deleteAsyncApi', async (id) => {
+    try {
+        const response = await DeleteWorkedApi(id)
         return response
     } catch (error) {
         const json = error.response.data

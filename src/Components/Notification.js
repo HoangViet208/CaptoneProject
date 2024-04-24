@@ -9,6 +9,7 @@ import { formatDate, getTimeAgo } from '../Hook/useFormatDate'
 import { Link } from 'react-router-dom'
 import { ApplyLeaveAction } from '../Redux/ApplyLeave/ApplyLeaveSlice'
 import { useDispatch } from 'react-redux'
+import { OvertimeAction } from '../Redux/Overtime/OvertimeSlice'
 
 function getIconByType(type) {
     switch (type) {
@@ -16,7 +17,7 @@ function getIconByType(type) {
             return <InsertChartOutlinedIcon style={{ width: '48px', height: '48px' }} />
         case 'Overtime':
             return <AddToPhotosIcon style={{ width: '48px', height: '48px' }} />
-        case 'Worked':
+        case 'Work Time':
             return <CalendarMonthIcon style={{ width: '48px', height: '48px' }} />
         default:
             return null
@@ -29,7 +30,7 @@ function getLinkByType(role, type, id) {
             return role == 'Manager' ? `/Manager/ManageLeave` : '/Employee/ApplyLeave'
         case 'Overtime':
             return role == 'Manager' ? '/Manager/ManageOvertime' : '/Employee/Overtime'
-        case 'Request Worked':
+        case 'Work Time':
             return role == 'Manager' ? '/Manager/ManageWorked' : '/Employee/Worked'
         default:
             return null
@@ -151,7 +152,10 @@ export default function NotificationComponent(props) {
         console.log('RequestId da chay', newValue)
         UpdateIsSeenToTrue(newValue)
         setAnchorEl(null)
-        dispatch(ApplyLeaveAction.changeRequestId(newValue.requestId))
+
+        role == 'Manager'
+            ? dispatch(ApplyLeaveAction.changeRequestId(newValue.requestId))
+            : dispatch(OvertimeAction.changeRequestId(newValue.requestId))
     }
 
     return (
@@ -245,16 +249,16 @@ export default function NotificationComponent(props) {
                                                   <>
                                                       {' '}
                                                       <strong> {item.employeeSenderName} </strong> <em>(Employee) </em>
-                                                      has send {' '}
+                                                      has send{' '}
                                                   </>
                                               ) : (
                                                   <>
                                                       {' '}
                                                       <strong> {item.employeeDeciderName} </strong> <em>(Manager) </em>
-                                                      has {item.status} your {' '}
+                                                      has {item.status} your{' '}
                                                   </>
                                               )}
-                                               Request {item.requestType}
+                                              Request {item.requestType}
                                               {/* {item.requestType === 'Overtime'
                                                   ? ' on ' +
                                                     formatDate(item.fromDate) +

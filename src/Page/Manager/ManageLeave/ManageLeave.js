@@ -169,7 +169,7 @@ export default function ManageLeave() {
     )
     const dispatch = useDispatch()
     useEffect(() => {
-        dispatch(GetApplyLeaveTypeAsyncApi())
+     
 
         dispatch(
             getApplyLeaveAsyncApi({
@@ -250,6 +250,7 @@ export default function ManageLeave() {
         }
     }, [RequestIdNoti])
     useEffect(() => {
+        dispatch(GetApplyLeaveTypeAsyncApi())
         // Update the userRole state whenever 'role' is changed in localStorage
         const handleStorageChange = () => {
             const userString = localStorage.getItem('role')
@@ -1087,7 +1088,7 @@ export default function ManageLeave() {
                         <IconBreadcrumbs data={dataBreadcrumbs} />
                     </div>
                     <div className="bg-white">
-                        <TabsData data={tabsData} />
+                        <TabsData changeTab={'Leave'} data={tabsData} />
                     </div>
                 </div>
             </div>

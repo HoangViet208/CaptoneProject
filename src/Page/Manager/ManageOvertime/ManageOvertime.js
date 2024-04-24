@@ -115,7 +115,7 @@ export default function ManageOvertime() {
                 name: search,
                 status: valueTabs == 4 ? -1 : valueTabs,
                 date: formatDateExact(selectedDate),
-                id: userRole  == "Manager" ? UserParseId : "",
+                id: userRole == 'Manager' ? UserParseId : '',
             })
         )
         return () => {}
@@ -200,7 +200,9 @@ export default function ManageOvertime() {
             </div>
         )
     }
-    const handleClickApprove = (data) => {
+    const [loadingButtonIndex, setLoadingButtonIndex] = useState(null)
+    const handleClickApprove = (data, index) => {
+        setLoadingButtonIndex(index)
         setLoadingButton(true)
         const Updatedata = {
             requestId: data.id,
@@ -215,7 +217,7 @@ export default function ManageOvertime() {
                             name: search,
                             status: valueTabs == 4 ? -1 : valueTabs,
                             date: formatDateExact(selectedDate),
-                            id: userRole  == "Manager" ? UserParseId : "",
+                            id: userRole == 'Manager' ? UserParseId : '',
                         })
                     )
                     showSnackbar({
@@ -229,7 +231,7 @@ export default function ManageOvertime() {
             })
     }
 
-    const handleClickReject = (data) => {
+    const handleClickReject = () => {
         setLoadingRJButton(true)
         const Updatedata = {
             requestId: requestId,
@@ -245,7 +247,7 @@ export default function ManageOvertime() {
                             name: search,
                             status: valueTabs == 4 ? -1 : valueTabs,
                             date: formatDateExact(selectedDate),
-                            id: userRole  == "Manager" ? UserParseId : "",
+                            id: userRole == 'Manager' ? UserParseId : '',
                         })
                     )
                     showSnackbar({
@@ -278,7 +280,7 @@ export default function ManageOvertime() {
                             name: search,
                             status: valueTabs == 4 ? -1 : valueTabs,
                             date: formatDateExact(selectedDate),
-                            id: userRole  == "Manager" ? UserParseId : "",
+                            id: userRole == 'Manager' ? UserParseId : '',
                         })
                     )
                     showSnackbar({
@@ -323,26 +325,48 @@ export default function ManageOvertime() {
                 userRole === 'Manager' ? (
                     <div className="flex gap-2">
                         <div>
-                            <LoadingButton
-                                type="submit"
-                                loading={loadingButton}
-                                sx={{
-                                    textAlign: 'center',
-                                    color: '#22c55e',
-                                    backgroundColor: 'transparent',
-                                    border: '1px solid #22c55e',
-                                    padding: '4px 16px', // tùy chỉnh px và py theo cần thiết
-                                    borderRadius: '9999px', // hoặc '3xl' nếu bạn muốn sử dụng classnames
-                                    '&:hover': {
-                                        backgroundColor: '#22c55e',
-                                        color: 'white',
-                                    },
-                                }}
-                                autoFocus
-                                onClick={() => handleClickApprove(item)}
-                            >
-                                Approve
-                            </LoadingButton>
+                            {loadingButtonIndex === index ? (
+                                <LoadingButton
+                                    type="submit"
+                                    loading={loadingButton}
+                                    sx={{
+                                        textAlign: 'center',
+                                        color: '#22c55e',
+                                        backgroundColor: 'transparent',
+                                        border: '1px solid #22c55e',
+                                        padding: '4px 16px', // tùy chỉnh px và py theo cần thiết
+                                        borderRadius: '9999px', // hoặc '3xl' nếu bạn muốn sử dụng classnames
+                                        '&:hover': {
+                                            backgroundColor: '#22c55e',
+                                            color: 'white',
+                                        },
+                                    }}
+                                    autoFocus
+                                >
+                                    Approve
+                                </LoadingButton>
+                            ) : (
+                                <LoadingButton
+                                    type="submit"
+                                  
+                                    sx={{
+                                        textAlign: 'center',
+                                        color: '#22c55e',
+                                        backgroundColor: 'transparent',
+                                        border: '1px solid #22c55e',
+                                        padding: '4px 16px', // tùy chỉnh px và py theo cần thiết
+                                        borderRadius: '9999px', // hoặc '3xl' nếu bạn muốn sử dụng classnames
+                                        '&:hover': {
+                                            backgroundColor: '#22c55e',
+                                            color: 'white',
+                                        },
+                                    }}
+                                    autoFocus
+                                    onClick={() => handleClickApprove(item, index)}
+                                >
+                                    Approve
+                                </LoadingButton>
+                            )}
                         </div>
                         <div className="">
                             <LoadingButton
@@ -371,7 +395,7 @@ export default function ManageOvertime() {
                     ''
                 ),
             actionAll: (
-                <Tooltip title="Delete">
+                <Tooltip title="Cancel">
                     <div onClick={() => handleClickOpen(item)}>
                         <IconButton>
                             <DeleteIcon />

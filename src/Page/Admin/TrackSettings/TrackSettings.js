@@ -277,10 +277,26 @@ export default function TrackSettings() {
         const minutes = Math.floor((timeDifferenceMilliseconds % (1000 * 60 * 60)) / (1000 * 60))
         const seconds = Math.floor((timeDifferenceMilliseconds % (1000 * 60)) / 1000)
         console.log('sada1', hours, minutes, seconds)
+        const body = {
+            id: timeSetting.id,
+            fromHourMorning: selectedStartTimeMorning,
+            toHourMorning: selectedEndTimeMorning,
+            fromHourAfternoon: selectedStartTimeAfternoon,
+            toHourAfternoon: selectedEndTimeAfternoon,
+        }
+        
         if (valid >= 0) {
-            showSnackbar({
-                severity: 'error',
-                children: 'Time Working < 8:00',
+            dispatch(putTimeSettingAsyncApi(body)).then((res) => {
+                if (res.meta.requestStatus == 'fulfilled') {
+                    showSnackbar({
+                        severity: 'success',
+                        children: 'Change Date Setting successfully',
+                    })
+    
+                    dispatch(getDateSettingAsyncApi(Department)).then((resDate) => {
+                        setDateStatus(resDate.payload.dateStatus)
+                    })
+                }
             })
         } else {
             showSnackbar({

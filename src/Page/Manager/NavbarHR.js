@@ -143,7 +143,7 @@ export default function NavbarHR() {
                                 <span className="flex-1 ml-3 whitespace-nowrap">Employee</span>
                             </Link>
                         </li>
-                        <li className="cursor-pointer p-2">
+                        {/* <li className="cursor-pointer p-2">
                             <Link
                                 to="/Hr/WorkedTime"
                                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
@@ -151,7 +151,7 @@ export default function NavbarHR() {
                                 <TodayIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
                                 <span className="flex-1 ml-3 whitespace-nowrap">Worked Time</span>
                             </Link>
-                        </li>
+                        </li> */}
                         <li className="cursor-pointer p-2">
                             <Link
                                 to="/Hr/ManageLeave"
@@ -388,7 +388,7 @@ export default function NavbarHR() {
                                 <span className="ml-3 text-lg">Dashboard</span>
                             </Link>
                         </li> */}
-                        <li className="cursor-pointer text-center mx-auto justify-center items-center">
+                        {/* <li className="cursor-pointer text-center mx-auto justify-center items-center">
                             <NavLink
                                 to="/Manager/WorkedTime"
                                 className="flex items-center gap-2 p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
@@ -399,7 +399,7 @@ export default function NavbarHR() {
                                 <TodayIcon className="ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
                                 <span className="ml-3">Worked Time</span>
                             </NavLink>
-                        </li>
+                        </li> */}
                         <li className="cursor-pointer text-center mx-auto justify-center items-center">
                             <NavLink
                                 to="/Hr/Employee"

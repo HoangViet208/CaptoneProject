@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import Navbar from '../Navbar'
 import { NavLink } from 'react-router-dom'
 
@@ -27,50 +27,58 @@ import PopupConfirm from '../../../Components/PopupConfirm'
 //hooks
 import { formatDate, formatDateExact } from '../../../Hook/useFormatDate'
 import { useDispatch, useSelector } from 'react-redux'
-import { PutApproveWorkedAsyncApi, PutWorkedAsyncApi, getWorkedAsyncApi } from '../../../Redux/Worked/WorkedSlice'
+import {
+    PutApproveWorkedAsyncApi,
+    PutCancelWorkedAsyncApi,
+    PutRejectWorkedAsyncApi,
+    PutWorkedAsyncApi,
+    getWorkedAsyncApi,
+} from '../../../Redux/Worked/WorkedSlice'
 import { useSnackbar } from '../../../Hook/useSnackbar'
 import NavbarHR from '../NavbarHR'
 import TableLoadData from '../../../Components/TableLoad'
+import { PutApproveWorkedApi } from '../../../Api/WorkedApi'
 
 const columnsPending = [
     { id: 'number', label: 'Number', minWidth: 50, align: 'center' },
-    { id: 'info', label: 'Employee Name', minWidth: 250, align: 'left' },
-    { id: 'dayAndTime', label: 'Date', minWidth: 100, align: 'left' },
+    { id: 'info', label: 'Employee Name', minWidth: 200, align: 'left' },
+    { id: 'dayAndTime', label: 'Date', minWidth: 200, align: 'left' },
 
     { id: 'timeInMonth', label: 'Time In Month', minWidth: 100, align: 'center' },
     { id: 'files', label: 'File', minWidth: 100, align: 'left' },
-    { id: 'applied', label: 'Applied On', minWidth: 50, align: 'center' },
+    { id: 'applied', label: 'Applied On', minWidth: 150, align: 'center' },
     { id: 'reason', label: 'Reason', minWidth: 50, align: 'center' },
     { id: 'action', label: 'Actions', minWidth: 50, maxWidth: 50, align: 'left' },
 ]
 
 const columnsApprove = [
     { id: 'number', label: 'Number', minWidth: 50, align: 'center' },
-    { id: 'info', label: 'Employee Name', minWidth: 250, align: 'left' },
-    { id: 'dayAndTime', label: 'Date', minWidth: 100, align: 'left' },
+    { id: 'info', label: 'Employee Name', minWidth: 200, align: 'left' },
+    { id: 'dayAndTime', label: 'Date', minWidth: 200, align: 'left' },
 
     { id: 'files', label: 'File', minWidth: 100, align: 'left' },
-    { id: 'applied', label: 'Applied On', minWidth: 50, align: 'center' },
+    { id: 'applied', label: 'Applied On', minWidth: 150, align: 'center' },
     { id: 'aprrovedBy', label: 'Aprroved By', minWidth: 50, align: 'center' },
     { id: 'reason', label: 'Reason', minWidth: 50, align: 'center' },
 ]
 const columnsReject = [
     { id: 'number', label: 'Number', minWidth: 50, align: 'center' },
-    { id: 'info', label: 'Employee Name', minWidth: 250, align: 'left' },
-    { id: 'dayAndTime', label: 'Date', minWidth: 100, align: 'left' },
+    { id: 'info', label: 'Employee Name', minWidth: 200, align: 'left' },
+    { id: 'dayAndTime', label: 'Date', minWidth: 200, align: 'left' },
 
     { id: 'files', label: 'File', minWidth: 100, align: 'left' },
-    { id: 'applied', label: 'Applied On', minWidth: 50, align: 'center' },
+    { id: 'applied', label: 'Applied On', minWidth: 150, align: 'center' },
     { id: 'aprrovedBy', label: 'Reject By', minWidth: 50, align: 'center' },
     { id: 'reason', label: 'Reason', minWidth: 50, align: 'center' },
 ]
+
 const columnsAll = [
     { id: 'number', label: 'Number', minWidth: 50, align: 'center' },
-    { id: 'info', label: 'Employee Name', minWidth: 250, align: 'left' },
-    { id: 'dayAndTime', label: 'Date', minWidth: 100, align: 'left' },
+    { id: 'info', label: 'Employee Name', minWidth: 200, align: 'left' },
+    { id: 'dayAndTime', label: 'Date', minWidth: 200, align: 'left' },
 
     { id: 'files', label: 'File', minWidth: 100, align: 'left' },
-    { id: 'applied', label: 'Applied On', minWidth: 50, align: 'center' },
+    { id: 'applied', label: 'Applied On', minWidth: 150, align: 'center' },
     { id: 'status', label: 'Status', minWidth: 50, align: 'left' },
     { id: 'reason', label: 'Reason', minWidth: 50, align: 'center' },
     { id: 'actionAll', label: 'Actions', minWidth: 50, maxWidth: 50, align: 'left' },
@@ -87,6 +95,12 @@ const breadcrumbIcons = () => {
 const dataBreadcrumbs = breadcrumbIcons()
 
 export default function ManageWorked() {
+    const [errorReject, setErrorReject] = useState(true)
+    const [rejectReason, setRejectReason] = useState('')
+    const userId = localStorage.getItem('employeeId')
+    const UserParseId = JSON.parse(userId)
+    const [requestId, setRequestId] = useState()
+    const [employeeId, setEmployeeID] = useState()
     const [loadingButton, setLoadingButton] = useState(false)
     const [loadingRJButton, setLoadingRJButton] = useState(false)
     const [open, setOpen] = useState(false)
@@ -102,7 +116,7 @@ export default function ManageWorked() {
         dispatch(
             getWorkedAsyncApi({
                 name: search,
-                status: valueTabs == 3 ? -1 : valueTabs,
+                status: valueTabs == 4 ? -1 : valueTabs,
                 date: formatDateExact(selectedDate),
             })
         )
@@ -123,6 +137,8 @@ export default function ManageWorked() {
         setOpen(true)
     }
     const clickOpenFalse = (event) => {
+        setErrorReject(true)
+        setRejectReason('')
         setOpen(false)
     }
     const handleDateChange = (newDate) => {
@@ -164,23 +180,28 @@ export default function ManageWorked() {
             </div>
         )
     }
-    const handleClickApprove = (data) => {
+    const handleClickOpenReason = (data) => {
+        setRequestId(data.id)
+        setEmployeeID(data.employeeId)
+        setOpen(true)
+    }
+    const [loadingButtonIndex, setLoadingButtonIndex] = useState(null)
+    const handleClickApprove = (data, index) => {
         setLoadingButton(true)
-        const Updatedata = {
-            id: data.id,
-            status: 1,
-        }
-        dispatch(PutWorkedAsyncApi({ id: data.employeeId, body: Updatedata }))
+        setLoadingButtonIndex(index)
+
+        dispatch(PutApproveWorkedAsyncApi(data.id))
             .then((response) => {
                 if (response.meta.requestStatus == 'fulfilled') {
                     setLoadingButton(false)
                     dispatch(
                         getWorkedAsyncApi({
                             name: search,
-                            status: valueTabs == 3 ? -1 : valueTabs,
+                            status: valueTabs == 4 ? -1 : valueTabs,
                             date: formatDateExact(selectedDate),
                         })
                     )
+                    setLoadingButtonIndex(null)
                     showSnackbar({
                         severity: 'success',
                         children: 'Approved request',
@@ -191,8 +212,14 @@ export default function ManageWorked() {
                 setLoadingButton(false)
             })
     }
-    const handleClickReject = (data) => {
-        dispatch(PutApproveWorkedAsyncApi(data.id))
+    const handleClickReject = () => {
+        setLoadingRJButton(true)
+        const body = {
+            requestId: requestId,
+            reason: rejectReason,
+            employeeIdDecider: employeeId,
+        }
+        dispatch(PutRejectWorkedAsyncApi(body))
             .then((response) => {
                 setLoadingRJButton(false)
 
@@ -200,7 +227,7 @@ export default function ManageWorked() {
                     dispatch(
                         getWorkedAsyncApi({
                             name: search,
-                            status: valueTabs == 3 ? -1 : valueTabs,
+                            status: valueTabs == 4 ? -1 : valueTabs,
                             date: formatDateExact(selectedDate),
                         })
                     )
@@ -208,6 +235,9 @@ export default function ManageWorked() {
                         severity: 'success',
                         children: 'Reject request',
                     })
+                    setErrorReject(true)
+                    setRejectReason('')
+                    setOpen(false)
                 }
             })
             .catch((error) => {
@@ -215,7 +245,6 @@ export default function ManageWorked() {
             })
     }
     const createRows = () => {
-
         return WorkedList.map((item, index) => ({
             ...item,
             reason: (
@@ -243,8 +272,48 @@ export default function ManageWorked() {
             number: index + 1,
             action: (
                 <div className="flex gap-2">
-                    <div className="border-[1px] border-green-500 text-green-500 px-4 py-1 rounded-3xl hover:bg-green-500 hover:text-white">
-                        <LoadingButton
+                    <div>
+                        {loadingButtonIndex === index ? (
+                            <LoadingButton
+                                type="submit"
+                                loading={true}
+                                sx={{
+                                    textAlign: 'center',
+                                    color: '#22c55e',
+                                    backgroundColor: 'transparent',
+                                    border: '1px solid #22c55e',
+                                    padding: '4px 16px', // tùy chỉnh px và py theo cần thiết
+                                    borderRadius: '9999px', // hoặc '3xl' nếu bạn muốn sử dụng classnames
+                                    '&:hover': {
+                                        backgroundColor: '#22c55e',
+                                        color: 'white',
+                                    },
+                                }}
+                            >
+                                Approve
+                            </LoadingButton>
+                        ) : (
+                            <LoadingButton
+                                type="submit"
+                                sx={{
+                                    textAlign: 'center',
+                                    color: '#22c55e',
+                                    backgroundColor: 'transparent',
+                                    border: '1px solid #22c55e',
+                                    padding: '4px 16px', // tùy chỉnh px và py theo cần thiết
+                                    borderRadius: '9999px', // hoặc '3xl' nếu bạn muốn sử dụng classnames
+                                    '&:hover': {
+                                        backgroundColor: '#22c55e',
+                                        color: 'white',
+                                    },
+                                }}
+                                onClick={() => handleClickApprove(item, index)}
+                            >
+                                Approve
+                            </LoadingButton>
+                        )}
+
+                        {/* <LoadingButton
                             type="submit"
                             loading={loadingButton}
                             sx={{
@@ -255,24 +324,29 @@ export default function ManageWorked() {
                                 },
                             }}
                             autoFocus
-                            onClick={() => handleClickApprove(item)}
+                            onClick={() => handleClickApprove(item, index)}
                         >
                             Approve
-                        </LoadingButton>
+                        </LoadingButton> */}
                     </div>
-                    <div className="border-[1px] border-red-500 text-red-500 px-4 py-1 rounded-3xl hover:bg-red-500 hover:text-white">
+                    <div>
                         <LoadingButton
                             type="submit"
                             loading={loadingRJButton}
                             sx={{
                                 textAlign: 'center',
                                 color: 'rgb(239 68 68)',
+                                backgroundColor: 'transparent',
+                                border: '1px solid #f44336',
+                                padding: '4px 16px', // tùy chỉnh px và py theo cần thiết
+                                borderRadius: '9999px', // hoặc '3xl' nếu bạn muốn sử dụng classnames
                                 '&:hover': {
+                                    backgroundColor: '#f44336',
                                     color: 'white',
                                 },
                             }}
                             autoFocus
-                            onClick={() => handleClickReject(item)}
+                            onClick={() => handleClickOpenReason(item)}
                         >
                             Reject
                         </LoadingButton>
@@ -280,7 +354,7 @@ export default function ManageWorked() {
                 </div>
             ),
             actionAll: (
-                <Tooltip onClick={handleClickOpen} title="Delete">
+                <Tooltip    onClick={() => handleClickOpenReason(item)} title="Cancel">
                     <IconButton>
                         <DeleteIcon />
                     </IconButton>
@@ -296,12 +370,14 @@ export default function ManageWorked() {
                             : `Pending...`
                     }
                 >
-                    {item.status == 'True' ? (
-                        <p className="text-green-500">{item.status}</p>
-                    ) : item.status == 'False' ? (
-                        <p className="text-red-500">{item.status}</p>
+                    {item.status == 1 ? (
+                        <p className="text-green-500">{item.statusName}</p>
+                    ) : item.status == 2 ? (
+                        <p className="text-red-500">{item.statusName}</p>
+                    ) : item.status == 3 ? (
+                        <p className="text-orange-500">{item.statusName}</p>
                     ) : (
-                        <p className="text-yellow-500">{item.status}</p>
+                        <p className="text-yellow-500">{item.statusName}</p>
                     )}
                 </Tooltip>
             ),
@@ -366,6 +442,24 @@ export default function ManageWorked() {
             ),
         },
         {
+            label: 'Cancel Worked',
+            view: searchData(
+                loading == true ? (
+                    <TableLoadData columns={columnsPending} tableHeight={360} />
+                ) : (
+                    <TableData
+                        tableHeight={380}
+                        rows={rows}
+                        columns={columnsReject}
+                        page={page}
+                        rowsPerPage={rowsPerPage}
+                        handleChangePage={handleChangePage}
+                        handleChangeRowsPerPage={handleChangeRowsPerPage}
+                    />
+                )
+            ),
+        },
+        {
             label: 'All Workeds',
             view: searchData(
                 loading == true ? (
@@ -403,10 +497,102 @@ export default function ManageWorked() {
             window.removeEventListener('storage', handleStorageChange)
         }
     }, [])
+    const handleClickCancel = () => {
+        console.log('da chay cancel')
+        setLoadingRJButton(true)
+        const Updatedata = {
+            requestId: requestId,
+            reason: rejectReason,
+            employeeIdDecider: UserParseId,
+        }
+        dispatch(PutCancelWorkedAsyncApi(Updatedata))
+            .then((response) => {
+                setLoadingRJButton(false)
+                if (response.meta.requestStatus == 'fulfilled') {
+                    dispatch(
+                        dispatch(
+                            getWorkedAsyncApi({
+                                name: search,
+                                status: valueTabs == 4 ? -1 : valueTabs,
+                                date: formatDateExact(selectedDate),
+                            })
+                        )
+                    )
+                    showSnackbar({
+                        severity: 'success',
+                        children: 'Cancel request',
+                    })
+                    setErrorReject(true)
+                    setRejectReason('')
+                    setOpen(false)
+                }
+            })
+            .catch((error) => {
+                setLoadingRJButton(false)
+            })
+    }
+    const handleChangeReasonRejectInput = (e) => {
+        console.log('12345', e)
+        if (e == '') {
+            setErrorReject(true)
+        } else {
+            setErrorReject(false)
+        }
+        setRejectReason(e)
+    }
+    const RejectContent = (
+        <Fragment>
+            <div className="">
+                <div className="my-2">
+                    <div className="mb-1">
+                        <strong className=" text-gray-500">Reject Reason</strong>
+                        <i className="text-red-500">*</i>
+                    </div>
+
+                    <TextField
+                        multiline
+                        rows={6}
+                        id="outlined-basic"
+                        size="small"
+                        className="mt-2 w-full"
+                        name="leaveReason"
+                        variant="outlined"
+                        value={rejectReason}
+                        onChange={(e) => handleChangeReasonRejectInput(e.target.value)}
+                    />
+                </div>
+            </div>
+        </Fragment>
+    )
     return (
         <div>
-             {userRole === 'Manager' ? <Navbar /> : <NavbarHR />}
-            <PopupConfirm open={open} clickOpenFalse={clickOpenFalse} />
+            {userRole === 'Manager' ? <Navbar /> : <NavbarHR />}
+
+            <PopupConfirm
+                open={open}
+                witdhModal={'sm'}
+                clickOpenFalse={clickOpenFalse}
+                clickDelete={valueTabs == 4 ? handleClickCancel : handleClickReject}
+                isError={errorReject}
+                viewTitle={valueTabs == 4 ? 'Cancel Confirm' : 'Reject Confirm'}
+                viewContent={
+                    valueTabs == 4 ? (
+                        <Fragment>
+                            <h2 className="font-bold text-xl">Are you sure to cancel this ?</h2>
+                            <p className="mb-5 text-gray-400">You can't undo this action once you canceled this.</p>
+                            {RejectContent}
+                        </Fragment>
+                    ) : (
+                        <Fragment>
+                            <h2 className="font-bold text-xl">Are you sure to reject this ?</h2>
+                            <p className="mb-5 text-gray-400">You can't undo this action once you rejected this.</p>
+                            {RejectContent}
+                        </Fragment>
+                    )
+                }
+                viewAction={valueTabs == 4 ? 'Cancel' : 'Reject'}
+                isLoading={loadingRJButton}
+            />
             <div className="sm:ml-64 pt-12 h-screen bg-gray-50">
                 <div className="px-12 py-6">
                     <h2 className="font-bold text-3xl mb-4">Manage Worked List </h2>
