@@ -190,7 +190,6 @@ export default function Wifi() {
                 setLoadingButton(true)
                 dispatch(PutwifiAsyncApi(newData))
                     .then((response) => {
-                        console.log('response.meta.requestStatus', response.meta.requestStatus)
                         if (response.meta.requestStatus == 'rejected') {
                         }
                         if (response.meta.requestStatus == 'fulfilled') {

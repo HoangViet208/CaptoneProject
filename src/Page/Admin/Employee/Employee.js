@@ -252,12 +252,10 @@ export default function EmployeeAdmin() {
         setOpenTeam(true)
         setIsAction(1)
     }
-    console.log('err', formik.values, formik.errors)
 
     const handleClickOpenUpdate = (data) => {
         setOpen(true)
         setIsAction(2)
-        console.log('data', data)
         formik.setValues({
             id: data.id,
             username: data.email,
@@ -778,7 +776,6 @@ export default function EmployeeAdmin() {
         }))
     }
     const rows = createRows()
-    console.log('search', search)
     return (
         <div>
             <Navbar />

@@ -28,7 +28,6 @@ const authSlice = createSlice({
             state.riskSetting = {}
         },
         ChangeTab: (state, action) => {
-            console.log('action', action)
             state.valueTabs = action.payload
         },
     },

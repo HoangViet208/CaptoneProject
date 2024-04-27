@@ -62,7 +62,6 @@ export default function Navbar() {
     const [isLoading, setIsLoading] = useState(false)
     const [dataNotification, setDataNotification] = useState([])
 
-console.log("employeeId", employeeId)
 
     const fetchDataFromDatabase = () => {
         setIsLoading(true)
@@ -73,7 +72,7 @@ console.log("employeeId", employeeId)
             if (snapshot.exists()) {
                 setIsLoading(false)
                 const data = Object.entries(snapshot.val()).map(([id, value]) => {
-                    if (value.employeeSenderId == employeeId) {
+                   if (value.employeeSenderId == employeeId) {
                         return { id, ...value };
                     }
                     return null; 
@@ -81,22 +80,18 @@ console.log("employeeId", employeeId)
                 setDataNotification(data)
             } else {
                 setIsLoading(false)
-                console.log('Data does not exist')
             }
         })
     }
-    function UpdateIsSeenToTrue(newValue) {
-        console.log('fetchRealDatabase da chay')
+     function UpdateIsSeenToTrue(newValue) {
 
         const db = getDatabase() // Lấy tham chiếu đến database
         const recordRef = ref(db, `employeeNoti/${newValue.id}`) // Tham chiếu đến bản ghi cụ thể bằng id
 
         set(recordRef, { ...newValue, isSeen: true })
             .then(() => {
-                console.log('fetchRealDatabase isSeen updated successfully')
             })
             .catch((error) => {
-                console.error('fetchRealDatabase Error updating isSeen: ', error)
             })
     }
     useEffect(() => {

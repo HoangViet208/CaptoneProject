@@ -104,7 +104,6 @@ export default function ManageOvertime() {
     const [search, setSearch] = useState('')
     const showSnackbar = useSnackbar()
     const today = new Date()
-    console.log('date', formatDateExact(today))
     const [selectedDate, setSelectedDate] = useState(dayjs())
     //setting redux
     const { OvertimeList, loading, valueTabs } = useSelector((state) => state.overTime)
@@ -163,7 +162,6 @@ export default function ManageOvertime() {
     const handleDateChange = (newDate) => {
         setSelectedDate(newDate)
     }
-    console.log('123', selectedDate)
     const searchData = (data) => {
         return (
             <div className="p-4">
@@ -264,7 +262,6 @@ export default function ManageOvertime() {
             })
     }
     const handleClickCancel = () => {
-        console.log('da chay cancel')
         setLoadingRJButton(true)
         const Updatedata = {
             requestId: requestId,
@@ -511,7 +508,6 @@ export default function ManageOvertime() {
         },
     ]
     const handleChangeReasonRejectInput = (e) => {
-        console.log('12345', e)
         if (e == '') {
             setErrorReject(true)
         } else {

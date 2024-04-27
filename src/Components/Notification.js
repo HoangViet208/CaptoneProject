@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom'
 import { ApplyLeaveAction } from '../Redux/ApplyLeave/ApplyLeaveSlice'
 import { useDispatch } from 'react-redux'
 import { OvertimeAction } from '../Redux/Overtime/OvertimeSlice'
+import { WorkedAction } from '../Redux/Worked/WorkedSlice'
 
 function getIconByType(type) {
     switch (type) {
@@ -133,7 +134,6 @@ const dataLoading = [{}, {}, {}, {}, {}]
 export default function NotificationComponent(props) {
     const { isLoading, dataNotification, role, UpdateIsSeenToTrue } = props
 
-    console.log('fetchRealDatabase', isLoading, dataNotification)
     let lengthIsSeen = dataNotification ? dataNotification.filter((obj) => obj.isSeen == false).length : 0
     const [isSeeAll, setIsSeeAll] = useState(false)
     const [anchorEl, setAnchorEl] = useState(null)
@@ -149,13 +149,14 @@ export default function NotificationComponent(props) {
     }
     const dispatch = useDispatch()
     const handleChange = (newValue) => {
-        console.log('RequestId da chay', newValue)
         UpdateIsSeenToTrue(newValue)
         setAnchorEl(null)
 
-        role == 'Manager'
-            ? dispatch(ApplyLeaveAction.changeRequestId(newValue.requestId))
-            : dispatch(OvertimeAction.changeRequestId(newValue.requestId))
+        newValue.requestType == 'Overtime'
+            ? dispatch(OvertimeAction.changeRequestId(newValue.requestId))
+            : newValue.requestType == 'Work Time'
+            ? dispatch(WorkedAction.changeRequestId(newValue.requestId))
+            : dispatch(ApplyLeaveAction.changeRequestId(newValue.requestId))
     }
 
     return (

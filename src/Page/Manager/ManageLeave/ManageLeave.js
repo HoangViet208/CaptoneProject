@@ -61,6 +61,7 @@ import TableLoadData from '../../../Components/TableLoad'
 import { useFormik } from 'formik'
 import PopupData from '../../../Components/Popup'
 import { useLocation } from 'react-router-dom'
+import UpdateIsSeenToTrueForManager from '../../../Hook/useFirebase'
 
 const CustomSelect = styled(Select)`
     color: #60a5fa; // Đổi màu chữ thành xanh
@@ -219,7 +220,6 @@ export default function ManageLeave() {
         },
     ])
 
-    console.log('RequestId ngu', RequestIdNoti)
     useEffect(() => {
         if (RequestIdNoti != 0) {
             dispatch(GetApplyLeaveByRequestIdAsyncApi(RequestIdNoti)).then((res) => {
@@ -279,6 +279,8 @@ export default function ManageLeave() {
         initialValues: initialValues,
     })
     const handleClickOpenUpdate = (data) => {
+     
+        UpdateIsSeenToTrueForManager(data)
         dispatch(GetLeaveTypeInfoAsyncApi({ employeeId: employeeId, LeaveTypeId: data.leaveTypeId }))
         dispatch(GetApplyLeaveByRequestIdAsyncApi(data.id)).then((res) => {
             if (res.meta.requestStatus == 'fulfilled') {
@@ -331,7 +333,6 @@ export default function ManageLeave() {
     }
     const userId = localStorage.getItem('employeeId')
     const UserParseId = JSON.parse(userId)
-    console.log('UserParseId', UserParseId)
     const handleClickApprove = () => {
         setLoadingButton(true)
 
@@ -374,7 +375,6 @@ export default function ManageLeave() {
             })
     }
     const handleChangeReasonRejectInput = (e) => {
-        console.log('12345', e)
         if (e == '') {
             setErrorReject(true)
         } else {
@@ -437,14 +437,11 @@ export default function ManageLeave() {
                 setLoadingRJButton(false)
             })
     }
-    console.log('newDate tổng', leaveDaysDate)
     const handleChangeLeaveDetail = (date, index) => {
         const updatedDataList = [...leaveDaysDate]
         updatedDataList[index].type = date
         setLeaveDaysDate(updatedDataList)
-        console.log('newDate change', leaveDaysDate, updatedDataList)
     }
-    console.log('ApplyLeaveList', ApplyLeaveList)
     const createRows = () => {
         return (
             ApplyLeaveList &&
@@ -514,7 +511,6 @@ export default function ManageLeave() {
     const rows = createRows()
 
     function getNameById(id) {
-        console.log('nguid', id)
         const leaveType = ApplyLeaveTypeList.find((item) => item.id === id)
         return leaveType ? leaveType.name : null
     }

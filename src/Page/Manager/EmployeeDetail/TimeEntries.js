@@ -94,7 +94,6 @@ export default function TimeEntries() {
         )
     }
     const rows = createRows()
-    console.log('23', TimeEntriesDetail)
     return (
         <div className="bg-white h-[600px] p-4 ">
             <div className="">

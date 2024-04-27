@@ -35,11 +35,9 @@ const authSlice = createSlice({
             state.totalOverTime = {}
         },
         ChangeTab: (state, action) => {
-            console.log('action', action)
             state.valueTabs = action.payload
         },
         changeRequestId: (state, action) => {
-            console.log('action', action)
             state.RequestIdNoti = action.payload
         },
     },
@@ -186,7 +184,6 @@ export const getOvertimeByIdAsyncApi = createAsyncThunk('OvertimeReducer/GetOver
 })
 export const PostOvertimeAsyncApi = createAsyncThunk('OvertimeReducer/postAsyncApi', async ({ id, body }) => {
     try {
-        console.log('thanh cong1', id, body)
         const response = await PostOvertimeApi(id, body)
         return response
     } catch (error) {

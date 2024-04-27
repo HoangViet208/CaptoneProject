@@ -139,7 +139,6 @@ export default function AllRequest() {
             })
             .catch((error) => {})
         return () => {
-            console.log('ApplyLeaveList  da chay')
             dispatch(ApplyLeaveAction.clearApplyLeave())
         }
     }, [selectedDate])
@@ -149,7 +148,6 @@ export default function AllRequest() {
 
         return () => {}
     }, [])
-    console.log('AllRequestInEmployee', AllRequestInEmployee)
     //action Leave
  
     const [pageLeave, setPageLeave] = useState(0)

@@ -123,12 +123,6 @@ export default function WorkSlot() {
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(getDepartmentAsyncApi()).then((res) => {
-            // dispatch(
-            //     GetWorkedSlotAsyncApi({
-            //         id: res.payload[0].id,
-            //         month: formatDateExact(currentMonth),
-            //     })
-            // )
             setDepartment(res.payload[0].id)
         })
 
@@ -207,7 +201,6 @@ export default function WorkSlot() {
         // Hiển thị tháng hiện tại dưới dạng "yyyy/MM/dd"
         setCurrentMonth(formattedDate)
     }
-    console.log('selectedDateRange', Department)
     const events = [
         {
             title: 'Event 1',
@@ -233,7 +226,6 @@ export default function WorkSlot() {
             time: item.startTime + ' ~ ' + item.endTime,
         }
     })
-    console.log('sada', newEvents)
 
     const dayHeaderContent = (info) => {
         const date = info.date
@@ -251,7 +243,6 @@ export default function WorkSlot() {
     }
     function renderEventContent(eventInfo) {
         // Tùy chỉnh cách hiển thị sự kiện
-        console.log('eventInfo.event', eventInfo.event)
         if (eventInfo.event.title === 'Not working') {
             return (
                 <div className="working-event text-black">
@@ -327,7 +318,6 @@ export default function WorkSlot() {
                                     month: formatDateExact(currentMonth),
                                 })
                             )
-                            setDepartment(res.payload[0].id)
                             showSnackbar({
                                 severity: 'success',
                                 children: 'Create Work Slot Department successfully',
@@ -409,6 +399,7 @@ export default function WorkSlot() {
                             right: 'prev,next today',
                         }}
                         height="150vh"
+                        aspectRatio={1.5} 
                         daysOfWeek={(0, 1)}
                         DayGrid={true}
                         TimeGrid={true}
@@ -420,7 +411,6 @@ export default function WorkSlot() {
                         eventBackgroundColor={'#ffffff'}
                         eventBorderColor={'#ffffff'}
                         className="custom-calendar"
-                       
                     />
                 </div>
             </div>

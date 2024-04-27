@@ -109,13 +109,10 @@ export default function TrackSettings() {
     const [days, setDays] = useState()
 
     const handleChangeDays = (event, value, reason) => {
-        console.log('bala', value, event.target.value, reason)
         if (reason === 'selectOption') {
-            console.log('bala', value, event.target.value, reason)
             setDays(value)
         }
     }
-    console.log('bala', days)
     const [hours, setHours] = useState()
 
     const handleChangeHours = (event, value, reason) => {
@@ -157,7 +154,6 @@ export default function TrackSettings() {
                 setDateStatus(resDate.payload.dateStatus)
             })
             dispatch(getTimeSettingAsyncApi(res.payload[0].id)).then((resTime) => {
-                console.log('ngu', resTime.payload)
                 const startTimeMorning = formatTimeToDate(resTime.payload.fromHourMorning)
                 const endTimeMorning = formatTimeToDate(resTime.payload.toHourMorning)
                 const startTimeAfternoon = formatTimeToDate(resTime.payload.fromHourAfternoon)
@@ -170,7 +166,6 @@ export default function TrackSettings() {
             })
             dispatch(getLeaveSettingAsyncApi(res.payload[0].id))
             dispatch(getRiskSettingAsyncApi(res.payload[0].id)).then((resRisk) => {
-                console.log('ngu', resRisk.payload.days)
                 setDays(resRisk.payload.days)
                 setHours(resRisk.payload.hours)
             })
@@ -195,7 +190,6 @@ export default function TrackSettings() {
                         setDateStatus(resDate.payload.dateStatus)
                     })
                     dispatch(getTimeSettingAsyncApi(Department)).then((resTime) => {
-                        console.log('ngu', resTime.payload)
                         const startTimeMorning = formatTimeToDate(resTime.payload.fromHourMorning)
                         const endTimeMorning = formatTimeToDate(resTime.payload.toHourMorning)
                         const startTimeAfternoon = formatTimeToDate(resTime.payload.fromHourAfternoon)
@@ -208,7 +202,6 @@ export default function TrackSettings() {
                     })
                     dispatch(getLeaveSettingAsyncApi(Department))
                     dispatch(getRiskSettingAsyncApi(Department)).then((resRisk) => {
-                        console.log('ngu', resRisk.payload.days)
                         setDays(resRisk.payload.days)
                         setHours(resRisk.payload.hours)
                     })
@@ -217,10 +210,8 @@ export default function TrackSettings() {
 
         return () => {}
     }, [Department])
-    console.log('sada', dateSetting, timeSetting, leaveSetting, riskSetting)
-    console.log('che', days, hours)
+   
     const handleClickChangeDate = () => {
-        console.log('sada1', dateStatus)
         const body = {
             id: dateSetting.id,
             dateStatus: dateStatus,
@@ -240,7 +231,6 @@ export default function TrackSettings() {
         })
     }
     const handleClickChangeRisk = () => {
-        console.log('sada1', dateStatus)
         const body = {
             id: riskSetting.id,
             hours: hours,
@@ -256,7 +246,6 @@ export default function TrackSettings() {
                 })
 
                 dispatch(getRiskSettingAsyncApi(Department)).then((resRisk) => {
-                    console.log('ngu', resRisk.payload.days)
                     setDays(resRisk.payload.days)
                     setHours(resRisk.payload.hours)
                 })
@@ -276,13 +265,12 @@ export default function TrackSettings() {
         const hours = Math.floor(timeDifferenceMilliseconds / (1000 * 60 * 60))
         const minutes = Math.floor((timeDifferenceMilliseconds % (1000 * 60 * 60)) / (1000 * 60))
         const seconds = Math.floor((timeDifferenceMilliseconds % (1000 * 60)) / 1000)
-        console.log('sada1', hours, minutes, seconds)
         const body = {
             id: timeSetting.id,
-            fromHourMorning: selectedStartTimeMorning,
-            toHourMorning: selectedEndTimeMorning,
-            fromHourAfternoon: selectedStartTimeAfternoon,
-            toHourAfternoon: selectedEndTimeAfternoon,
+            fromHourMorning: FormatDateToTime(selectedStartTimeMorning),
+            toHourMorning: FormatDateToTime(selectedEndTimeMorning),
+            fromHourAfternoon: FormatDateToTime(selectedStartTimeAfternoon),
+            toHourAfternoon: FormatDateToTime(selectedEndTimeAfternoon),
         }
         
         if (valid >= 0) {

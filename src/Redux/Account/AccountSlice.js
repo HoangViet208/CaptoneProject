@@ -31,7 +31,6 @@ const authSlice = createSlice({
             state.WorkSetting = []
         },
         ChangeTab: (state, action) => {
-            console.log('action', action)
             state.valueTabs = action.payload
         },
     },

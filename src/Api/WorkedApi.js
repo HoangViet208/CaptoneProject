@@ -138,4 +138,13 @@ export const DeleteWorkedApi = async (id) => {
     }
 }
 
+export const GetWorkingByRequestIdApi = async (id) => {
+    try {
+        const response = await axios.get(`${API_URL}/RequestWorkTime/get-request-work-time-by-request-id?requestId=${id}`)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
 export default GetWorkedApi

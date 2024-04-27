@@ -78,6 +78,7 @@ import TableLoadData from '../../../Components/TableLoad'
 import { useSnackbar } from '../../../Hook/useSnackbar'
 import PopupAlert from '../../../Components/PopupAlert'
 import { GetALLEmployeeInDepartmentAsyncApi } from '../../../Redux/Department/DepartmentSlice'
+import UpdateIsSeenToTrueForManager, { UpdateIsSeenToTrueForEmployee } from '../../../Hook/useFirebase'
 
 const CustomSelect = styled(Select)`
     color: #60a5fa; // Đổi màu chữ thành xanh
@@ -212,7 +213,6 @@ export default function ApplyLeave() {
             })
             setOpen(true)
         }
-        console.log('RequestId', RequestIdNoti)
     }, [RequestIdNoti])
     useEffect(() => {
         dispatch(GetWorkDateSettingByIdAsyncApi(employeeId))
@@ -235,7 +235,6 @@ export default function ApplyLeave() {
             leaveType: Yup.string().required(),
         }),
         onSubmit: (values) => {
-            console.log('chay', click)
             setIsLoading(true)
 
             if (click == true) {
@@ -290,11 +289,9 @@ export default function ApplyLeave() {
                                 dateRange: transformedDates,
                                 supportEmployeeId: values.substitute,
                             }
-                            console.log('thanh cong', data, isAction)
                             if (isAction == 1) {
                                 dispatch(PostApplyLeaveAsyncApi({ id: employeeId, body: data }))
                                     .then((response) => {
-                                        console.log('Response', response.meta.requestStatus == 'fulfilled')
                                         if (response.meta.requestStatus == 'fulfilled') {
                                             setSelectedImage()
                                             setStatusRequest(-1)
@@ -387,7 +384,6 @@ export default function ApplyLeave() {
                     }
                 )
             } else {
-                console.log('chay1')
                 setIsLoading(true)
                 const { format, parse } = require('date-fns')
                 let transformedDates = leaveDaysDate.map((date) => {
@@ -468,7 +464,6 @@ export default function ApplyLeave() {
             const daysToAdd = calculateDays(ranges.selection.startDate, ranges.selection.endDate)
             const dateArray = getDateRangeArray(ranges.selection.startDate, ranges.selection.endDate)
             const RuleDay = calculateDays(today, ranges.selection.startDate)
-            console.log('ngu', daysToAdd, RuleDay, RuleDay > 2, RuleDay < 5, daysToAdd <= 3)
             if (RuleDay > 2 && RuleDay < 5 && daysToAdd > 3) {
                 setLeaveErorr('đăng ký trước 2 ngày với đơn nghỉ dưới 3 ngày')
             }
@@ -479,12 +474,7 @@ export default function ApplyLeave() {
                 setLeaveErorr('trước 5 ngày vs đơn từ 3-7 ngày')
             } else {
                 for (let i = 0; i < daysToAdd; i++) {
-                    console.log(
-                        'hikika',
-                        dateArray[i],
-                        WorkSetting.dateStatus,
-                        isNonWorkingDay(dateArray[i], WorkSetting.dateStatus)
-                    )
+             
                     newDate.push({
                         title: dateArray[i],
                         type:
@@ -495,7 +485,6 @@ export default function ApplyLeave() {
                 }
 
                 const totalLeaveDate = newDate.filter((date) => date.type !== 'nonWorkingDay')
-                console.log('newDate', newDate, totalLeaveDate)
                 setLeaveDaysDate(newDate)
                 setLeaveDays(calculateTotalLeaveDays(newDate))
             }
@@ -507,7 +496,6 @@ export default function ApplyLeave() {
         setLeaveDaysDate(updatedDataList)
         setLeaveDays(calculateTotalLeaveDays(updatedDataList))
     }
-    console.log('day', leaveDays, formik.values, ApplyLeaveByEmployee.length)
     const handleChangePage = (newPage) => {
         setPage(newPage)
     }
@@ -523,7 +511,7 @@ export default function ApplyLeave() {
         setIsAction(1)
     }
     const handleClickOpenUpdate = (data) => {
-        console.log('AllEmployeeInDepartment status', data.status)
+        UpdateIsSeenToTrueForEmployee(data)
         if (data.status != 0) {
             SetErrorEdit(true)
             dispatch(GetLeaveTypeInfoAsyncApi({ employeeId: employeeId, LeaveTypeId:  data.leaveTypeId }))
@@ -535,7 +523,6 @@ export default function ApplyLeave() {
         setRequestId(data.id)
 
         setIsAction(2)
-        console.log('data', data.startDate, parse(data.startDate, 'dd/MM/yyyy', new Date()))
         const newDate = data.dateRange.map((item, index) => ({
             title: formatDate(item.title),
             type: item.type,
@@ -627,12 +614,10 @@ export default function ApplyLeave() {
     }
 
     function getNameById(id) {
-        console.log('nguid', id)
         const leaveType = ApplyLeaveTypeList.find((item) => item.id === id)
         return leaveType ? leaveType.name : null
     }
 
-    console.log('AllEmployeeInDepartment', statusRequest)
     const viewModalContent = (
         <Fragment>
             <form onSubmit={formik.handleSubmit}>
@@ -1104,7 +1089,6 @@ export default function ApplyLeave() {
     const rows = createRows()
     const userId = localStorage.getItem('employeeId')
     const UserParseId = JSON.parse(userId)
-    console.log('search', dateRange)
 
     const handleDelete = async () => {
      
@@ -1117,10 +1101,8 @@ export default function ApplyLeave() {
                 const recordRef = refRealtime(db, `managerNoti/${childSnapshot.key}`)
                 remove(recordRef)
                     .then(() => {
-                        console.log(`Record with requestId ${idDelete} deleted successfully`)
                     })
                     .catch((error) => {
-                        console.error(`Error deleting record with requestId ${idDelete}: `, error)
                     })
             }
         })
@@ -1149,7 +1131,6 @@ export default function ApplyLeave() {
                 setLoadingButton(false)
             })
     }
-    console.log('chay', formik.values.substitute)
     return (
         <div>
             <Navbar />

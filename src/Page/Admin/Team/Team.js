@@ -231,7 +231,6 @@ export default function Team() {
         setIsAction(2)
         dispatch(getDepartmentByIdAsyncApi(data.id))
             .then((response) => {
-                console.log('ngu ne', response.payload)
                 const updatedData = response.payload.map((item) => ({
                     ...item,
                     isNew: false,
@@ -241,7 +240,6 @@ export default function Team() {
             .catch((error) => {
                 console.error('Error fetching team data:', error)
             })
-        console.log('data', data)
         formik.setValues({
             name: data.name,
             managerName: data.managerId,
@@ -263,7 +261,6 @@ export default function Team() {
             managerName: '',
         })
     }
-    console.log('chay ne', teamData)
 
     const handleClickOpenConfirm = (data) => {
         setOpenConfirm(true)
@@ -347,7 +344,6 @@ export default function Team() {
                 const lastIndex = updateTeam.length - 1
                 updateTeam[lastIndex].isNew = false
                 setTeamData(updateTeam)
-                console.log('chay ne 3', updateTeam, lastIndex)
             }
             const updatedEmployeeList = [...EmployeeNotIncludeInAnyTeam]
             const filteredEmployeeNotIncludeInAnyTeam = updatedEmployeeList.filter((employee) => {
@@ -572,7 +568,6 @@ export default function Team() {
     }
     const rows = createRows()
 
-    console.log('search', search)
     return (
         <div>
             <Navbar />

@@ -68,6 +68,7 @@ import { useSnackbar } from '../../../Hook/useSnackbar'
 import TableLoadData from '../../../Components/TableLoad'
 import PopupAlert from '../../../Components/PopupAlert'
 import { DatePicker } from '@mui/x-date-pickers'
+import UpdateIsSeenToTrueForManager, { UpdateIsSeenToTrueForEmployee } from '../../../Hook/useFirebase'
 
 const CustomSelect = styled(Select)`
     color: #60a5fa; // Đổi màu chữ thành xanh
@@ -146,7 +147,6 @@ export default function Overtime() {
     const [date, setDate] = useState(null)
     const DaysLater = addDays(today, 2)
     const [click, SetClick] = useState(false)
-    console.log('day', leaveDays)
     const [selectedStartTime, setSelectedStartTime] = useState(null)
     const [selectedEndTime, setSelectedEndTime] = useState(null)
     const userStringEmployeeName = localStorage.getItem('employeeId')
@@ -165,21 +165,18 @@ export default function Overtime() {
                     setIsAction(2)
                     const startTime = formatTimeToDate(res.payload.timeStart)
                     const endTime = formatTimeToDate(res.payload.timeEnd)
-                    console.log(1234, startTime, endTime, res.payload.timeLate)
                     setSelectedStartTime(startTime)
                     setSelectedEndTime(endTime)
                     setReason(res.payload.reason)
                     setChosenFileName(res.payload.linkFile)
                     seterrorImport(true)
                     setDate(parse(res.payload.date, 'yyyy/MM/dd', new Date()))
-                    console.log('res.payload', res.payload)
                   
                   
                 }
             })
             setOpen(true)
         }
-        console.log('RequestId', RequestIdNoti)
     }, [RequestIdNoti])
     useEffect(() => {
         dispatch(getOvertimeByIdAsyncApi(employeeId))
@@ -212,8 +209,8 @@ export default function Overtime() {
     const handleDateChange = (date) => {
         setSelectedDate(date)
     }
-    console.log('selectedDate123', statusRequest)
     const handleClickOpenUpdate = (data, event) => {
+        UpdateIsSeenToTrueForEmployee(data)
         if (data.statusRequest != 0) {
             SetErrorEdit(true)
         }
@@ -228,14 +225,12 @@ export default function Overtime() {
         setIsAction(2)
         const startTime = formatTimeToDate(data.timeStart)
         const endTime = formatTimeToDate(data.timeEnd)
-        console.log(1234, startTime, endTime, data.timeLate)
         setSelectedStartTime(startTime)
         setSelectedEndTime(endTime)
         setReason(data.reason)
         setChosenFileName(data.linkFile)
         seterrorImport(true)
         setDate(parse(data.date, 'yyyy/MM/dd', new Date()))
-        console.log('data', data)
     }
     const handleFileInputChange = (event) => {
         const selectedFile = event.target.files[0]
@@ -276,9 +271,7 @@ export default function Overtime() {
         setOpen(false)
     }
 
-    console.log('mn', selectedStartTime)
     const handleRequest = () => {
-        console.log('chay new')
         setLoadingButton(true)
         const { format, parse } = require('date-fns')
         // const parsedDate = parse(date, 'dd MMM, yyyy', new Date())
@@ -288,7 +281,6 @@ export default function Overtime() {
         const endTime = FormatDateToTime(selectedEndTime)
         const storageRef = refStorage(storage, `Package/${selectedImage.name}`)
         const uploadTask = uploadBytesResumable(storageRef, selectedImage)
-        console.log('mnr', formatDateExact(date), selectedStartTime, timeStart)
         uploadTask.on(
             'state_changed',
             (snapshot) => {
@@ -310,7 +302,6 @@ export default function Overtime() {
                     }
                     dispatch(PostOvertimeAsyncApi({ id: employeeId, body: body }))
                         .then((response) => {
-                            console.log('Response', response.meta.requestStatus == 'fulfilled')
 
                             if (response.meta.requestStatus == 'fulfilled') {
                                 setAnchorEl(null)
@@ -342,9 +333,7 @@ export default function Overtime() {
             }
         )
     }
-    console.log('selectedDate', selectedDate)
     const handleRequestUpdate = () => {
-        console.log('chay update')
         const { format, parse } = require('date-fns')
         // const parsedDate = parse(date, 'dd MMM, yyyy', new Date())
         // const formattedDateStr = format(parsedDate, 'yyyy/MM/dd')
@@ -353,7 +342,6 @@ export default function Overtime() {
         const endTime = FormatDateToTime(selectedEndTime)
         setLoadingButton(true)
 
-        console.log('mnr', formatDateExact(date), selectedStartTime, timeStart)
         if (click == false) {
             const body = {
                 requestId: IdRequest,
@@ -366,7 +354,6 @@ export default function Overtime() {
             }
             dispatch(PutOvertimeAsyncApi({ id: employeeId, body: body }))
                 .then((response) => {
-                    console.log('Response', response.meta.requestStatus == 'fulfilled')
                     if (response.meta.requestStatus == 'fulfilled') {
                         setAnchorEl(null)
                         setLoadingButton(false)
@@ -417,7 +404,6 @@ export default function Overtime() {
                         dispatch(PostOvertimeAsyncApi({ id: employeeId, body: body }))
                             .then((response) => {
                                 setLoadingButton(false)
-                                console.log('Response', response.meta.requestStatus == 'fulfilled')
                                 if (response.meta.requestStatus == 'fulfilled') {
                                     setAnchorEl(null)
                                     setOpen(false)
@@ -457,10 +443,8 @@ export default function Overtime() {
                 const recordRef = refRealtime(db, `managerNoti/${childSnapshot.key}`);
                 remove(recordRef)
                     .then(() => {
-                        console.log(`Record with requestId ${idDelete} deleted successfully`);
                     })
                     .catch((error) => {
-                        console.error(`Error deleting record with requestId ${idDelete}: `, error);
                     });
             }
         });
@@ -548,13 +532,11 @@ export default function Overtime() {
         }))
     }
     const rows = createRows()
-    console.log('search', search)
     const minTime = new Date()
     minTime.setHours(17, 30) // 5:30 PM
     const maxTime = new Date()
     maxTime.setHours(22, 30) // 10:30 PM
 
-    console.log('selectedDate', selectedDate)
     const viewModalContent = (
         <Fragment>
             <div className="w-full">

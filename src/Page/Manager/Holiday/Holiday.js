@@ -150,7 +150,6 @@ export default function Holiday() {
                     name: item.name,
                 }))
                 setDataUser(data)
-                console.log('ga1', data, dataUser, response.payload)
             }
         })
         return () => {}
@@ -175,7 +174,6 @@ export default function Holiday() {
                 for (var i = 0; i < DepartmentList.length; i++) {
                     idValuesArray.push(DepartmentList[i].id)
                 }
-                console.log('chay', values.holidayDate, values.holidayDateEnd, idArray)
                 const body = {
                     departmentIds: idValuesArray,
                     startDate: startDateStr,
@@ -185,7 +183,6 @@ export default function Holiday() {
                     isRecurring: true,
                     isDeleted: true,
                 }
-                console.log('chay', values.holidayDate, values.holidayDateEnd, body, idArray)
 
                 dispatch(PostHolidayAsyncApi(body))
                     .then((response) => {
@@ -263,7 +260,6 @@ export default function Holiday() {
             }
         }
     }
-    console.log('123', formik.values, formik.errors)
 
     const handleBrowseButtonClick = () => {
         fileInputRef.current.click()
@@ -329,9 +325,7 @@ export default function Holiday() {
     //     seterrorSelect(true)
     //     setSelectedUser(newValue)
     // }
-    console.log('nguuuu', dateRange, threeDaysLater)
     const handleClickOpenUpdate = (data) => {
-        console.log('nguuuu', data.startDate)
         const parsedStartDate = parse(data.startDate, "yyyy-MM-dd'T'HH:mm:ss", new Date())
         const parsedEndDate = parse(data.endDate, "yyyy-MM-dd'T'HH:mm:ss", new Date())
         setDateRange([
@@ -379,7 +373,6 @@ export default function Holiday() {
         link.click()
     }
     function handleClickImportExcel() {
-        console.log('data 1', selectedImage)
         const promise = new Promise((resolve, reject) => {
             const fileReader = new FileReader()
             fileReader.readAsArrayBuffer(selectedImage)
@@ -396,7 +389,6 @@ export default function Holiday() {
                     item.EndDate = XLSX.SSF.format('yyyy-mm-dd', item.EndDate)
                 })
                 resolve(lastData)
-                console.log('data2', lastData, data)
             }
 
             fileReader.onerror = (errors) => {
@@ -405,7 +397,6 @@ export default function Holiday() {
         })
 
         promise.then((data) => {
-            console.log('data3', data)
             // Thực hiện các thao tác khác với dữ liệu ở đây
             const idArray = dataUser.map((item) => item.id)
             const newData = data.map((x) => {
@@ -464,7 +455,6 @@ export default function Holiday() {
             title: item.holidayName,
         }))
     }
-    console.log('ngu', formik.errors, formik.touched)
     const [value, setValue] = useState([])
     const rows = createRows()
     const viewModalContent = (
@@ -645,7 +635,6 @@ export default function Holiday() {
             </div>
         </Fragment>
     )
-    console.log('fileInputRef', fileInputRef)
     const [userRole, setUserRole] = useState(() => {
         const userString = localStorage.getItem('role')
         const userObject = JSON.parse(userString)

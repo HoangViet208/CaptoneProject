@@ -64,13 +64,16 @@ import {
 } from '../../../Hook/useFormatDate'
 import { useDispatch, useSelector } from 'react-redux'
 import {
+    GetWorkingByRequestIdAsyncApi,
     PostWorkedAsyncApi,
     PutWorkedAsyncApi,
+    WorkedAction,
     getWorkedAsyncApi,
     getWorkedByIdAsyncApi,
 } from '../../../Redux/Worked/WorkedSlice'
 import { useSnackbar } from '../../../Hook/useSnackbar'
 import TableLoadData from '../../../Components/TableLoad'
+import UpdateIsSeenToTrueForManager, { UpdateIsSeenToTrueForEmployee } from '../../../Hook/useFirebase'
 
 const CustomSelect = styled(Select)`
     color: #60a5fa; // Đổi màu chữ thành xanh
@@ -163,7 +166,6 @@ export default function Worked() {
     }
 
     const [viewStatus, setViewStatus] = useState(initialViewStatus)
-    console.log('initialViewStatus', viewStatus)
     const handleCheckboxChange = (event) => {
         const { name, checked } = event.target
         setViewStatus((prevDateStatus) => ({
@@ -172,9 +174,39 @@ export default function Worked() {
         }))
     }
     //setting redux
-    const { WorkedByEmployee, loading } = useSelector((state) => state.worked)
+    const { WorkedByEmployee, loading, RequestIdNoti } = useSelector((state) => state.worked)
 
     const dispatch = useDispatch()
+    useEffect(() => {
+        if (RequestIdNoti != 0) {
+            dispatch(GetWorkingByRequestIdAsyncApi(RequestIdNoti)).then((data) => {
+                if (data.meta.requestStatus == 'fulfilled') {
+                    setOpen(true)
+                    setDate(data.date)
+                    setStartTime(data.slotStart)
+                    setEndTime(data.slotEnd)
+                    setCheckIn(data.checkInTime)
+                    setCheckOut(data.checkOutTime)
+
+                    setIsAction(3)
+                    const startTime = formatTimeToDate(data.slotStart)
+                    const endTime = formatTimeToDate(data.slotEnd)
+                    setSelectedStartTime(startTime)
+                    setSelectedEndTime(endTime)
+
+                    setworkslotEmployeeId(data.workslotEmployeeId)
+                    if (data.statusName != 'Lack Of Work Time') {
+                        setReason(data.reason)
+                        setrequestId(data.requestId)
+                        setChosenFileName(data.linkFile)
+                        seterrorImport(true)
+                        setIsAction(2)
+                    }
+                }
+            })
+            setOpen(true)
+        }
+    }, [RequestIdNoti])
     useEffect(() => {
         dispatch(
             getWorkedByIdAsyncApi({
@@ -244,29 +276,40 @@ export default function Worked() {
         setOpen(true)
         setIsAction(1)
     }
+    const [date, setDate] = useState()
+    const [startTime, setStartTime] = useState()
+    const [endTime, setEndTime] = useState()
+    const [checkIn, setCheckIn] = useState()
+    const [checkOut, setCheckOut] = useState()
     const handleClickOpenUpdate = (data, event) => {
-        setAnchorEl(event.currentTarget)
-        setIsAction(1)
+        UpdateIsSeenToTrueForEmployee(data)
+        if (data.statusName == 'Pending') {
+            setIsAction(1)
+        } else {
+            setIsAction(3)
+        }
+        setReason(data.reason)
+        setrequestId(data.requestId)
+        setChosenFileName(data.linkFile)
+        seterrorImport(true)
+        console.log('data', date)
+        setOpen(true)
+        setDate(data.date)
+        setStartTime(data.slotStart)
+        setEndTime(data.slotEnd)
+        setCheckIn(data.checkInTime)
+        setCheckOut(data.checkOutTime)
         const startTime = formatTimeToDate(data.slotStart)
         const endTime = formatTimeToDate(data.slotEnd)
-        console.log(1234, startTime, endTime, data.timeLate)
         setSelectedStartTime(startTime)
         setSelectedEndTime(endTime)
 
         setworkslotEmployeeId(data.workslotEmployeeId)
-        if (data.statusName != 'Lack Of Work Time') {
-            setReason(data.reason)
-            setrequestId(data.requestId)
-            setChosenFileName(data.linkFile)
-            seterrorImport(true)
-            setIsAction(2)
-        }
     }
-    console.log(1234, selectedEndTime)
     const clickOpenFalse = (event) => {
         setOpen(false)
         setIsAction(0)
-
+        dispatch(WorkedAction.changeRequestId(0))
         setDateRange([
             {
                 startDate: threeDaysLater,
@@ -288,7 +331,6 @@ export default function Worked() {
     }
     const handleClickRequest = () => {
         setLoadingButton(true)
-        console.log('chay 1')
         const storageRef = ref(storage, `Package/${selectedImage.name}`)
         const uploadTask = uploadBytesResumable(storageRef, selectedImage)
         uploadTask.on(
@@ -311,7 +353,6 @@ export default function Worked() {
                     dispatch(PostWorkedAsyncApi({ id: employeeId, body: body }))
                         .then((response) => {
                             setLoadingButton(false)
-                            console.log('Response', response.meta.requestStatus == 'fulfilled')
                             if (response.meta.requestStatus == 'fulfilled') {
                                 setAnchorEl(null)
                                 showSnackbar({
@@ -325,7 +366,7 @@ export default function Worked() {
                                 setworkslotEmployeeId()
 
                                 seterrorImport(false)
-
+                                setOpen(false)
                                 setReason()
                                 setSelectedImage()
                                 dispatch(
@@ -349,7 +390,6 @@ export default function Worked() {
     }
 
     const handleClickRequestUpdate = () => {
-        console.log('chay 2', click)
         if (click == false) {
             const body = {
                 id: requestId,
@@ -359,7 +399,6 @@ export default function Worked() {
                 reason: reason,
             }
             dispatch(PutWorkedAsyncApi({ id: employeeId, body: body })).then((response) => {
-                console.log('Response', response.meta.requestStatus == 'fulfilled')
                 if (response.meta.requestStatus == 'fulfilled') {
                     setAnchorEl(null)
                     showSnackbar({
@@ -370,7 +409,7 @@ export default function Worked() {
                     setIsAction(0)
                     setSelectedStartTime()
                     setSelectedEndTime()
-
+                    setOpen(false)
                     setReason()
                     setSelectedImage()
                     dispatch(getWorkedByIdAsyncApi(employeeId))
@@ -399,7 +438,6 @@ export default function Worked() {
                             linkFile: downloadURL,
                         }
                         dispatch(PutWorkedAsyncApi({ id: employeeId, body: body })).then((response) => {
-                            console.log('Response', response.meta.requestStatus == 'fulfilled')
                             if (response.meta.requestStatus == 'fulfilled') {
                                 setAnchorEl(null)
                                 showSnackbar({
@@ -410,7 +448,7 @@ export default function Worked() {
                                 setIsAction(0)
                                 setSelectedStartTime()
                                 setSelectedEndTime()
-
+                                setOpen(false)
                                 setReason()
                                 setSelectedImage()
                                 dispatch(getWorkedByIdAsyncApi(employeeId))
@@ -478,8 +516,8 @@ export default function Worked() {
             ),
         }))
     }
+
     const rows = createRows()
-    console.log('search', search)
     return (
         <div>
             <Navbar />
@@ -494,71 +532,151 @@ export default function Worked() {
                         vertical: 'bottom',
                         horizontal: 'left',
                     }}
-                >
-                    <div className="md:flex">
-                        <div className="mx-2 flex flex-col items-center justify-center">
-                            <div className="mb-2 mt-2 relative">
-                                <input
-                                    className="hidden w-full" // Ẩn input mặc định
-                                    type="file"
-                                    ref={fileInputRef}
-                                    onChange={handleFileInputChange}
-                                />
-                                <button
-                                    onClick={handleBrowseButtonClick}
-                                    className="border-[1px] cursor-pointer rounded-md h-10 bg-gray-300 px-4 absolute "
-                                >
-                                    Browse
-                                </button>
-                                <div>
+                ></Popover>
+            )}
+            <PopupData
+                open={open}
+                clickOpenFalse={clickOpenFalse}
+                viewTitle={isAction == 1 ? 'Apply Worked' : isAction == 2 ? 'Edit Worked' : 'Worked'}
+                viewContent={
+                    <Fragment>
+                        <div className="md:flex">
+                            <div className="mx-2 flex flex-col items-center justify-center w-full">
+                                <div className="">
+                                    <TextField
+                                        label="Date"
+                                        size="small"
+                                        disabled
+                                        sx={{
+                                            '& .MuiInputBase-input.Mui-disabled': {
+                                                WebkitTextFillColor: '#000000',
+                                            },
+                                        }}
+                                        className=" w-[400px] text-red-600"
+                                        value={date && formatDate(date)}
+                                    />
+                                </div>
+                                <div className="grid grid-cols-2 w-[400px] mt-2 gap-2">
+                                    <TextField
+                                        label="Start Time"
+                                        size="small"
+                                        disabled
+                                        sx={{
+                                            '& .MuiInputBase-input.Mui-disabled': {
+                                                WebkitTextFillColor: '#000000',
+                                            },
+                                        }}
+                                        className=" "
+                                        value={startTime}
+                                    />
+                                    <TextField
+                                        label="End Time"
+                                        size="small"
+                                        disabled
+                                        sx={{
+                                            '& .MuiInputBase-input.Mui-disabled': {
+                                                WebkitTextFillColor: '#000000',
+                                            },
+                                        }}
+                                        className=" "
+                                        value={endTime}
+                                    />
+                                </div>
+                                <div className="grid grid-cols-2 w-[400px] mt-2 gap-2">
+                                    <TextField
+                                        label="Check In"
+                                        size="small"
+                                        disabled
+                                        sx={{
+                                            '& .MuiInputBase-input.Mui-disabled': {
+                                                WebkitTextFillColor: '#000000',
+                                            },
+                                        }}
+                                        className=" "
+                                        value={checkIn}
+                                    />
+                                    <TextField
+                                        label="Check Out"
+                                        size="small"
+                                        disabled
+                                        sx={{
+                                            '& .MuiInputBase-input.Mui-disabled': {
+                                                WebkitTextFillColor: '#000000',
+                                            },
+                                        }}
+                                        className=" "
+                                        value={checkOut}
+                                    />
+                                </div>
+                                <div className="mb-2 mt-2 relative">
+                                    <input
+                                        className="hidden w-full" // Ẩn input mặc định
+                                        type="file"
+                                        ref={fileInputRef}
+                                        onChange={handleFileInputChange}
+                                    />
                                     <button
-                                        onClick={handleBrowseButtonClick}
-                                        className="cursor-pointer  block rounded-md h-10 text-left w-[260px] pl-[90px] font-medium text-gray-600  border border-gray-300   bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                                        variant="contained"
+                                        onClick={isAction == 3 ? undefined : handleBrowseButtonClick}
+                                        className="border-[1px] cursor-pointer rounded-md h-10 bg-gray-300 px-4 absolute "
                                     >
-                                        {chosenFileName.length > 16
-                                            ? chosenFileName.slice(0, 16).concat('...')
-                                            : chosenFileName}
+                                        Browse
                                     </button>
-                                    {error && <div className="text-red-500 w-[260px]">{error}</div>}
+                                    <div>
+                                        <button
+                                            onClick={isAction == 3 ? undefined : handleBrowseButtonClick}
+                                            className="cursor-pointer  block rounded-md h-10 text-left w-[400px] pl-[90px] font-medium text-gray-600  border border-gray-300   bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                                            variant="contained"
+                                        >
+                                            {chosenFileName.length > 16
+                                                ? chosenFileName.slice(0, 16).concat('...')
+                                                : chosenFileName}
+                                        </button>
+                                        {error && <div className="text-red-500 w-[260px]">{error}</div>}
+                                    </div>
+                                </div>
+                                <div className="mb-2">
+                                    <TextField
+                                        onChange={(e) => setReason(e.target.value)}
+                                        label="Reason"
+                                        disabled={isAction == 3 ? true : false}
+                                        multiline
+                                        className="w-[400px]"
+                                        rows={3}
+                                        value={reason}
+                                    />
                                 </div>
                             </div>
-                            <div className="mb-2">
-                                <TextField
-                                    onChange={(e) => setReason(e.target.value)}
-                                    label="Reason"
-                                    multiline
-                                    className="w-[260px]"
-                                    rows={3}
-                                    value={reason}
-                                />
+                        </div>
+                        <div className="">
+                            <hr />
+                            <div className="my-2 float-right mr-4">
+                                <LoadingButton
+                                    startIcon={<AddIcon />}
+                                    onClick={
+                                        isAction == 1
+                                            ? handleClickRequest
+                                            : isAction == 2
+                                            ? handleClickRequestUpdate
+                                            : null
+                                    }
+                                    disabled={error || !errorImport}
+                                    loading={loadingButton}
+                                    loadingPosition="start"
+                                    variant="contained"
+                                    color="primary"
+                                    sx={{
+                                        textAlign: 'center',
+                                    }}
+                                    autoFocus
+                                >
+                                    Save changes
+                                </LoadingButton>
                             </div>
                         </div>
-                    </div>
-                    <div className="">
-                        <hr />
-                        <div className="my-2 float-right mr-4">
-                            <LoadingButton
-                                startIcon={<AddIcon />}
-                                onClick={
-                                    isAction == 1 ? handleClickRequest : isAction == 2 ? handleClickRequestUpdate : null
-                                }
-                                disabled={error || !errorImport}
-                                loading={loadingButton}
-                                loadingPosition="start"
-                                variant="contained"
-                                color="primary"
-                                sx={{
-                                    textAlign: 'center',
-                                }}
-                                autoFocus
-                            >
-                                Save changes
-                            </LoadingButton>
-                        </div>
-                    </div>
-                </Popover>
-            )}
+                    </Fragment>
+                }
+                size="sm"
+            />
             <div className="sm:ml-64 pt-12 h-screen bg-gray-50">
                 <div className="px-12 py-6">
                     <h2 className="font-bold text-3xl mb-4"> Worked List </h2>

@@ -64,7 +64,6 @@ export default function NavbarManager() {
 
     const employeeIdString = localStorage.getItem('employeeId')
     const employeeId = JSON.parse(employeeIdString)
-    console.log('employeeId', employeeId)
     const fetchDataFromDatabase = () => {
         setIsLoading(true)
         const db = getDatabase(app)
@@ -82,26 +81,21 @@ export default function NavbarManager() {
                         return null
                     })
                     .filter((item) => item !== null)
-                console.log('employeeId tung cai', data)
                 setDataNotification(data)
             } else {
                 setIsLoading(false)
-                console.log('Data does not exist')
             }
         })
     }
     function UpdateIsSeenToTrue(newValue) {
-        console.log('fetchRealDatabase da chay')
 
         const db = getDatabase() // Lấy tham chiếu đến database
         const recordRef = ref(db, `managerNoti/${newValue.id}`) // Tham chiếu đến bản ghi cụ thể bằng id
-
+        console.log("test ne1",newValue, db, recordRef)
         set(recordRef, { ...newValue, isSeen: true })
             .then(() => {
-                console.log('fetchRealDatabase isSeen updated successfully')
             })
             .catch((error) => {
-                console.error('fetchRealDatabase Error updating isSeen: ', error)
             })
     }
     useEffect(() => {
@@ -124,7 +118,6 @@ export default function NavbarManager() {
             onValue(dbRef, () => {}) // Pass empty function to remove listener
         }
     }, [])
-    console.log('fetchRealDatabase ', dataNotification)
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget)
     }

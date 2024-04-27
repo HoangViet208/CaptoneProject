@@ -52,7 +52,6 @@ export default function Profile() {
     const userStringRole = localStorage.getItem('role')
     const role = JSON.parse(userStringRole)
     let newNav = null
-    console.log('role', role)
     useEffect(() => {
         if (role) {
             if (role === 'Manager') {

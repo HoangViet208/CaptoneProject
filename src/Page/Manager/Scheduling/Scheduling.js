@@ -222,7 +222,6 @@ export default function SchedulingHRandManagament() {
             time: item.startTime + ' ~ ' + item.endTime,
         }
     })
-    console.log('sada', newEvents)
 
     const dayHeaderContent = (info) => {
         const date = info.date
@@ -240,7 +239,6 @@ export default function SchedulingHRandManagament() {
     }
     function renderEventContent(eventInfo) {
         // Tùy chỉnh cách hiển thị sự kiện
-        console.log('eventInfo.event', eventInfo.event)
         if (eventInfo.event.title === 'Not working') {
             return (
                 <div className="working-event text-black">
@@ -263,8 +261,8 @@ export default function SchedulingHRandManagament() {
                     <div className="flex bg-orange-500 p-2 rounded-md my-2 gap-2 bg-none items-center mx-auto ">
                         <p className="text-white">{eventInfo.event.extendedProps.time}</p>
                     </div>
-                ) : eventInfo.event.title == 'Overtime' ? (
-                    <div className="flex bg-orange-500 p-2 rounded-md my-2 gap-2 bg-none items-center mx-auto ">
+                ) : eventInfo.event.title == 'Public Holiday' ? (
+                    <div className="flex bg-red-500 p-2 rounded-md my-2 gap-2 bg-none items-center mx-auto ">
                         <p className="text-white">{eventInfo.event.title}</p>
                     </div>
                 ) : eventInfo.event.title == 'Leave' ? (

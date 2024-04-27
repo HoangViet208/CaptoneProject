@@ -48,6 +48,7 @@ import {
 import { getDepartmentAsyncApi } from '../../../Redux/Department/DepartmentSlice'
 import { useSnackbar } from '../../../Hook/useSnackbar'
 import { GetWorkedSlotForPersonalAsyncApi } from '../../../Redux/WorkSlotEmployee/WorkSlotEmployeeSlice'
+import { CommentsDisabledOutlined } from '@mui/icons-material'
 
 const breadcrumbIcons = () => {
     const data = [
@@ -164,7 +165,6 @@ export default function Scheduling() {
         // Hiển thị tháng hiện tại dưới dạng "yyyy/MM/dd"
         setCurrentMonth(formattedDate)
     }
-    console.log('selectedDateRange', Department)
     const events = [
         {
             title: 'Event 1',
@@ -189,9 +189,9 @@ export default function Scheduling() {
             start: item.date,
             title: item.title,
             time: item.startTime + ' ~ ' + item.endTime,
+            period: item.period
         }
     })
-    console.log('sada', newEvents)
 
     const dayHeaderContent = (info) => {
         const date = info.date
@@ -209,7 +209,6 @@ export default function Scheduling() {
     }
     function renderEventContent(eventInfo) {
         // Tùy chỉnh cách hiển thị sự kiện
-        console.log('eventInfo.event', eventInfo.event)
         if (eventInfo.event.title === 'Not working') {
             return (
                 <div className="working-event text-black">
@@ -231,13 +230,13 @@ export default function Scheduling() {
                         <div className="flex bg-orange-500 p-2 rounded-md my-2 gap-2 bg-none items-center mx-auto ">
                             <p className="text-white">{eventInfo.event.extendedProps.time}</p>
                         </div>
-                    ) : eventInfo.event.title == 'Overtime' ? (
-                        <div className="flex bg-orange-500 p-2 rounded-md my-2 gap-2 bg-none items-center mx-auto ">
+                    ) : eventInfo.event.title == 'Public Holiday' ? (
+                        <div className="flex bg-red-500 p-2 rounded-md my-2 gap-2 bg-none items-center mx-auto ">
                             <p className="text-white">{eventInfo.event.title}</p>
                         </div>
                     ) : eventInfo.event.title == 'Leave' ? (
                         <div className="flex bg-emerald-500 p-2 rounded-md my-2 gap-2 bg-none items-center mx-auto ">
-                            <p className="text-white">{eventInfo.event.title}</p>
+                            <p className="text-white">{eventInfo.event.title} {eventInfo.event.extendedProps.period}</p>
                         </div>
                     ) : (
                         <div className="flex bg-gray-500 p-2 rounded-md my-2 gap-2 bg-none items-center mx-auto ">

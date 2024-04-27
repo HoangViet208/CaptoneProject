@@ -40,11 +40,9 @@ const authSlice = createSlice({
             state.LeaveTypeInfo = {}
         },
         ChangeTab: (state, action) => {
-            console.log('action', action)
             state.valueTabs = action.payload
         },
         changeRequestId: (state, action) => {
-            console.log('action', action)
             state.RequestIdNoti = action.payload
         },
     },
@@ -217,7 +215,6 @@ export const GetApplyLeaveByRequestIdAsyncApi = createAsyncThunk(
 
 export const GetAllRequestAsyncApi = createAsyncThunk('ApplyLeaveReducer/GetAllRequestApi', async ({id,date}) => {
     try {
-        console.log("nguqua", id ,date)
         const response = await GetAllRequestApi(id, date)
         return response
     } catch (error) {
@@ -229,7 +226,6 @@ export const GetAllRequestAsyncApi = createAsyncThunk('ApplyLeaveReducer/GetAllR
 
 export const PostApplyLeaveAsyncApi = createAsyncThunk('ApplyLeaveReducer/postAsyncApi', async ({ id, body }) => {
     try {
-        console.log('thanh cong1', id, body)
         const response = await PostApplyLeaveApi(id, body)
         return response
     } catch (error) {

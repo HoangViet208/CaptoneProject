@@ -13,6 +13,7 @@ import GetWorkedApi, {
     PutApproveWorkedApi,
     PutRejectWorkedApi,
     PutCancelWorkedApi,
+    GetWorkingByRequestIdApi,
 } from '../../Api/WorkedApi'
 
 const initialState = {
@@ -23,6 +24,7 @@ const initialState = {
     WorkedByEmployee: [],
     WorkedSlot: [],
     WorkSetting: [],
+    RequestIdNoti: 0,
 }
 
 const authSlice = createSlice({
@@ -36,8 +38,10 @@ const authSlice = createSlice({
             state.WorkSetting = []
         },
         ChangeTab: (state, action) => {
-            console.log('action', action)
             state.valueTabs = action.payload
+        },
+        changeRequestId: (state, action) => {
+            state.RequestIdNoti = action.payload
         },
     },
     extraReducers: (builder) => {
@@ -86,6 +90,11 @@ const authSlice = createSlice({
                 state.WorkedTypeList = action.payload
             })
             .addCase(GetWorkedTypeAsyncApi.rejected, (state, action) => {})
+        builder
+            .addCase(GetWorkingByRequestIdAsyncApi.pending, (state) => {})
+            .addCase(GetWorkingByRequestIdAsyncApi.fulfilled, (state, action) => {
+            })
+            .addCase(GetWorkingByRequestIdAsyncApi.rejected, (state, action) => {})
         builder
             .addCase(PostWorkedAsyncApi.pending, (state) => {})
             .addCase(PostWorkedAsyncApi.fulfilled, (state, action) => {})
@@ -175,6 +184,16 @@ export const GetWorkedTypeAsyncApi = createAsyncThunk('WorkedReducer/GetWorkedTy
         throw errors[0].errorMessage
     }
 })
+export const GetWorkingByRequestIdAsyncApi = createAsyncThunk('WorkedReducer/GetWorkingByRequestIdApi', async (id) => {
+    try {
+        const response = await GetWorkingByRequestIdApi()
+        return response
+    } catch (error) {
+        const json = error.response.data
+        const errors = json[''].errors
+        throw errors[0].errorMessage
+    }
+})
 export const getWorkedByIdAsyncApi = createAsyncThunk(
     'WorkedReducer/getByIdAsyncApi',
     async ({ id, isWorkLate, isLeaveSoon, isNotCheckIn, isNotCheckOut }) => {
@@ -190,7 +209,6 @@ export const getWorkedByIdAsyncApi = createAsyncThunk(
 )
 export const PostWorkedAsyncApi = createAsyncThunk('WorkedReducer/postAsyncApi', async ({ id, body }) => {
     try {
-        console.log('thanh cong1', id, body)
         const response = await PostWorkedApi(id, body)
         return response
     } catch (error) {
@@ -201,7 +219,6 @@ export const PostWorkedAsyncApi = createAsyncThunk('WorkedReducer/postAsyncApi',
 })
 export const PostWorkedSlotAsyncApi = createAsyncThunk('WorkedReducer/PostWorkedSlotAsyncApi', async (body) => {
     try {
-        console.log('thanh cong1')
         const response = await PostWorkedSlotApi(body)
         return response
     } catch (error) {
@@ -214,7 +231,6 @@ export const PostWorkedSlotEmployeeAsyncApi = createAsyncThunk(
     'WorkedReducer/PostWorkedSlotEmployeeAsyncApi',
     async (body) => {
         try {
-            console.log('thanh cong1')
             const response = await PostWorkedSlotEmployeeApi(body)
             return response
         } catch (error) {
@@ -228,7 +244,6 @@ export const PostWorkEmployeeByDepartmentAsyncApi = createAsyncThunk(
     'WorkedReducer/PostWorkEmployeeByDepartmentAsyncApi',
     async ({ id, body }) => {
         try {
-            console.log('thanh cong1')
             const response = await PostWorkEmployeeByDepartmentApi(id, body)
             return response
         } catch (error) {

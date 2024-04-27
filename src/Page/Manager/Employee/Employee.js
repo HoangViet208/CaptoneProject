@@ -78,7 +78,6 @@ export default function Employee() {
         userRole === 'Manager'
             ? dispatch(getEmployeeByIdAsyncApi(employeeId)).then((response) => {
                   if (response.meta.requestStatus == 'fulfilled') {
-                      console.log('effect', response)
                       dispatch(
                           getEmployeeAsyncApi({ roleId: '', departmentId: response.payload.departmentId, name: search })
                       )

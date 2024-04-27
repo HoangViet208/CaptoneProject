@@ -47,13 +47,11 @@ function Login() {
                 password: password,
             })
         ).then((response) => {
-            console.log('Response', response.payload.statusCode == 409)
             if (response.payload.statusCode == 409) {
                 setError(response.payload.message)
                 setLoadingButton(false)
             } else if (response.payload.statusCode == 200) {
                 setError()
-                console.log('Response', response)
                 localStorage.setItem('user', JSON.stringify(response.payload.data))
                 localStorage.setItem('role', JSON.stringify(response.payload.role))
                 localStorage.setItem('employeeId', JSON.stringify(response.payload.employeeId))

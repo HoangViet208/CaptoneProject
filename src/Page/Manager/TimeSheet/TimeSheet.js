@@ -117,7 +117,6 @@ export default function TimeSheet() {
             ? Department &&
               dispatch(getEmployeeByIdAsyncApi(employeeId)).then((response) => {
                   if (response.meta.requestStatus == 'fulfilled') {
-                      console.log('effect', response)
                       dispatch(
                           GetWorkedSlotByIdDepartmentAsyncApi({
                               id: response.payload.departmentId,
@@ -162,11 +161,10 @@ export default function TimeSheet() {
         // const userStringEmployeeName = localStorage.getItem('employeeId')
         // const employeeId = JSON.parse(userStringEmployeeName)
         // const response = await dispatch(getEmployeeByIdAsyncApi(employeeId))
-        //   console.log("response", response)
-        
+        const { format } = require('date-fns')
             try {
                 const downloadResponse = await axios.get(
-                    `https://timekeepingsystem.azurewebsites.net/api/WorkSlotEmployee/export-excel-file?departmentId=${Department}`,
+                    `https://timekeepingsystem.azurewebsites.net/api/WorkSlotEmployee/export-excel-file?departmentId=${Department}&month=${format(selectedDateRange.startDate, 'yyyy/MM/dd')}`,
                     {
                         responseType: 'blob', // Set the response type to blob
                     }
@@ -219,7 +217,6 @@ export default function TimeSheet() {
             [name]: checked,
         }))
     }
-    console.log('initialViewStatus', initialViewStatus, viewStatus, viewStatus.isWork)
     const handleClickOpen = () => {
         setOpen(true)
     }
@@ -236,7 +233,6 @@ export default function TimeSheet() {
             Save changes
         </Button>
     )
-    console.log('de', Department)
 
     return (
         <div>
@@ -329,11 +325,11 @@ export default function TimeSheet() {
                                         className="bg-white"
                                         labelId="demo-simple-select-label"
                                         id="demo-simple-select"
-                                        value={Department}
+                                        value={Department || ''} 
                                         label="Team"
                                         onChange={handleChangeDepartment}
                                     >
-                                        <MenuItem value={'AllTeam'}>All Team</MenuItem>
+                                      <MenuItem value={''}>All Team</MenuItem>
                                         {DepartmentList.map((item, index) => {
                                             return (
                                                 <MenuItem key={index} value={item.id}>

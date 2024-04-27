@@ -46,7 +46,6 @@ export default function MonthAttendance() {
         }),
         onSubmit: async (values, { setSubmitting }) => {},
     })
-    console.log(days, formik.values.startTime)
 
     return (
         <div className="flex-1 ">

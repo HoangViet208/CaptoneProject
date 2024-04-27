@@ -120,7 +120,6 @@ export default function DashboardEmployee() {
     }, [])
     const [date, setDate] = useState(null)
     const DaysLater = addDays(today, 2)
-    console.log('day', WorkSlotByEmployee)
     const [selectedStartTime, setSelectedStartTime] = useState(null)
     const [selectedEndTime, setSelectedEndTime] = useState(null)
     const handleChangeStartTime = (newTime) => {
@@ -147,7 +146,6 @@ export default function DashboardEmployee() {
     const handleClickOpenUpdate = (data) => {
         setOpen(true)
         setIsAction(2)
-        console.log('data', data)
     }
     const handleFileInputChange = (event) => {
         const selectedFile = event.target.files[0]

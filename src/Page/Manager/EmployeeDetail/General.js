@@ -42,7 +42,6 @@ export default function General() {
     const { EmployeeDetail } = useSelector((state) => state.employee)
     const { RoleList } = useSelector((state) => state.account)
     const { DepartmentList } = useSelector((state) => state.department)
-  console.log("param", param.id, )
     const dispatch = useDispatch()
     
     useEffect(() => {
@@ -51,7 +50,6 @@ export default function General() {
         dispatch(getEmployeeByIdAsyncApi(param.id))
             .then((response) => {
                 if (response.meta.requestStatus == 'fulfilled') {
-                    console.log('effect', response)
                     formik.setValues({
                         username: response.payload.email,
                         firstName: response.payload.firstName,

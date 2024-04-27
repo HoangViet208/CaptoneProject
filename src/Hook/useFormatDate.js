@@ -180,7 +180,6 @@ export const isNonWorkingDay = (dateString, listDayOff) => {
 
     // Kiểm tra nếu ngày là ngày nghỉ dựa trên listDayOff
     const dayName = getDayName(dayOfWeek)
-    console.log('hikika', dayName, listDayOff, listDayOff[dayName])
     return listDayOff[dayName.toLowerCase()]
 }
 // Hàm trợ giúp để lấy tên ngày dựa trên số thứ tự

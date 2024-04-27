@@ -248,8 +248,10 @@ export default function ManageWorked() {
         return WorkedList.map((item, index) => ({
             ...item,
             reason: (
-                <Tooltip title={item.reason}>
-                    {item.reason.length > 5 ? item.reason.slice(0, 5) + '...' : item.reason}
+                <Tooltip title={item.reason }>
+                     <button>
+                        {item.reason.length > 5 ? item.reason.slice(0, 5) + '...' : item.reason}
+                    </button>
                 </Tooltip>
             ),
 
@@ -498,7 +500,6 @@ export default function ManageWorked() {
         }
     }, [])
     const handleClickCancel = () => {
-        console.log('da chay cancel')
         setLoadingRJButton(true)
         const Updatedata = {
             requestId: requestId,
@@ -532,7 +533,6 @@ export default function ManageWorked() {
             })
     }
     const handleChangeReasonRejectInput = (e) => {
-        console.log('12345', e)
         if (e == '') {
             setErrorReject(true)
         } else {

@@ -64,7 +64,6 @@ export default function LinearWithValueLabel(props) {
             // )
             const apiPromise = await api()
             await Promise.all([loopPromise, apiPromise])
-            console.log(loopPromise, apiPromise)
             await sleep(1000)
             setProgress(100)
             await sleep(1000)
