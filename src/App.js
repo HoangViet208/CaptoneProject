@@ -54,6 +54,8 @@ function App() {
                 <Route path="/Manager/ManageHoliday" exact component={Holiday} />
                 <Route path="/Manager/ManageOvertime" exact component={ManageOvertime} />
                 <Route path="/Manager/ManageWorked" exact component={ManageWorked} />
+                <Route path="/Manager/Workslot" exact component={WorkSlot} />
+                <Route path="/Manager/TrackSettings" exact component={TrackSettings} />
                 {/*HR*/}
                 <Route path="/Hr/WorkedTime" exact component={SchedulingHRandManagament} />
                 <Route path="/Hr/Employee" exact component={Employee} />
@@ -71,6 +73,7 @@ function App() {
                 <Route path="/Employee/ApplyLeave" exact component={ApplyLeave} />
                 <Route path="/Employee/Overtime" exact component={Overtime} />
                 <Route path="/Employee/Worked" exact component={Worked} />
+                
                 {/* Data */}
                 <Route path="/GenerationData" exact component={GenerationData} />
                 <Route component={ErrorPage} />

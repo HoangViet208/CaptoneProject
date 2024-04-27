@@ -93,9 +93,7 @@ export const getWorkSlotEmployeeedAsyncApi = createAsyncThunk('WorkSlotEmployeee
         const response = await GetWorkedSlotByIdEmployeeApi(id)
         return response
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })
 

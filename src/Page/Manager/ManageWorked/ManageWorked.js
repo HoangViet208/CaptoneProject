@@ -118,6 +118,7 @@ export default function ManageWorked() {
                 name: search,
                 status: valueTabs == 4 ? -1 : valueTabs,
                 date: formatDateExact(selectedDate),
+                id: userRole == 'Manager' ? UserParseId : '',
             })
         )
         return () => {}
@@ -199,6 +200,7 @@ export default function ManageWorked() {
                             name: search,
                             status: valueTabs == 4 ? -1 : valueTabs,
                             date: formatDateExact(selectedDate),
+                            id: userRole == 'Manager' ? UserParseId : '',
                         })
                     )
                     setLoadingButtonIndex(null)
@@ -229,6 +231,7 @@ export default function ManageWorked() {
                             name: search,
                             status: valueTabs == 4 ? -1 : valueTabs,
                             date: formatDateExact(selectedDate),
+                            id: userRole == 'Manager' ? UserParseId : '',
                         })
                     )
                     showSnackbar({
@@ -516,6 +519,7 @@ export default function ManageWorked() {
                                 name: search,
                                 status: valueTabs == 4 ? -1 : valueTabs,
                                 date: formatDateExact(selectedDate),
+                                id: userRole == 'Manager' ? UserParseId : '',
                             })
                         )
                     )

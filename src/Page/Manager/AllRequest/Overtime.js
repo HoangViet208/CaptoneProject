@@ -104,7 +104,7 @@ const breadcrumbIcons = () => {
 
 const dataBreadcrumbs = breadcrumbIcons()
 
-export default function Overtime() {
+export default function OvertimeHR() {
     const [loadingButton, setLoadingButton] = useState(false)
     //popover
     const [anchorEl, setAnchorEl] = React.useState(null)
@@ -321,20 +321,15 @@ export default function Overtime() {
                                 dispatch(getOvertimeByIdAsyncApi(employeeId))
                                 SetClick(false)
                             }
-                            if (response.meta.requestStatus == 'rejected') {
+                            if (response.meta.requestStatus == 'reject') {
                                 setLoadingButton(false)
-                                showSnackbar({
-                                    severity: 'error',
-                                    children: response.error.message,
-                                })
-                            
+                                
                             }else{
                                 setLoadingButton(false)
-                               
+                                console.log("response", response)
                             }
                         })
                         .catch((err) => {
-                           
                             setLoadingButton(false)
                         })
                 })

@@ -88,8 +88,12 @@ const authSlice = createSlice({
             .addCase(GetOvertimeByRequestIdAsyncApi.rejected, (state, action) => {})
         builder
             .addCase(PostOvertimeAsyncApi.pending, (state) => {})
-            .addCase(PostOvertimeAsyncApi.fulfilled, (state, action) => {})
-            .addCase(PostOvertimeAsyncApi.rejected, (state, action) => {})
+            .addCase(PostOvertimeAsyncApi.fulfilled, (state, action) => {
+                 console.log("res full", action)
+            })
+            .addCase(PostOvertimeAsyncApi.rejected, (state, action) => {
+                console.log("res reject", action.error.message)
+            })
         builder
             .addCase(PutOvertimeAsyncApi.pending, (state) => {})
             .addCase(PutOvertimeAsyncApi.fulfilled, (state, action) => {})
@@ -144,9 +148,7 @@ export const GetOvertimeTypeAsyncApi = createAsyncThunk('OvertimeReducer/GetOver
         const response = await GetOvertimeTypeApi()
         return response
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })
 export const GetTotalTimeOvertimeAsyncApi = createAsyncThunk('OvertimeReducer/GetTotalTimeOvertimeApi', async (id) => {
@@ -154,9 +156,7 @@ export const GetTotalTimeOvertimeAsyncApi = createAsyncThunk('OvertimeReducer/Ge
         const response = await GetTotalTimeOvertimeApi(id)
         return response
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })
 export const GetOvertimeByRequestIdAsyncApi = createAsyncThunk(
@@ -177,9 +177,7 @@ export const getOvertimeByIdAsyncApi = createAsyncThunk('OvertimeReducer/GetOver
         const response = await GetOvertimeByIdApi(id)
         return response
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })
 export const PostOvertimeAsyncApi = createAsyncThunk('OvertimeReducer/postAsyncApi', async ({ id, body }) => {
@@ -187,9 +185,8 @@ export const PostOvertimeAsyncApi = createAsyncThunk('OvertimeReducer/postAsyncA
         const response = await PostOvertimeApi(id, body)
         return response
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        console.log("response async", error)
+        throw error
     }
 })
 export const PutOvertimeAsyncApi = createAsyncThunk('OvertimeReducer/putAsyncApi', async ({ id, body }) => {
@@ -197,9 +194,7 @@ export const PutOvertimeAsyncApi = createAsyncThunk('OvertimeReducer/putAsyncApi
         const response = await PutOvertimeApi(id, body)
         return response.data // Trả về dữ liệu từ response nếu thành công
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })
 
@@ -208,9 +203,7 @@ export const CancelOvertimeAsyncApi = createAsyncThunk('OvertimeReducer/cancelAs
         const response = await CancelOvertimeApi(body)
         return response.data // Trả về dữ liệu từ response nếu thành công
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })
 
@@ -219,9 +212,7 @@ export const RejectOvertimeAsyncApi = createAsyncThunk('OvertimeReducer/RejectOv
         const response = await RejectOvertimeApi(body)
         return response.data // Trả về dữ liệu từ response nếu thành công
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })
 
@@ -230,8 +221,6 @@ export const DeleteOvertimeAsyncApi = createAsyncThunk('OvertimeReducer/deleteAs
         const response = await DeleteOvertimeApi(data.idDelete, data.employeeId)
         return response
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })

@@ -113,7 +113,7 @@ const breadcrumbIcons = () => {
 
 const dataBreadcrumbs = breadcrumbIcons()
 
-export default function ApplyLeave() {
+export default function ApplyLeaveHR() {
     const [openAccordionComponent, setOpenAccordionComponent] = useState(false)
     const handleopenAccordionComponent = () => {
         if (formik.values.leaveType !== '') {

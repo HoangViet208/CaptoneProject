@@ -30,6 +30,7 @@ export default function ChangePassword() {
     const userString = localStorage.getItem('user')
     const userObject = JSON.parse(userString)
     const dispatch = useDispatch()
+
     const frmUser = useFormik({
         initialValues: initialValues,
         validationSchema: Yup.object({
@@ -48,20 +49,23 @@ export default function ChangePassword() {
                         newPassword: values.newPassword,
                     },
                     token: userObject,
-                }).then((respone) => {
-                    setLoadingButton(false)
-                    showSnackbar({
-                        severity: 'success',
-                        children: 'Change Password Succesfully',
-                    })
-                    Formik.setValues({
-                        userName: employeeName,
-                        oldPassword: '',
-                        confirmPassword: '',
-                        newPassword: '',
-                    })
                 })
-            )
+            ).then((respone) => {
+                setLoadingButton(false)
+                showSnackbar({
+                    severity: 'success',
+                    children: 'Change Password Succesfully',
+                })
+                Formik.setValues({
+                    userName: employeeName,
+                    oldPassword: '',
+                    confirmPassword: '',
+                    newPassword: '',
+                })
+            }).catch((err) => {
+                setLoadingButton(false)
+                
+            })
         },
     })
     const handleClickShowOldPassword = () => setShowOldPassword((show) => !show)

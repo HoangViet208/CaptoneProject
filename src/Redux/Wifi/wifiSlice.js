@@ -51,9 +51,7 @@ export const getwifiAsyncApi = createAsyncThunk('wifiReducer/getAsyncApi', async
         const response = await GetwifiApi()
         return response
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })
 export const getwifiByIdAsyncApi = createAsyncThunk('wifiReducer/getByIdAsyncApi', async (id) => {
@@ -61,9 +59,7 @@ export const getwifiByIdAsyncApi = createAsyncThunk('wifiReducer/getByIdAsyncApi
         const response = await GetwifiByIdApi(id)
         return response
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })
 export const PostwifiAsyncApi = createAsyncThunk('wifiReducer/postAsyncApi', async (body) => {
@@ -71,9 +67,7 @@ export const PostwifiAsyncApi = createAsyncThunk('wifiReducer/postAsyncApi', asy
         const response = await PostwifiApi(body)
         return response
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })
 export const PutwifiAsyncApi = createAsyncThunk('wifiReducer/putAsyncApi', async (body) => {
@@ -81,9 +75,7 @@ export const PutwifiAsyncApi = createAsyncThunk('wifiReducer/putAsyncApi', async
         const response = await PutwifiApi(body)
         return response.data // Trả về dữ liệu từ response nếu thành công
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })
 export const DeletewifiAsyncApi = createAsyncThunk('wifiReducer/deleteAsyncApi', async (body) => {
@@ -91,8 +83,6 @@ export const DeletewifiAsyncApi = createAsyncThunk('wifiReducer/deleteAsyncApi',
         const response = await DeletewifiApi(body)
         return response
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })

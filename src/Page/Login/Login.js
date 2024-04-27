@@ -68,6 +68,10 @@ function Login() {
                 }
                 setLoadingButton(false)
             }
+        }).catch((err) => {
+            console.log("er", err)
+            setError()
+            setLoadingButton(false)
         })
     }
     // history.push('/Employee')

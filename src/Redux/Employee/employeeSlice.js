@@ -28,6 +28,14 @@ const authSlice = createSlice({
             .addCase(getEmployeeAsyncApi.pending, (state) => {})
             .addCase(getEmployeeAsyncApi.fulfilled, (state, action) => {
                 state.EmployeeList = action.payload
+                const userId = localStorage.getItem('role')
+                const RoleUser = JSON.parse(userId)
+                if (RoleUser == 'Admin') {
+                    state.EmployeeList = action.payload
+                } else {
+                    const filteredEmployeeList = action.payload.filter((hr) => hr.id !== 'aa57b5fe-2ae8-4fcf-a16b-cb0597d92397')
+                    state.EmployeeList = filteredEmployeeList
+                }
             })
             .addCase(getEmployeeAsyncApi.rejected, (state, action) => {})
         builder
@@ -79,9 +87,7 @@ export const getEmployeeByIdAsyncApi = createAsyncThunk('EmployeeReducer/getById
         const response = await GetEmployeeByIdApi(id)
         return response
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })
 export const GetALLEmployeeNotIncludeInAnyTeamAsyncApi = createAsyncThunk(
@@ -102,9 +108,7 @@ export const PostEmployeeAsyncApi = createAsyncThunk('EmployeeReducer/postAsyncA
         const response = await PostEmployeeApi(body)
         return response
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })
 export const PutEmployeeAsyncApi = createAsyncThunk('EmployeeReducer/putAsyncApi', async (body) => {
@@ -112,9 +116,7 @@ export const PutEmployeeAsyncApi = createAsyncThunk('EmployeeReducer/putAsyncApi
         const response = await PutEmployeeApi(body)
         return response.data // Trả về dữ liệu từ response nếu thành công
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })
 export const DeleteEmployeeAsyncApi = createAsyncThunk('EmployeeReducer/deleteAsyncApi', async (body) => {
@@ -122,8 +124,6 @@ export const DeleteEmployeeAsyncApi = createAsyncThunk('EmployeeReducer/deleteAs
         const response = await DeleteEmployeeApi(body)
         return response
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })

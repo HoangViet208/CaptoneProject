@@ -135,6 +135,9 @@ export default function EmployeeAdmin() {
             if (isAction == 1) {
                 setLoadingButton(true)
                 let today = new Date()
+                if (values.roleID == 'c4345940-4d7b-11ee-be56-0242ac120002') {
+                    values.departmentID = 'd4a6ec67-3d4e-4e5c-8fe3-64d631f27ab0'
+                }
                 const newData = {
                     username: values.username,
                     password: values.password,
@@ -451,10 +454,10 @@ export default function EmployeeAdmin() {
                     </div>
                     <div className="my-2">
                         <FormControl>
-                            <FormLabel id="demo-radio-buttons-group-label">               
-                                    <div className="mb-1 flex gap-1">
-                                        <p className=" text-gray-500">Gender</p> <i className="text-red-500">*</i>
-                                    </div>                   
+                            <FormLabel id="demo-radio-buttons-group-label">
+                                <div className="mb-1 flex gap-1">
+                                    <p className=" text-gray-500">Gender</p> <i className="text-red-500">*</i>
+                                </div>
                             </FormLabel>
                             <RadioGroup
                                 aria-labelledby="demo-radio-buttons-group-label"
@@ -505,11 +508,9 @@ export default function EmployeeAdmin() {
                     <div className="my-2">
                         <FormControl fullWidth>
                             <InputLabel size="small" id="demo-simple-select-label">
-                       
                                 <div className="mb-1 flex gap-1">
                                     <p className=" text-gray-500">Role</p> <i className="text-red-500">*</i>
                                 </div>
-        
                             </InputLabel>
                             <Select
                                 id="outlined-basic"
@@ -520,7 +521,7 @@ export default function EmployeeAdmin() {
                                 name="roleID"
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                label={"role *"}
+                                label={'role *'}
                                 variant="outlined"
                             >
                                 {RoleList.map((item, index) => {
@@ -779,7 +780,12 @@ export default function EmployeeAdmin() {
     return (
         <div>
             <Navbar />
-            <PopupConfirm open={openConfirm} clickOpenFalse={clickOpenFalseConfirm} clickDelete={handleDelete} isLoading={loadingButton} />
+            <PopupConfirm
+                open={openConfirm}
+                clickOpenFalse={clickOpenFalseConfirm}
+                clickDelete={handleDelete}
+                isLoading={loadingButton}
+            />
             <PopupData
                 open={open}
                 clickOpenFalse={clickOpenFalse}
@@ -827,7 +833,7 @@ export default function EmployeeAdmin() {
                         <div>
                             <TableData
                                 tableHeight={400}
-                                rowsPerPageOptions={[4,25,50]}
+                                rowsPerPageOptions={[4, 25, 50]}
                                 rows={rows}
                                 columns={columns}
                                 page={page}

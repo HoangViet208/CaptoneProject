@@ -2,10 +2,10 @@ import axios from 'axios'
 
 const API_URL = process.env.REACT_APP_API_URL
 
-const GetWorkedApi = async (name, status, date) => {
+const GetWorkedApi = async (name, status, date, id) => {
     try {
         const response = await axios.get(
-            `${API_URL}/RequestWorkTime/get-all-work-time-request?nameSearch=${name}&status=${status}&month=${date}`
+            `${API_URL}/RequestWorkTime/get-all-work-time-request?nameSearch=${name}&status=${status}&month=${date}&employeeId=${id}`
         )
         return response.data
     } catch (error) {
@@ -141,6 +141,15 @@ export const DeleteWorkedApi = async (id) => {
 export const GetWorkingByRequestIdApi = async (id) => {
     try {
         const response = await axios.get(`${API_URL}/RequestWorkTime/get-request-work-time-by-request-id?requestId=${id}`)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
+export const GetRequestWorkOfEmployeeApi = async (id) => {
+    try {
+        const response = await axios.get(`${API_URL}/RequestWorkTime/get-request-work-time-of-employee?employeeId=${id}`)
         return response.data
     } catch (error) {
         throw error

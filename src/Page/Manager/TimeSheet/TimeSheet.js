@@ -130,7 +130,7 @@ export default function TimeSheet() {
             : Department &&
               dispatch(
                   GetWorkedSlotByIdDepartmentAsyncApi({
-                      id: Department == 'AllTeam' ? '' : Department,
+                      id: Department == 'AllTeam' ? `` : Department,
                       //  id: '4752ec79-a7e7-427e-9eb4-c8e96744278f',
                       startTime: format(selectedDateRange.startDate, 'yyyy/MM/dd'),
                       endTime: format(selectedDateRange.endDate, 'yyyy/MM/dd'),
@@ -164,7 +164,7 @@ export default function TimeSheet() {
         const { format } = require('date-fns')
             try {
                 const downloadResponse = await axios.get(
-                    `https://timekeepingsystem.azurewebsites.net/api/WorkSlotEmployee/export-excel-file?departmentId=${Department}&month=${format(selectedDateRange.startDate, 'yyyy/MM/dd')}`,
+                    `https://timekeepingsystem.azurewebsites.net/api/WorkSlotEmployee/export-excel-file?departmentId=${Department == 'AllTeam' ? `` : Department}&month=${format(selectedDateRange.startDate, 'yyyy/MM/dd')}`,
                     {
                         responseType: 'blob', // Set the response type to blob
                     }
@@ -325,11 +325,11 @@ export default function TimeSheet() {
                                         className="bg-white"
                                         labelId="demo-simple-select-label"
                                         id="demo-simple-select"
-                                        value={Department || ''} 
+                                        value={Department} 
                                         label="Team"
                                         onChange={handleChangeDepartment}
                                     >
-                                      <MenuItem value={''}>All Team</MenuItem>
+                                      <MenuItem value={'AllTeam'}>All Team</MenuItem>
                                         {DepartmentList.map((item, index) => {
                                             return (
                                                 <MenuItem key={index} value={item.id}>
@@ -386,8 +386,8 @@ export default function TimeSheet() {
                                                             alt={item.name}
                                                             sx={{ width: 40, height: 40 }}
                                                         />
-                                                        <p className="">
-                                                            {item.name} ({item.teamName}        )
+                                                        <p className="text-center">
+                                                            {item.name} ({item.teamName})
                                                         </p>
                                                         <p>{item.employeeNumber} </p>
                                                     </div>

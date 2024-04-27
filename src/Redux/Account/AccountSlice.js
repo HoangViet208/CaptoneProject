@@ -93,9 +93,7 @@ export const loginAsyncApi = createAsyncThunk('AccountReducer/loginAsyncApi', as
         const response = await LoginApi(body)
         return response
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })
 
@@ -104,9 +102,7 @@ export const getAccountAsyncApi = createAsyncThunk('AccountReducer/getAsyncApi',
         const response = await GetAccountApi(name, status)
         return response
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })
 export const getRoleAsyncApi = createAsyncThunk('AccountReducer/getRoleAsyncApi', async () => {
@@ -114,9 +110,7 @@ export const getRoleAsyncApi = createAsyncThunk('AccountReducer/getRoleAsyncApi'
         const response = await getRoleApi()
         return response
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })
 
@@ -138,9 +132,7 @@ export const GetAccountTypeAsyncApi = createAsyncThunk('AccountReducer/GetAccoun
         const response = await GetAccountTypeApi()
         return response
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })
 export const getAccountByIdAsyncApi = createAsyncThunk('AccountReducer/getByIdAsyncApi', async (id) => {
@@ -148,9 +140,7 @@ export const getAccountByIdAsyncApi = createAsyncThunk('AccountReducer/getByIdAs
         const response = await GetAccountByIdApi(id)
         return response
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })
 export const PostAccountAsyncApi = createAsyncThunk('AccountReducer/postAsyncApi', async (body) => {
@@ -158,9 +148,7 @@ export const PostAccountAsyncApi = createAsyncThunk('AccountReducer/postAsyncApi
         const response = await PostAccountApi(body)
         return response
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })
 export const PutAccountAsyncApi = createAsyncThunk('AccountReducer/putAsyncApi', async ({ body, token }) => {
@@ -168,9 +156,7 @@ export const PutAccountAsyncApi = createAsyncThunk('AccountReducer/putAsyncApi',
         const response = await PutAccountApi(body, token)
         return response.data // Trả về dữ liệu từ response nếu thành công
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })
 export const DeleteAccountAsyncApi = createAsyncThunk('AccountReducer/deleteAsyncApi', async (body) => {
@@ -178,8 +164,6 @@ export const DeleteAccountAsyncApi = createAsyncThunk('AccountReducer/deleteAsyn
         const response = await DeleteAccountApi(body)
         return response
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })

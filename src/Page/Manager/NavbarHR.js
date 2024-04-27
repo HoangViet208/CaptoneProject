@@ -460,7 +460,6 @@ export default function NavbarHR() {
                                 <span className="ml-3">Manage Holiday</span>
                             </NavLink>
                         </li>
-
                         <li className="cursor-pointer text-center mx-auto justify-center items-center">
                             <NavLink
                                 to="/Hr/Workslot"

@@ -25,7 +25,7 @@ import BadgeIcon from '@mui/icons-material/Badge'
 import DeleteIcon from '@mui/icons-material/Delete'
 //component
 import IconBreadcrumbs from '../../../Components/Breadcrumbs'
-import Navbar from '../Navbar'
+
 import { Checkbox } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
 import { getDepartmentAsyncApi } from '../../../Redux/Department/DepartmentSlice'
@@ -43,7 +43,7 @@ import { useSnackbar } from '../../../Hook/useSnackbar'
 import PopupData from '../../../Components/Popup'
 import TableData from '../../../Components/Table'
 import NavbarHR from '../../Manager/NavbarHR'
-
+import Navbar from '../../Manager/Navbar'
 const columns = [
     { id: 'number', label: 'Number', minWidth: 50, align: 'center' },
     { id: 'leaveTypeName', label: 'Type Name', minWidth: 200, align: 'left' },

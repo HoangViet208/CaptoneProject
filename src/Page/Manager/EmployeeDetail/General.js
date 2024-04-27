@@ -43,11 +43,12 @@ export default function General() {
     const { RoleList } = useSelector((state) => state.account)
     const { DepartmentList } = useSelector((state) => state.department)
     const dispatch = useDispatch()
-    
+    const userId = localStorage.getItem('employeeId')
+    const UserParseId = JSON.parse(userId)
     useEffect(() => {
         dispatch(getDepartmentAsyncApi())
         dispatch(getRoleAsyncApi())
-        dispatch(getEmployeeByIdAsyncApi(param.id))
+        dispatch(getEmployeeByIdAsyncApi(UserParseId))
             .then((response) => {
                 if (response.meta.requestStatus == 'fulfilled') {
                     formik.setValues({
@@ -102,8 +103,8 @@ export default function General() {
                 gender: values.gender,
                 address: values.address,
                 phoneNumber: values.phoneNumber,
-                roleID: values.roleId,
-                departmentID: values.departmentId,
+                roleID: values.roleID,
+                departmentID: values.departmentID,
             }
             dispatch(PutEmployeeAsyncApi(newData))
                 .then((response) => {

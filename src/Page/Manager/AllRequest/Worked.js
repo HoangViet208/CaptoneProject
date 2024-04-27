@@ -118,7 +118,7 @@ const breadcrumbIcons = () => {
 
 const dataBreadcrumbs = breadcrumbIcons()
 
-export default function Worked() {
+export default function WorkedHR() {
     const [loadingButton, setLoadingButton] = useState(false)
     //popover
     const [anchorEl, setAnchorEl] = React.useState(null)
@@ -309,14 +309,13 @@ export default function Worked() {
         } else {
             setIsAction(3)
         }
-        
         setReason(data.reason)
         setrequestId(data.requestId)
         setChosenFileName(data.linkFile)
         seterrorImport(true)
         console.log('data', date)
         setOpen(true)
-        setDate(data.dateOfWorkTime)
+        setDate(data.date)
         setStartTime(data.slotStart)
         setEndTime(data.slotEnd)
         setCheckIn(data.checkInTime)

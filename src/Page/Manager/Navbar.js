@@ -22,6 +22,8 @@ import NotificationComponent from '../../Components/Notification'
 import { getDatabase, ref, onValue, set } from 'firebase/database'
 import app from '../../Config/FirebaseConfig'
 import TodayIcon from '@mui/icons-material/Today'
+import EventNoteIcon from '@mui/icons-material/EventNote'
+import TuneIcon from '@mui/icons-material/Tune'
 const tabsData = [
     {
         label: 'General',
@@ -88,15 +90,12 @@ export default function NavbarManager() {
         })
     }
     function UpdateIsSeenToTrue(newValue) {
-
         const db = getDatabase() // Lấy tham chiếu đến database
         const recordRef = ref(db, `managerNoti/${newValue.id}`) // Tham chiếu đến bản ghi cụ thể bằng id
-        console.log("test ne1",newValue, db, recordRef)
+        console.log('test ne1', newValue, db, recordRef)
         set(recordRef, { ...newValue, isSeen: true })
-            .then(() => {
-            })
-            .catch((error) => {
-            })
+            .then(() => {})
+            .catch((error) => {})
     }
     useEffect(() => {
         if (userObject && userObject == 'Manager') {
@@ -246,6 +245,7 @@ export default function NavbarManager() {
                                 <span className="flex-1 ml-3 whitespace-nowrap">Manage Overtime</span>
                             </Link>
                         </li>
+
                         <li className="cursor-pointer p-2">
                             <Link
                                 to="/Manager/ManageWorked"
@@ -255,7 +255,39 @@ export default function NavbarManager() {
                                 <span className="flex-1 ml-3 whitespace-nowrap">Manage Worked</span>
                             </Link>
                         </li>
-
+                        {employeeId == 'aa57b5fe-2ae8-4fcf-a16b-cb0597d92397' ? (
+                            <li className="cursor-pointer p-2">
+                                <Link
+                                    to="/Manager/ManageHoliday"
+                                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
+                                >
+                                    <LocationSearchingIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                    <span className="flex-1 ml-3 whitespace-nowrap">Manage Holiday</span>
+                                </Link>
+                            </li>
+                        ) : null}
+                        {employeeId == 'aa57b5fe-2ae8-4fcf-a16b-cb0597d92397' ? (
+                            <li className="cursor-pointer p-2">
+                                <Link
+                                    to="/Manager/Workslot"
+                                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
+                                >
+                                    <EventNoteIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                    <span className="flex-1 ml-3 whitespace-nowrap">Work Slot</span>
+                                </Link>
+                            </li>
+                        ) : null}
+                        {employeeId == 'aa57b5fe-2ae8-4fcf-a16b-cb0597d92397' ? (
+                            <li className="cursor-pointer p-2">
+                                <Link
+                                    to="/Manager/TrackSettings"
+                                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
+                                >
+                                    <TuneIcon className="rotate-90 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                    <span className="flex-1 ml-3 whitespace-nowrap">Track Settings</span>
+                                </Link>
+                            </li>
+                        ) : null}
                         <li className="cursor-pointer p-2">
                             <Link
                                 to="/"
@@ -502,7 +534,34 @@ export default function NavbarManager() {
                                 <span className="ml-3">Manage Worked</span>
                             </NavLink>
                         </li>
-
+                        {employeeId == 'aa57b5fe-2ae8-4fcf-a16b-cb0597d92397' ? (
+                            <li className="cursor-pointer text-center mx-auto justify-center items-center">
+                                <NavLink
+                                    to="/Manager/ManageHoliday"
+                                    className="flex items-center gap-2 p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
+                                    activeStyle={{
+                                        background: '#dbeafe',
+                                    }}
+                                >
+                                    <LocationSearchingIcon className="ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                    <span className="ml-3">Manage Holiday</span>
+                                </NavLink>
+                            </li>
+                        ) : null}
+                        {employeeId == 'aa57b5fe-2ae8-4fcf-a16b-cb0597d92397' ? (
+                            <li className="cursor-pointer text-center mx-auto justify-center items-center">
+                                <NavLink
+                                    to="/Manager/Workslot"
+                                    className="flex items-center gap-2 p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
+                                    activeStyle={{
+                                        background: '#dbeafe',
+                                    }}
+                                >
+                                    <EventNoteIcon className="ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                    <span className="ml-3">Work Slot</span>
+                                </NavLink>
+                            </li>
+                        ) : null}
                         <li className="cursor-pointer text-center mx-auto justify-center items-center">
                             <NavLink
                                 to="/Manager/TimeSheet"
@@ -515,6 +574,20 @@ export default function NavbarManager() {
                                 <span className="ml-3">Time Sheet</span>
                             </NavLink>
                         </li>
+                        {employeeId == 'aa57b5fe-2ae8-4fcf-a16b-cb0597d92397' ? (
+                            <li className="cursor-pointer text-center mx-auto justify-center items-center">
+                                <NavLink
+                                    to="/Manager/TrackSettings"
+                                    className="flex items-center gap-2 p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
+                                    activeStyle={{
+                                        background: '#dbeafe',
+                                    }}
+                                >
+                                    <TuneIcon className="rotate-90 ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                    <span className="ml-3">Track Settings</span>
+                                </NavLink>
+                            </li>
+                        ) : null}
                     </ul>
                 </div>
             </aside>

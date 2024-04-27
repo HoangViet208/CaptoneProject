@@ -56,9 +56,7 @@ export const getTimeEntrieAsyncApi = createAsyncThunk('TimeEntrieReducer/getAsyn
         const response = await GetTimeEntrieApi()
         return response
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })
 export const getTimeEntrieByIdAsyncApi = createAsyncThunk('TimeEntrieReducer/getByIdAsyncApi', async (id) => {
@@ -66,9 +64,7 @@ export const getTimeEntrieByIdAsyncApi = createAsyncThunk('TimeEntrieReducer/get
         const response = await GetTimeEntrieByIdApi(id)
         return response
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })
 export const PostTimeEntrieAsyncApi = createAsyncThunk('TimeEntrieReducer/postAsyncApi', async (body) => {
@@ -76,9 +72,7 @@ export const PostTimeEntrieAsyncApi = createAsyncThunk('TimeEntrieReducer/postAs
         const response = await PostTimeEntrieApi(body)
         return response
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })
 export const PutTimeEntrieAsyncApi = createAsyncThunk('TimeEntrieReducer/putAsyncApi', async (body) => {
@@ -86,9 +80,7 @@ export const PutTimeEntrieAsyncApi = createAsyncThunk('TimeEntrieReducer/putAsyn
         const response = await PutTimeEntrieApi(body)
         return response.data // Trả về dữ liệu từ response nếu thành công
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })
 export const DeleteTimeEntrieAsyncApi = createAsyncThunk('TimeEntrieReducer/deleteAsyncApi', async (body) => {
@@ -96,8 +88,6 @@ export const DeleteTimeEntrieAsyncApi = createAsyncThunk('TimeEntrieReducer/dele
         const response = await DeleteTimeEntrieApi(body)
         return response
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })

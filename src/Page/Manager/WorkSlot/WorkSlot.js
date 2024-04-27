@@ -330,6 +330,11 @@ export default function WorkSlot() {
                 setLoadingButton(false)
             })
     }
+    const [userRole, setUserRole] = useState(() => {
+        const userString = localStorage.getItem('role')
+        const userObject = JSON.parse(userString)
+        return userObject || 'defaultRole'
+    })
     return (
         <div>
             <PopupData
@@ -339,7 +344,7 @@ export default function WorkSlot() {
                 viewContent={viewModalContent}
             />
 
-            <NavbarHR />
+            {userRole === 'Manager' ? <Navbar /> : <NavbarHR />}
 
             <div className="sm:ml-64  pt-20 bg-gray-50">
                 <div className="w-full py-8 px-5 bg-white relative ">
@@ -399,7 +404,7 @@ export default function WorkSlot() {
                             right: 'prev,next today',
                         }}
                         height="150vh"
-                        aspectRatio={1.5} 
+                        aspectRatio={1.5}
                         daysOfWeek={(0, 1)}
                         DayGrid={true}
                         TimeGrid={true}

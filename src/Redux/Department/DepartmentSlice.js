@@ -31,7 +31,16 @@ const authSlice = createSlice({
         builder
             .addCase(getDepartmentAsyncApi.pending, (state) => {})
             .addCase(getDepartmentAsyncApi.fulfilled, (state, action) => {
-                state.DepartmentList = action.payload
+                const userId  = localStorage.getItem('employeeId')
+                const IdUser = JSON.parse(userId)
+                const userRole = localStorage.getItem('role')
+                const RoleUser = JSON.parse(userRole)
+                if (RoleUser == 'Admin' || IdUser == 'aa57b5fe-2ae8-4fcf-a16b-cb0597d92397') {
+                    state.DepartmentList = action.payload
+                } else {
+                    const filteredDepartmentList = action.payload.filter((department) => department.name !== 'Team HR')
+                    state.DepartmentList = filteredDepartmentList
+                }
             })
             .addCase(getDepartmentAsyncApi.rejected, (state, action) => {})
         builder
@@ -80,9 +89,7 @@ export const getDepartmentAsyncApi = createAsyncThunk('DepartmentReducer/getAsyn
         const response = await GetDepartmentApi()
         return response.data
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })
 export const GetDepartmentWithoutAsyncApi = createAsyncThunk('DepartmentReducer/GetDepartmentWithoutApi', async () => {
@@ -90,9 +97,7 @@ export const GetDepartmentWithoutAsyncApi = createAsyncThunk('DepartmentReducer/
         const response = await GetDepartmentWithoutApi()
         return response
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })
 export const getDepartmentByIdAsyncApi = createAsyncThunk('DepartmentReducer/getByIdAsyncApi', async (id) => {
@@ -100,9 +105,7 @@ export const getDepartmentByIdAsyncApi = createAsyncThunk('DepartmentReducer/get
         const response = await GetDepartmentByIdApi(id)
         return response
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })
 export const PostDepartmentAsyncApi = createAsyncThunk('DepartmentReducer/postAsyncApi', async (body) => {
@@ -110,9 +113,7 @@ export const PostDepartmentAsyncApi = createAsyncThunk('DepartmentReducer/postAs
         const response = await PostDepartmentApi(body)
         return response
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })
 export const PutDepartmentAsyncApi = createAsyncThunk('DepartmentReducer/putAsyncApi', async (body) => {
@@ -120,9 +121,7 @@ export const PutDepartmentAsyncApi = createAsyncThunk('DepartmentReducer/putAsyn
         const response = await PutDepartmentApi(body)
         return response.data // Trả về dữ liệu từ response nếu thành công
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })
 export const PutTeamMemberAsyncApi = createAsyncThunk('DepartmentReducer/putTeamMemberApi', async (body) => {
@@ -130,9 +129,7 @@ export const PutTeamMemberAsyncApi = createAsyncThunk('DepartmentReducer/putTeam
         const response = await UpdateTeamMemberApi(body)
         return response.data // Trả về dữ liệu từ response nếu thành công
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })
 export const DeleteDepartmentAsyncApi = createAsyncThunk('DepartmentReducer/deleteAsyncApi', async (body) => {
@@ -140,9 +137,7 @@ export const DeleteDepartmentAsyncApi = createAsyncThunk('DepartmentReducer/dele
         const response = await DeleteDepartmentApi(body)
         return response
     } catch (error) {
-        const json = error.response.data
-        const errors = json[''].errors
-        throw errors[0].errorMessage
+        throw error
     }
 })
 

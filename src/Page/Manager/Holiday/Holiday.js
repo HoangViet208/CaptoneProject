@@ -311,6 +311,8 @@ export default function Holiday() {
                         holidayDescription: '',
                         holidayId: '',
                     })
+                }else{
+                    setLoadingButton(false)
                 }
             })
             .catch((error) => {
