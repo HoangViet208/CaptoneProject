@@ -93,6 +93,8 @@ const CustomSelect = styled(Select)`
 const columns = [
     { id: 'number', label: 'Number', minWidth: 50, align: 'center' },
     { id: 'date', label: 'Date', minWidth: 150, align: 'center' },
+    { id: 'timeComeLate', label: 'Come Late', maxWidth: 200, align: 'center' },
+    { id: 'timeLeaveEarly', label: 'Leave Early', maxWidth: 200, align: 'center' },
     { id: 'checkInTime', label: 'Check In Time', maxWidth: 200, align: 'center' },
     { id: 'checkOutTime', label: 'Check Out Time', maxWidth: 200, align: 'center' },
     { id: 'slotStart', label: 'Slot Start', maxWidth: 150, align: 'center' },
@@ -286,11 +288,16 @@ export default function Worked() {
         setOpen(true)
         setIsAction(1)
     }
+    const [workslotEmployeeMorningId, setWorkslotEmployeeMorningId] = useState()
     const [date, setDate] = useState()
     const [startTime, setStartTime] = useState()
     const [endTime, setEndTime] = useState()
     const [checkIn, setCheckIn] = useState()
     const [checkOut, setCheckOut] = useState()
+    const [timeLeaveEarly , setTimeLeaveEarly] = useState()
+    const [timeComeLate, setTimeComeLate] = useState()
+    const [attendanceStatusAfternoonId , setAttendanceStatusAfternoonId] = useState()
+    const [attendanceStatusMorningId, setAttendanceStatusMorningId] = useState()
 
     const handleClickOpenNew = (data, event) => {
         setDate(data.date)
@@ -298,8 +305,14 @@ export default function Worked() {
         setEndTime(data.slotEnd)
         setCheckIn(data.checkInTime)
         setCheckOut(data.checkOutTime)
+        setAttendanceStatusMorningId(data.attendanceStatusMorningId)
+        setAttendanceStatusAfternoonId(data.attendanceStatusAfternoonId)
         setIsAction(1)
         setOpen(true)
+        setWorkslotEmployeeMorningId(data.workslotEmployeeMorningId)
+        setworkslotEmployeeId(data.workslotEmployeeId)
+        setTimeLeaveEarly(data.timeLeaveEarly)
+        setTimeComeLate(data.timeComeLate)
     }
 
     const handleClickOpenUpdate = (data, event) => {
@@ -309,7 +322,7 @@ export default function Worked() {
         } else {
             setIsAction(3)
         }
-        
+        setWorkslotEmployeeMorningId(data.workslotEmployeeMorningId)
         setReason(data.reason)
         setrequestId(data.requestId)
         setChosenFileName(data.linkFile)
@@ -371,6 +384,11 @@ export default function Worked() {
                         status: 0,
                         reason: reason,
                         linkFile: downloadURL,
+                        workslotEmployeeMorningId: workslotEmployeeMorningId,
+                        RealHourStart: checkIn,
+                        RealHourEnd: checkOut,
+                        NumberOfComeLateHour: timeComeLate,
+                        NumberOfLeaveEarlyHour: timeLeaveEarly 
                     }
                     dispatch(PostWorkedAsyncApi({ id: employeeId, body: body }))
                         .then((response) => {
@@ -400,6 +418,7 @@ export default function Worked() {
                                         isNotCheckOut: viewStatus.isNotCheckOut,
                                     })
                                 )
+                                dispatch(GetRequestWorkOfEmployeeAsyncApi(employeeId))
                                 SetClick(false)
                             }
                         })
@@ -419,6 +438,8 @@ export default function Worked() {
                 workslotEmployeeId: workslotEmployeeId,
                 status: 0,
                 reason: reason,
+                workslotEmployeeMorningId: workslotEmployeeMorningId,
+               
             }
             dispatch(PutWorkedAsyncApi({ id: employeeId, body: body })).then((response) => {
                 if (response.meta.requestStatus == 'fulfilled') {
@@ -435,6 +456,7 @@ export default function Worked() {
                     setReason()
                     setSelectedImage()
                     dispatch(getWorkedByIdAsyncApi(employeeId))
+                    dispatch(GetRequestWorkOfEmployeeAsyncApi(employeeId))
                     SetClick(false)
                 }
             })
@@ -466,6 +488,7 @@ export default function Worked() {
                                     severity: 'success',
                                     children: 'Request Successfully',
                                 })
+                                dispatch(GetRequestWorkOfEmployeeAsyncApi(employeeId))
                                 setChosenFileName('Chosen file')
                                 setIsAction(0)
                                 setSelectedStartTime()

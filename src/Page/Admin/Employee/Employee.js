@@ -177,6 +177,17 @@ export default function EmployeeAdmin() {
                                 employeesClassification: '',
                             })
                             dispatch(getEmployeeAsyncApi({ roleId: '', departmentId: '', name: search }))
+                        }if (response.meta.requestStatus == 'rejected') {
+                            setLoadingButton(false)
+                            console.log("errror", response)
+                            showSnackbar({
+                                severity: 'error',
+                                children: response.error.message,
+                            })
+                        
+                        }
+                        else{
+                            setLoadingButton(false)
                         }
                     })
                     .catch((error) => {

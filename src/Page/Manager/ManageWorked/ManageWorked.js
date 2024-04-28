@@ -38,6 +38,7 @@ import { useSnackbar } from '../../../Hook/useSnackbar'
 import NavbarHR from '../NavbarHR'
 import TableLoadData from '../../../Components/TableLoad'
 import { PutApproveWorkedApi } from '../../../Api/WorkedApi'
+import UpdateIsSeenToTrueForManager from '../../../Hook/useFirebase'
 
 const columnsPending = [
     { id: 'number', label: 'Number', minWidth: 50, align: 'center' },
@@ -190,7 +191,7 @@ export default function ManageWorked() {
     const handleClickApprove = (data, index) => {
         setLoadingButton(true)
         setLoadingButtonIndex(index)
-
+        UpdateIsSeenToTrueForManager(data)
         dispatch(PutApproveWorkedAsyncApi(data.id))
             .then((response) => {
                 if (response.meta.requestStatus == 'fulfilled') {
@@ -221,6 +222,10 @@ export default function ManageWorked() {
             reason: rejectReason,
             employeeIdDecider: employeeId,
         }
+        const dataForManager = {
+            id : requestId
+        };
+        UpdateIsSeenToTrueForManager(dataForManager)
         dispatch(PutRejectWorkedAsyncApi(body))
             .then((response) => {
                 setLoadingRJButton(false)

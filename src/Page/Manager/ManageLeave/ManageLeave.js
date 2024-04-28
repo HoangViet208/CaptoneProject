@@ -335,7 +335,10 @@ export default function ManageLeave() {
     const UserParseId = JSON.parse(userId)
     const handleClickApprove = () => {
         setLoadingButton(true)
-
+        const dataForManager = {
+            id: requestId
+        }
+        UpdateIsSeenToTrueForManager(dataForManager)
         dispatch(PutApproveApplyLeaveAsyncApi({ requestId, UserParseId }))
             .then((response) => {
                 setLoadingButton(false)
@@ -389,8 +392,13 @@ export default function ManageLeave() {
         setIsReject(false)
         //   rejectButtonRef.current.scrollIntoView({ behavior: 'smooth' })
     }
+    
     const handleClickReject = () => {
         setLoadingRJButton(true)
+        const dataForManager = {
+            id: requestId
+        }
+        UpdateIsSeenToTrueForManager(dataForManager)
         const Updatedata = {
             requestId: requestId,
             reason: rejectReason,
