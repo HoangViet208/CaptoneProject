@@ -560,7 +560,7 @@ export default function EmployeeAdmin() {
                     >
                         <FormControl fullWidth>
                             <InputLabel size="small" id="demo-simple-select-label">
-                                Department
+                                Team
                             </InputLabel>
                             <Select
                                 id="outlined-basic"
@@ -576,7 +576,7 @@ export default function EmployeeAdmin() {
                                 name="departmentID"
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                label="Department"
+                                label="Team"
                                 variant="outlined"
                             >
                                 {formik.values.roleID == 'c43450f8-4d7b-11ee-be56-0242ac120002' || isAction == 2

@@ -328,15 +328,16 @@ export default function ApplyLeave() {
                                             setIsLoading(false)
                                             showSnackbar({
                                                 severity: 'error',
-                                                children: 'Workslot of dateRange not already',
+                                                children: response.error.message,
                                             })
                                         }
+                                    
                                         setIsLoading(false)
                                     })
                                     .catch((error) => {
                                         // Xử lý lỗi ở đây
                                         setIsLoading(false)
-                                        console.error('Lỗi API:', error)
+                                       
                                     })
                             } else if (isAction == 2) {
                                 dispatch(PutApplyLeaveAsyncApi({ id: employeeId, body: Updatedata }))
@@ -471,7 +472,7 @@ export default function ApplyLeave() {
                 setLeaveErorr('trước 5 ngày vs đơn từ 3-7 ngày')
             }
             if (RuleDay < 10 && daysToAdd > 7) {
-                setLeaveErorr('trước 5 ngày vs đơn từ 3-7 ngày')
+                setLeaveErorr('trước 7 ngày vs đơn từ 7 ngày trở lên')
             } else {
                 for (let i = 0; i < daysToAdd; i++) {
              
@@ -528,7 +529,7 @@ export default function ApplyLeave() {
             type: item.type,
         }))
         setLeaveDaysDate(newDate)
-        setLeaveDays(data.dateRange.length)
+        setLeaveDays(calculateTotalLeaveDays(newDate))
         setChosenFileName(data.linkFile)
         seterrorImport(true)
         setDateRange([
@@ -999,47 +1000,7 @@ export default function ApplyLeave() {
     )
 
     const createRows = () => {
-        const data = [
-            {
-                id: '1',
-                startDate: '2022/06/12',
-                endDate: '2022/07/10',
-                leaveType: 'Sick Leave',
-                status: 'Approved',
-                reason: 'nghỉ ốm',
-                dateRange: [
-                    { title: '15 Sep', type: 'Full Day' },
-                    { title: '16 Sep', type: 'Full Day' },
-                    { title: '17 Sep', type: 'Full Day' },
-                ],
-            },
-            {
-                id: '2',
-                startDate: '2022/09/08',
-                endDate: '2022/09/12',
-                leaveType: 'Casual Leave',
-                status: 'Reject',
-                reason: 'nghỉ phép',
-                dateRange: [
-                    { title: '15 Sep', type: 'Full Day' },
-                    { title: '16 Sep', type: 'Full Day' },
-                    { title: '17 Sep', type: 'Full Day' },
-                ],
-            },
-            {
-                id: '3',
-                startDate: '2022/11/12',
-                endDate: '2022/11/14',
-                leaveType: 'Sick Leave',
-                status: 'Pending',
-                reason: 'nghỉ ốm',
-                dateRange: [
-                    { title: '15 Sep', type: 'Full Day' },
-                    { title: '16 Sep', type: 'Full Day' },
-                    { title: '17 Sep', type: 'Full Day' },
-                ],
-            },
-        ]
+      
 
         return ApplyLeaveByEmployee.map((item, index) => ({
             ...item,
@@ -1050,7 +1011,7 @@ export default function ApplyLeave() {
                     {formatDate(item.startDate)} ~ {formatDate(item.endDate)}
                 </div>
             ),
-            day: item.dateRange.length,
+            day:  calculateTotalLeaveDays(item.dateRange),
             status:
                 item.status == 1 ? (
                     <button className="bg-green-300 w-24 text-green-700 font-semibold py-1 px-2 rounded-xl">

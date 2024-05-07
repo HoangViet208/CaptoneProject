@@ -338,8 +338,11 @@ export default function Worked() {
         const endTime = formatTimeToDate(data.slotEnd)
         setSelectedStartTime(startTime)
         setSelectedEndTime(endTime)
-
+        setAttendanceStatusMorningId(data.attendanceStatusMorningId)
+        setAttendanceStatusAfternoonId(data.attendanceStatusAfternoonId)
         setworkslotEmployeeId(data.workslotEmployeeId)
+        setTimeLeaveEarly(data.timeLeaveEarly)
+        setTimeComeLate(data.timeComeLate)
     }
     const clickOpenFalse = (event) => {
         setOpen(false)
@@ -388,7 +391,9 @@ export default function Worked() {
                         RealHourStart: checkIn,
                         RealHourEnd: checkOut,
                         NumberOfComeLateHour: timeComeLate,
-                        NumberOfLeaveEarlyHour: timeLeaveEarly 
+                        NumberOfLeaveEarlyHour: timeLeaveEarly ,
+                        attendanceStatusAfternoonId: attendanceStatusAfternoonId,
+                        attendanceStatusMorningId: attendanceStatusMorningId,
                     }
                     dispatch(PostWorkedAsyncApi({ id: employeeId, body: body }))
                         .then((response) => {

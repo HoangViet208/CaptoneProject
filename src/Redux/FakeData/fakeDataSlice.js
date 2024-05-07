@@ -35,7 +35,7 @@ export const PostGenerationDataEmployeeAsyncApi = createAsyncThunk('fakedataRedu
         const response = await PostGenerationDataEmployeeApi(body)
         return response
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 
@@ -48,7 +48,7 @@ export const PostGenerationDataCheckInAsyncApi = createAsyncThunk(
         } catch (error) {
             const json = error.response.data
             const errors = json[''].errors
-            throw errors[0].errorMessage
+            throw error.response.datas[0].errorMessage
         }
     }
 )

@@ -13,8 +13,8 @@ export const PostGenerationDataEmployeeApi = async (id) => {
 }
 export const PostGenerationDataCheckInApi = async (id, std, end) => {
     try {
-        const response = await axios.patch(
-            `${API_URL}/FakeData/generate-checkin-checkout-workslot-employee?departmentId=${id}&startDateStr=${std}&endDateStr=${end}`
+        const response = await axios.get(
+            `${API_URL}/WorkSlotEmployee/generate-checkin-checkout-data?departmentId=${id}&startDateStr=${std}&endDateStr=${end}`
         )
         return response.data
     } catch (error) {

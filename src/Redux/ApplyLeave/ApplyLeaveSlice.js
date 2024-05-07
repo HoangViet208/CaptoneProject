@@ -144,7 +144,7 @@ export const getApplyLeaveAsyncApi = createAsyncThunk('ApplyLeaveReducer/getAsyn
         const response = await GetApplyLeaveApi(name, status, id)
         return response
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 
@@ -157,7 +157,7 @@ export const GetWorkDateSettingByIdAsyncApi = createAsyncThunk(
         } catch (error) {
             const json = error.response.data
             const errors = json[''].errors
-            throw errors[0].errorMessage
+            throw error.response.datas[0].errorMessage
         }
     }
 )
@@ -166,7 +166,7 @@ export const GetApplyLeaveTypeAsyncApi = createAsyncThunk('ApplyLeaveReducer/Get
         const response = await GetApplyLeaveTypeApi()
         return response
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 
@@ -179,7 +179,7 @@ export const GetLeaveTypeInfoAsyncApi = createAsyncThunk(
         } catch (error) {
             const json = error.response.data
             const errors = json[''].errors
-            throw errors[0].errorMessage
+            throw error.response.datas[0].errorMessage
         }
     }
 )
@@ -189,7 +189,7 @@ export const getApplyLeaveByIdAsyncApi = createAsyncThunk('ApplyLeaveReducer/get
         const response = await GetApplyLeaveByIdApi(id)
         return response
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 
@@ -202,7 +202,7 @@ export const GetApplyLeaveByRequestIdAsyncApi = createAsyncThunk(
         } catch (error) {
             const json = error.response.data
             const errors = json[''].errors
-            throw errors[0].errorMessage
+            throw error.response.datas[0].errorMessage
         }
     }
 )
@@ -212,7 +212,7 @@ export const GetAllRequestAsyncApi = createAsyncThunk('ApplyLeaveReducer/GetAllR
         const response = await GetAllRequestApi(id, date)
         return response
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 
@@ -221,7 +221,9 @@ export const PostApplyLeaveAsyncApi = createAsyncThunk('ApplyLeaveReducer/postAs
         const response = await PostApplyLeaveApi(id, body)
         return response
     } catch (error) {
-        throw error
+        console.log("loi ne", error)
+        throw error.response.data
+   
     }
 })
 export const PutApplyLeaveAsyncApi = createAsyncThunk('ApplyLeaveReducer/putAsyncApi', async ({ id, body }) => {
@@ -229,7 +231,7 @@ export const PutApplyLeaveAsyncApi = createAsyncThunk('ApplyLeaveReducer/putAsyn
         const response = await PutApplyLeaveApi(id, body)
         return response.data // Trả về dữ liệu từ response nếu thành công
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 
@@ -242,7 +244,7 @@ export const PutCancelApprovedLeaveForHRAsyncApi = createAsyncThunk(
         } catch (error) {
             const json = error.response.data
             const errors = json[''].errors
-            throw errors[0].errorMessage
+            throw error.response.datas[0].errorMessage
         }
     }
 )
@@ -252,7 +254,7 @@ export const PutRejectLeaveAsyncApi = createAsyncThunk('ApplyLeaveReducer/PutRej
         const response = await PutRejectLeaveApi(body)
         return response.data // Trả về dữ liệu từ response nếu thành công
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 
@@ -265,7 +267,7 @@ export const PutApproveApplyLeaveAsyncApi = createAsyncThunk(
         } catch (error) {
             const json = error.response.data
             const errors = json[''].errors
-            throw errors[0].errorMessage
+            throw error.response.datas[0].errorMessage
         }
     }
 )
@@ -274,6 +276,6 @@ export const DeleteApplyLeaveAsyncApi = createAsyncThunk('ApplyLeaveReducer/dele
         const response = await DeleteApplyLeaveApi(data.idDelete, data.UserParseId)
         return response
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })

@@ -28,6 +28,8 @@ import Wifi from './Page/Admin/Wifi/Wifi'
 import GenerationData from './Page/GenerationData/GenerationData'
 import Scheduling from './Page/Employee/Scheduling/Scheduling'
 import SchedulingHRandManagament from './Page/Manager/Scheduling/Scheduling'
+import AllRequestForHR from './Page/Manager/AllRequest/AllRequest'
+import Loading from './Page/Loading/Loading'
 
 export const history = createBrowserHistory()
 
@@ -57,6 +59,8 @@ function App() {
                 <Route path="/Manager/Workslot" exact component={WorkSlot} />
                 <Route path="/Manager/TrackSettings" exact component={TrackSettings} />
                 {/*HR*/}
+                
+                <Route path="/Hr/AllRequest" exact component={AllRequestForHR} />
                 <Route path="/Hr/WorkedTime" exact component={SchedulingHRandManagament} />
                 <Route path="/Hr/Employee" exact component={Employee} />
                 <Route path="/Hr/Employee/Detail/:id" render={(props) => <EmployeeDetail {...props} />} />
@@ -75,8 +79,10 @@ function App() {
                 <Route path="/Employee/Worked" exact component={Worked} />
                 
                 {/* Data */}
+                <Route path="/Loading" exact component={Loading} />
                 <Route path="/GenerationData" exact component={GenerationData} />
                 <Route component={ErrorPage} />
+           
             </Switch>
         </Router>
     )

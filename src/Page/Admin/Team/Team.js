@@ -336,7 +336,7 @@ export default function Team() {
     }
 
     const handleClickAddMemberInTeam = () => {
-        const isNewExists = teamData.some((item) => item.id == undefined)
+        const isNewExists = teamData.some((item) => item.id == "")
         const hasTrueIsNew = teamData.some((obj) => obj.isNew === true)
         if (!isNewExists) {
             if (hasTrueIsNew) {
@@ -368,12 +368,13 @@ export default function Team() {
         //     // Kiểm tra xem trường email của nhân viên có tồn tại trong teamData không
         //     return !teamData.some(teamMember => teamMember.email === employee.email);
         // });
-        return teamData.map((item, index) => ({
+        return teamData.map((item, index) => ( {
             ...item,
-
+     
             info: (
                 <div className="flex gap-2 items-center ">
                     {' '}
+                    {console.log("item", item)}
                     {/* Added the class 'align-center' for centering */}
                     <p className="font-bold">{item.firstName + ' ' + item.lastName}</p>
                 </div>
@@ -405,7 +406,7 @@ export default function Team() {
                     </FormControl>
                 ),
             number: index + 1,
-            role: (
+            role: formik.values.name == "Team HR" ? item.roleName : (
                 <FormControl fullWidth>
                     <InputLabel size="small" id="demo-simple-select-label">
                         Role Name
@@ -440,7 +441,7 @@ export default function Team() {
         <Fragment>
             <form onSubmit={formik.handleSubmit}>
                 <div className=" gap-5 py-4 px-8 mb-5 lg:my-0">
-                    {isAction == 2 && (
+                    {isAction == 2 && formik.values.name !== "Team HR" && (
                         <Button onClick={handleClickAddMemberInTeam} variant="contained" color="success">
                             Add new Employee
                         </Button>

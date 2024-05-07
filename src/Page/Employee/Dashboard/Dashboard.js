@@ -12,7 +12,8 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { TimePicker } from '@mui/x-date-pickers/TimePicker'
 import { addDays, startOfDay } from 'date-fns'
-
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker'
+import dayjs from 'dayjs'
 //Firebase
 
 //Mui
@@ -38,6 +39,7 @@ import {
     calculateDuration,
     calculateTime,
     formatDate,
+    formatDateExact,
     formattedDate,
     getDateRangeArray,
     getDayOfWeek,
@@ -79,10 +81,13 @@ export default function DashboardEmployee() {
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget)
     }
-
+    const handleDateChange = (newDate) => {
+        setSelectedDate(newDate)
+    }
     const handleClose = () => {
         setAnchorEl(null)
     }
+    const [selectedDate, setSelectedDate] = useState(dayjs())
     const [error, SetError] = useState()
     const [errorImport, seterrorImport] = useState(false)
     const [chosenFileName, setChosenFileName] = useState('Chosen file')
@@ -112,12 +117,14 @@ export default function DashboardEmployee() {
     const { WorkSlotByEmployee } = useSelector((state) => state.WorkSlotEmployee)
     const dispatch = useDispatch()
     useEffect(() => {
-        dispatch(getWorkSlotEmployeeedAsyncApi(employeeId)).then((res) => {
-            setSeries([res.payload.allTimeWork])
-        })
+        dispatch(getWorkSlotEmployeeedAsyncApi({ id: employeeId, month: formatDateExact(selectedDate) })).then(
+            (res) => {
+                setSeries([res.payload.allTimeWork])
+            }
+        )
 
         return () => {}
-    }, [])
+    }, [selectedDate])
     const [date, setDate] = useState(null)
     const DaysLater = addDays(today, 2)
     const [selectedStartTime, setSelectedStartTime] = useState(null)
@@ -199,7 +206,12 @@ export default function DashboardEmployee() {
             ? WorkSlotByEmployee.timeSlot.map((item, index) => ({
                   ...item,
                   number: index + 1,
-                  date: <p> {item.date && formatDate(item.date)} {item.isOvertime ? "(Over Time)" : "(Worked)" } </p>,
+                  date: (
+                      <p>
+                          {' '}
+                          {item.date && formatDate(item.date)} {item.isOvertime ? '(Over Time)' : '(Worked)'}{' '}
+                      </p>
+                  ),
                   startTime: item.startTime,
                   stopTime: item.stopTime,
                   duration: item.duration, // calculateDuration(item.startTime, item.stopTime),
@@ -219,7 +231,7 @@ export default function DashboardEmployee() {
     return (
         <div>
             <Navbar />
-            <PopupConfirm open={openConfirm} clickOpenFalse={clickOpenFalseConfirm}  />
+            <PopupConfirm open={openConfirm} clickOpenFalse={clickOpenFalseConfirm} />
             {openPopover && (
                 <Popover
                     id={id}
@@ -391,7 +403,32 @@ export default function DashboardEmployee() {
                         </div>
                         <div className="bg-white p-4">
                             <div className="mb-5 flex items-center">
-                                <div className="ml-auto md:mr-16 mr-4"></div>
+                                <div className="">
+                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                        <DesktopDatePicker
+                                            label="Month"
+                                            size="small"
+                                            openTo="month"
+                                            views={['year', 'month']}
+                                            value={selectedDate}
+                                            onChange={handleDateChange}
+                                            inputFormat="DD/MM/YYYY "
+                                            // onChange={() => 1}
+                                            renderInput={(params) => (
+                                                <TextField
+                                                    size="small"
+                                                    // error={
+                                                    //     formik.errors.rentFrom &&
+                                                    //         formik.touched.rentFrom
+                                                    //         ? true
+                                                    //         : undefined
+                                                    // }
+                                                    {...params}
+                                                />
+                                            )}
+                                        />
+                                    </LocalizationProvider>
+                                </div>
                             </div>
                             <div>
                                 <TableData

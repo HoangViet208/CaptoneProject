@@ -93,7 +93,7 @@ export const loginAsyncApi = createAsyncThunk('AccountReducer/loginAsyncApi', as
         const response = await LoginApi(body)
         return response
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 
@@ -102,7 +102,7 @@ export const getAccountAsyncApi = createAsyncThunk('AccountReducer/getAsyncApi',
         const response = await GetAccountApi(name, status)
         return response
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 export const getRoleAsyncApi = createAsyncThunk('AccountReducer/getRoleAsyncApi', async () => {
@@ -110,7 +110,7 @@ export const getRoleAsyncApi = createAsyncThunk('AccountReducer/getRoleAsyncApi'
         const response = await getRoleApi()
         return response
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 
@@ -123,7 +123,7 @@ export const GetWorkDateSettingByIdAsyncApi = createAsyncThunk(
         } catch (error) {
             const json = error.response.data
             const errors = json[''].errors
-            throw errors[0].errorMessage
+            throw error.response.datas[0].errorMessage
         }
     }
 )
@@ -132,7 +132,7 @@ export const GetAccountTypeAsyncApi = createAsyncThunk('AccountReducer/GetAccoun
         const response = await GetAccountTypeApi()
         return response
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 export const getAccountByIdAsyncApi = createAsyncThunk('AccountReducer/getByIdAsyncApi', async (id) => {
@@ -140,7 +140,7 @@ export const getAccountByIdAsyncApi = createAsyncThunk('AccountReducer/getByIdAs
         const response = await GetAccountByIdApi(id)
         return response
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 export const PostAccountAsyncApi = createAsyncThunk('AccountReducer/postAsyncApi', async (body) => {
@@ -149,7 +149,7 @@ export const PostAccountAsyncApi = createAsyncThunk('AccountReducer/postAsyncApi
         return response
     } catch (error) {
         console.log("err async", error.response.data.message)
-        throw error.response.data.message
+        throw error.response.data.response.data.message
     }
 })
 export const PutAccountAsyncApi = createAsyncThunk('AccountReducer/putAsyncApi', async ({ body, token }) => {
@@ -157,7 +157,7 @@ export const PutAccountAsyncApi = createAsyncThunk('AccountReducer/putAsyncApi',
         const response = await PutAccountApi(body, token)
         return response.data // Trả về dữ liệu từ response nếu thành công
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 export const DeleteAccountAsyncApi = createAsyncThunk('AccountReducer/deleteAsyncApi', async (body) => {
@@ -165,6 +165,6 @@ export const DeleteAccountAsyncApi = createAsyncThunk('AccountReducer/deleteAsyn
         const response = await DeleteAccountApi(body)
         return response
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })

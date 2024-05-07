@@ -28,11 +28,15 @@ function getIconByType(type) {
 function getLinkByType(role, type, id) {
     switch (type) {
         case 'Leave':
-            return role == 'Manager' ? `/Manager/ManageLeave` : '/Employee/ApplyLeave'
+            return role == 'Manager' ? `/Manager/ManageLeave` : role == 'HR' ? '/Hr/AllRequest' : '/Employee/ApplyLeave'
         case 'Overtime':
-            return role == 'Manager' ? '/Manager/ManageOvertime' : '/Employee/Overtime'
+            return role == 'Manager'
+                ? '/Manager/ManageOvertime'
+                : role == 'HR'
+                ? '/Hr/AllRequest'
+                : '/Employee/Overtime'
         case 'Work Time':
-            return role == 'Manager' ? '/Manager/ManageWorked' : '/Employee/Worked'
+            return role == 'Manager' ? '/Manager/ManageWorked' : role == 'HR' ? '/Hr/AllRequest' : '/Employee/Worked'
         default:
             return null
     }

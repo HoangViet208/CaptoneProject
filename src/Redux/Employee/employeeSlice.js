@@ -78,7 +78,7 @@ export const getEmployeeAsyncApi = createAsyncThunk(
         } catch (error) {
             const json = error.response.data
             const errors = json[''].errors
-            throw errors[0].errorMessage
+            throw error.response.datas[0].errorMessage
         }
     }
 )
@@ -87,7 +87,7 @@ export const getEmployeeByIdAsyncApi = createAsyncThunk('EmployeeReducer/getById
         const response = await GetEmployeeByIdApi(id)
         return response
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 export const GetALLEmployeeNotIncludeInAnyTeamAsyncApi = createAsyncThunk(
@@ -99,7 +99,7 @@ export const GetALLEmployeeNotIncludeInAnyTeamAsyncApi = createAsyncThunk(
         } catch (error) {
             const json = error.response.data
             const errors = json[''].errors
-            throw errors[0].errorMessage
+            throw error.response.datas[0].errorMessage
         }
     }
 )
@@ -108,7 +108,7 @@ export const PostEmployeeAsyncApi = createAsyncThunk('EmployeeReducer/postAsyncA
         const response = await PostEmployeeApi(body)
         return response
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 export const PutEmployeeAsyncApi = createAsyncThunk('EmployeeReducer/putAsyncApi', async (body) => {
@@ -116,7 +116,7 @@ export const PutEmployeeAsyncApi = createAsyncThunk('EmployeeReducer/putAsyncApi
         const response = await PutEmployeeApi(body)
         return response.data // Trả về dữ liệu từ response nếu thành công
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 export const DeleteEmployeeAsyncApi = createAsyncThunk('EmployeeReducer/deleteAsyncApi', async (body) => {
@@ -124,6 +124,6 @@ export const DeleteEmployeeAsyncApi = createAsyncThunk('EmployeeReducer/deleteAs
         const response = await DeleteEmployeeApi(body)
         return response
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })

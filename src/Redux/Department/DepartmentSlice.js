@@ -89,7 +89,7 @@ export const getDepartmentAsyncApi = createAsyncThunk('DepartmentReducer/getAsyn
         const response = await GetDepartmentApi()
         return response.data
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 export const GetDepartmentWithoutAsyncApi = createAsyncThunk('DepartmentReducer/GetDepartmentWithoutApi', async () => {
@@ -97,7 +97,7 @@ export const GetDepartmentWithoutAsyncApi = createAsyncThunk('DepartmentReducer/
         const response = await GetDepartmentWithoutApi()
         return response
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 export const getDepartmentByIdAsyncApi = createAsyncThunk('DepartmentReducer/getByIdAsyncApi', async (id) => {
@@ -105,7 +105,7 @@ export const getDepartmentByIdAsyncApi = createAsyncThunk('DepartmentReducer/get
         const response = await GetDepartmentByIdApi(id)
         return response
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 export const PostDepartmentAsyncApi = createAsyncThunk('DepartmentReducer/postAsyncApi', async (body) => {
@@ -113,7 +113,7 @@ export const PostDepartmentAsyncApi = createAsyncThunk('DepartmentReducer/postAs
         const response = await PostDepartmentApi(body)
         return response
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 export const PutDepartmentAsyncApi = createAsyncThunk('DepartmentReducer/putAsyncApi', async (body) => {
@@ -121,7 +121,7 @@ export const PutDepartmentAsyncApi = createAsyncThunk('DepartmentReducer/putAsyn
         const response = await PutDepartmentApi(body)
         return response.data // Trả về dữ liệu từ response nếu thành công
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 export const PutTeamMemberAsyncApi = createAsyncThunk('DepartmentReducer/putTeamMemberApi', async (body) => {
@@ -129,7 +129,7 @@ export const PutTeamMemberAsyncApi = createAsyncThunk('DepartmentReducer/putTeam
         const response = await UpdateTeamMemberApi(body)
         return response.data // Trả về dữ liệu từ response nếu thành công
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 export const DeleteDepartmentAsyncApi = createAsyncThunk('DepartmentReducer/deleteAsyncApi', async (body) => {
@@ -137,7 +137,7 @@ export const DeleteDepartmentAsyncApi = createAsyncThunk('DepartmentReducer/dele
         const response = await DeleteDepartmentApi(body)
         return response
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 
@@ -150,7 +150,7 @@ export const GetALLEmployeeInDepartmentAsyncApi = createAsyncThunk(
         } catch (error) {
             const json = error.response.data
             const errors = json[''].errors
-            throw errors[0].errorMessage
+            throw error.response.datas[0].errorMessage
         }
     }
 )

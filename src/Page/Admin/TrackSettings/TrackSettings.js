@@ -328,7 +328,7 @@ export default function TrackSettings() {
                     </div>
                     <FormControl sx={{ width: 300, marginBottom: 4 }}>
                         <InputLabel size="small" id="demo-simple-select-label">
-                            Department
+                            Team
                         </InputLabel>
                         <Select
                             size="small"
@@ -336,7 +336,7 @@ export default function TrackSettings() {
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
                             value={Department}
-                            label="Department"
+                            label="Team"
                             onChange={handleChangeDepartment}
                         >
                             {DepartmentList.map((item, index) => {

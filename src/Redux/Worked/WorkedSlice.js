@@ -151,7 +151,7 @@ export const getWorkedAsyncApi = createAsyncThunk('WorkedReducer/getAsyncApi', a
         const response = await GetWorkedApi(name, status, date, id)
         return response
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 
@@ -160,7 +160,7 @@ export const GetWorkedSlotAsyncApi = createAsyncThunk('WorkedReducer/GetWorkedSl
         const response = await GetWorkedSlotApi(id, month)
         return response
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 
@@ -173,7 +173,7 @@ export const GetWorkDateSettingByIdAsyncApi = createAsyncThunk(
         } catch (error) {
             const json = error.response.data
             const errors = json[''].errors
-            throw errors[0].errorMessage
+            throw error.response.datas[0].errorMessage
         }
     }
 )
@@ -182,7 +182,7 @@ export const GetWorkedTypeAsyncApi = createAsyncThunk('WorkedReducer/GetWorkedTy
         const response = await GetWorkedTypeApi()
         return response
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 export const GetWorkingByRequestIdAsyncApi = createAsyncThunk('WorkedReducer/GetWorkingByRequestIdApi', async (id) => {
@@ -190,7 +190,7 @@ export const GetWorkingByRequestIdAsyncApi = createAsyncThunk('WorkedReducer/Get
         const response = await GetWorkingByRequestIdApi()
         return response
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 export const getWorkedByIdAsyncApi = createAsyncThunk(
@@ -202,7 +202,7 @@ export const getWorkedByIdAsyncApi = createAsyncThunk(
         } catch (error) {
             const json = error.response.data
             const errors = json[''].errors
-            throw errors[0].errorMessage
+            throw error.response.datas[0].errorMessage
         }
     }
 )
@@ -215,7 +215,7 @@ export const GetRequestWorkOfEmployeeAsyncApi = createAsyncThunk(
         } catch (error) {
             const json = error.response.data
             const errors = json[''].errors
-            throw errors[0].errorMessage
+            throw error.response.datas[0].errorMessage
         }
     }
 )
@@ -224,7 +224,7 @@ export const PostWorkedAsyncApi = createAsyncThunk('WorkedReducer/postAsyncApi',
         const response = await PostWorkedApi(id, body)
         return response
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 export const PostWorkedSlotAsyncApi = createAsyncThunk('WorkedReducer/PostWorkedSlotAsyncApi', async (body) => {
@@ -232,7 +232,7 @@ export const PostWorkedSlotAsyncApi = createAsyncThunk('WorkedReducer/PostWorked
         const response = await PostWorkedSlotApi(body)
         return response
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 export const PostWorkedSlotEmployeeAsyncApi = createAsyncThunk(
@@ -244,7 +244,7 @@ export const PostWorkedSlotEmployeeAsyncApi = createAsyncThunk(
         } catch (error) {
             const json = error.response.data
             const errors = json[''].errors
-            throw errors[0].errorMessage
+            throw error.response.datas[0].errorMessage
         }
     }
 )
@@ -257,7 +257,7 @@ export const PostWorkEmployeeByDepartmentAsyncApi = createAsyncThunk(
         } catch (error) {
             const json = error.response.data
             const errors = json[''].errors
-            throw errors[0].errorMessage
+            throw error.response.datas[0].errorMessage
         }
     }
 )
@@ -267,7 +267,7 @@ export const PutWorkedAsyncApi = createAsyncThunk('WorkedReducer/putAsyncApi', a
         const response = await PutWorkedApi(id, body)
         return response.data // Trả về dữ liệu từ response nếu thành công
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 export const PutApproveWorkedAsyncApi = createAsyncThunk('WorkedReducer/PutApproveWorkedApi', async (id) => {
@@ -275,7 +275,7 @@ export const PutApproveWorkedAsyncApi = createAsyncThunk('WorkedReducer/PutAppro
         const response = await PutApproveWorkedApi(id)
         return response
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 export const PutRejectWorkedAsyncApi = createAsyncThunk('WorkedReducer/PutRejectWorkedApi', async (body) => {
@@ -283,7 +283,7 @@ export const PutRejectWorkedAsyncApi = createAsyncThunk('WorkedReducer/PutReject
         const response = await PutRejectWorkedApi(body)
         return response
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 export const PutCancelWorkedAsyncApi = createAsyncThunk('WorkedReducer/PutCancelWorkedApi', async (body) => {
@@ -291,7 +291,7 @@ export const PutCancelWorkedAsyncApi = createAsyncThunk('WorkedReducer/PutCancel
         const response = await PutCancelWorkedApi(body)
         return response
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 export const DeleteWorkedAsyncApi = createAsyncThunk('WorkedReducer/deleteAsyncApi', async (id) => {
@@ -299,6 +299,6 @@ export const DeleteWorkedAsyncApi = createAsyncThunk('WorkedReducer/deleteAsyncA
         const response = await DeleteWorkedApi(id)
         return response
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })

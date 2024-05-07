@@ -8,10 +8,12 @@ import {
 } from '../../Api/WorkSlotEmployeeApi'
 
 const initialState = {
+    loading: false,
     WorkSlotByEmployee: [],
     WorkSlotByDepartment: [],
     WorkslotForPersonal: [],
     WorkslotForTeam: [],
+    currentRequestId: undefined,
 }
 
 const authSlice = createSlice({
@@ -39,15 +41,20 @@ const authSlice = createSlice({
                 state.loading = false
             })
         builder
-            .addCase(GetWorkedSlotByIdDepartmentAsyncApi.pending, (state) => {
-                state.loading = true
+            .addCase(GetWorkedSlotByIdDepartmentAsyncApi.pending, (state, action) => {
+                console.log("state", state.loading)
+                if (state.loading == true) {
+                    state.loading = true
+                }
             })
             .addCase(GetWorkedSlotByIdDepartmentAsyncApi.fulfilled, (state, action) => {
-                state.WorkSlotByDepartment = action.payload
-                state.loading = false
+                    state.loading = false
+                    state.WorkSlotByDepartment = action.payload
+                    
             })
             .addCase(GetWorkedSlotByIdDepartmentAsyncApi.rejected, (state, action) => {
-                state.loading = false
+                    state.loading = false
+                    state.currentRequestId = undefined
             })
         builder
             .addCase(GetWorkedSlotExcelAsyncApi.pending, (state) => {
@@ -62,7 +69,6 @@ const authSlice = createSlice({
         builder
             .addCase(GetWorkedSlotForTeamAsyncApi.pending, (state) => {
                 state.loading = true
-             
             })
             .addCase(GetWorkedSlotForTeamAsyncApi.fulfilled, (state, action) => {
                 state.loading = false
@@ -88,14 +94,17 @@ const authSlice = createSlice({
 export default authSlice.reducer
 export const WorkSlotEmployeeedAction = authSlice.actions
 
-export const getWorkSlotEmployeeedAsyncApi = createAsyncThunk('WorkSlotEmployeeedReducer/getAsyncApi', async (id) => {
-    try {
-        const response = await GetWorkedSlotByIdEmployeeApi(id)
-        return response
-    } catch (error) {
-        throw error
+export const getWorkSlotEmployeeedAsyncApi = createAsyncThunk(
+    'WorkSlotEmployeeedReducer/getAsyncApi',
+    async ({ id, month }) => {
+        try {
+            const response = await GetWorkedSlotByIdEmployeeApi(id, month)
+            return response
+        } catch (error) {
+            throw error.response.data
+        }
     }
-})
+)
 
 export const GetWorkedSlotByIdDepartmentAsyncApi = createAsyncThunk(
     'WorkSlotEmployeeedReducer/GetWorkedSlotByIdDepartmentApi',
@@ -106,7 +115,7 @@ export const GetWorkedSlotByIdDepartmentAsyncApi = createAsyncThunk(
         } catch (error) {
             const json = error.response.data
             const errors = json[''].errors
-            throw errors[0].errorMessage
+            throw error.response.datas[0].errorMessage
         }
     }
 )
@@ -119,7 +128,7 @@ export const GetWorkedSlotExcelAsyncApi = createAsyncThunk(
         } catch (error) {
             const json = error.response.data
             const errors = json[''].errors
-            throw errors[0].errorMessage
+            throw error.response.datas[0].errorMessage
         }
     }
 )
@@ -133,7 +142,7 @@ export const GetWorkedSlotForPersonalAsyncApi = createAsyncThunk(
         } catch (error) {
             const json = error.response.data
             const errors = json[''].errors
-            throw errors[0].errorMessage
+            throw error.response.datas[0].errorMessage
         }
     }
 )
@@ -147,7 +156,7 @@ export const GetWorkedSlotForTeamAsyncApi = createAsyncThunk(
         } catch (error) {
             const json = error.response.data
             const errors = json[''].errors
-            throw errors[0].errorMessage
+            throw error.response.datas[0].errorMessage
         }
     }
 )

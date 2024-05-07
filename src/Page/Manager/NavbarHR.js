@@ -20,6 +20,10 @@ import TabsData from '../../Components/Tabs'
 import PopupData from '../../Components/Popup'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import TodayIcon from '@mui/icons-material/Today'
+import TopicIcon from '@mui/icons-material/Topic';
+import { getDatabase, ref, onValue, set } from 'firebase/database'
+import app from '../../Config/FirebaseConfig'
+import NotificationComponent from '../../Components/Notification'
 const tabsData = [
     {
         label: 'General',
@@ -57,6 +61,9 @@ export default function NavbarHR() {
     const userString = localStorage.getItem('role')
     const userObject = JSON.parse(userString)
 
+    const employeeIdString = localStorage.getItem('employeeId')
+    const employeeId = JSON.parse(employeeIdString)
+
     useEffect(() => {
         if (userObject && userObject == 'Manager') {
             history.push('/Manager/Employee')
@@ -68,6 +75,7 @@ export default function NavbarHR() {
         } else {
             history.push('')
         }
+        fetchDataFromDatabase()
     }, [])
 
     const handleClick = (event) => {
@@ -88,7 +96,41 @@ export default function NavbarHR() {
     const handleModalOpen = () => {
         setIsModalOpen(!isModalOpen)
     }
+    const [isLoading, setIsLoading] = useState(false)
+    const [dataNotification, setDataNotification] = useState([])
 
+
+    const fetchDataFromDatabase = () => {
+        setIsLoading(true)
+        const db = getDatabase(app)
+        const dbRef = ref(db, 'employeeNoti')
+
+        onValue(dbRef, (snapshot) => {
+            if (snapshot.exists()) {
+                setIsLoading(false)
+                const data = Object.entries(snapshot.val()).map(([id, value]) => {
+                   if (value.employeeSenderId == employeeId) {
+                        return { id, ...value };
+                    }
+                    return null; 
+                }).filter(item => item !== null);
+                setDataNotification(data)
+            } else {
+                setIsLoading(false)
+            }
+        })
+    }
+     function UpdateIsSeenToTrue(newValue) {
+
+        const db = getDatabase() // Lấy tham chiếu đến database
+        const recordRef = ref(db, `employeeNoti/${newValue.id}`) // Tham chiếu đến bản ghi cụ thể bằng id
+
+        set(recordRef, { ...newValue, isSeen: true })
+            .then(() => {
+            })
+            .catch((error) => {
+            })
+    }
     const handleModalClose = () => {
         setIsModalOpen(false)
     }
@@ -136,6 +178,15 @@ export default function NavbarHR() {
                         </li>
                         <li className="cursor-pointer p-2">
                             <Link
+                                to="/Hr/AllRequest"
+                                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
+                            >
+                                <TopicIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                <span className="flex-1 ml-3 whitespace-nowrap">All Request</span>
+                            </Link>
+                        </li>
+                        <li className="cursor-pointer p-2">
+                            <Link
                                 to="/Hr/Employee"
                                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
                             >
@@ -152,7 +203,7 @@ export default function NavbarHR() {
                                 <span className="flex-1 ml-3 whitespace-nowrap">Worked Time</span>
                             </Link>
                         </li> */}
-                        <li className="cursor-pointer p-2">
+                        {/* <li className="cursor-pointer p-2">
                             <Link
                                 to="/Hr/ManageLeave"
                                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
@@ -160,7 +211,7 @@ export default function NavbarHR() {
                                 <AssessmentIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
                                 <span className="flex-1 ml-3 whitespace-nowrap">Employee</span>
                             </Link>
-                        </li>
+                        </li> */}
                         <li className="cursor-pointer p-2">
                             <Link
                                 to="/Hr/ManageLeave"
@@ -288,6 +339,12 @@ export default function NavbarHR() {
                         </div>
 
                         <div className="flex items-center ">
+                        <NotificationComponent
+                                role={userObject}
+                                isLoading={isLoading}
+                                dataNotification={dataNotification}
+                                UpdateIsSeenToTrue={UpdateIsSeenToTrue}
+                            />
                             <div>
                                 <Tooltip title="Account settings">
                                     <IconButton
@@ -388,9 +445,9 @@ export default function NavbarHR() {
                                 <span className="ml-3 text-lg">Dashboard</span>
                             </Link>
                         </li> */}
-                        {/* <li className="cursor-pointer text-center mx-auto justify-center items-center">
+                        <li className="cursor-pointer text-center mx-auto justify-center items-center">
                             <NavLink
-                                to="/Manager/WorkedTime"
+                                to="/Hr/WorkedTime"
                                 className="flex items-center gap-2 p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
                                 activeStyle={{
                                     background: '#dbeafe',
@@ -399,7 +456,19 @@ export default function NavbarHR() {
                                 <TodayIcon className="ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
                                 <span className="ml-3">Worked Time</span>
                             </NavLink>
-                        </li> */}
+                        </li>
+                        <li className="cursor-pointer text-center mx-auto justify-center items-center">
+                            <NavLink
+                                to="/Hr/AllRequest"
+                                className="flex items-center gap-2 p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
+                                activeStyle={{
+                                    background: '#dbeafe',
+                                }}
+                            >
+                                <TopicIcon className="ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                <span className="ml-3">All Request</span>
+                            </NavLink>
+                        </li>
                         <li className="cursor-pointer text-center mx-auto justify-center items-center">
                             <NavLink
                                 to="/Hr/Employee"

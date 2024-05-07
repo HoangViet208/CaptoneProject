@@ -2,10 +2,10 @@ import axios from 'axios'
 
 const API_URL = process.env.REACT_APP_API_URL
 
-export const GetWorkedSlotByIdEmployeeApi = async (id) => {
+export const GetWorkedSlotByIdEmployeeApi = async (id,month) => {
     try {
         const response = await axios.get(
-            `${API_URL}/WorkSlotEmployee/get-workslot-employee-by-employee-id?employeeId=${id}`
+            `${API_URL}/WorkSlotEmployee/get-workslot-employee-by-employee-id?employeeId=${id}&month=${month}`
         )
         return response.data
     } catch (error) {

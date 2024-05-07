@@ -38,6 +38,7 @@ import NavbarHR from '../NavbarHR'
 import TableLoadData from '../../../Components/TableLoad'
 import { Fragment } from 'react'
 import PopupDelete from '../../../Components/PopupDelete'
+import UpdateIsSeenToTrueForManager from '../../../Hook/useFirebase'
 
 const columnsPending = [
     { id: 'number', label: 'Number', minWidth: 50, align: 'center' },
@@ -201,6 +202,7 @@ export default function ManageOvertime() {
     const [loadingButtonIndex, setLoadingButtonIndex] = useState(null)
     const handleClickApprove = (data, index) => {
         setLoadingButtonIndex(index)
+        UpdateIsSeenToTrueForManager(data)
         setLoadingButton(true)
         const Updatedata = {
             requestId: data.id,
@@ -222,6 +224,7 @@ export default function ManageOvertime() {
                         severity: 'success',
                         children: 'Approved request',
                     })
+                    setLoadingButtonIndex(null)
                 }
             })
             .catch((error) => {
@@ -231,6 +234,10 @@ export default function ManageOvertime() {
 
     const handleClickReject = () => {
         setLoadingRJButton(true)
+        const dataForManager = {
+            id : requestId
+        };
+        UpdateIsSeenToTrueForManager(dataForManager)
         const Updatedata = {
             requestId: requestId,
             employeeIdDecider: employeeId,

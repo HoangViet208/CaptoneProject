@@ -10,8 +10,6 @@ import {
     Button,
     Stack,
     Avatar,
-    Autocomplete,
-    TextField,
     Select,
     MenuItem,
     FormControl,
@@ -164,7 +162,7 @@ export default function TimeSheet() {
         const { format } = require('date-fns')
             try {
                 const downloadResponse = await axios.get(
-                    `https://timekeepingsystem.azurewebsites.net/api/WorkSlotEmployee/export-excel-file?departmentId=${Department == 'AllTeam' ? `` : Department}&month=${format(selectedDateRange.startDate, 'yyyy/MM/dd')}`,
+                    `https://timekeepingsystem.azurewebsites.net/api/WorkSlotEmployee/export-excel-file?departmentId=${Department == 'AllTeam' ? `00000000-0000-0000-0000-000000000000` : Department}&month=${format(selectedDateRange.startDate, 'yyyy/MM/dd')}`,
                     {
                         responseType: 'blob', // Set the response type to blob
                     }

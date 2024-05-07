@@ -328,7 +328,7 @@ export default function ApplyLeaveHR() {
                                             setIsLoading(false)
                                             showSnackbar({
                                                 severity: 'error',
-                                                children: 'Workslot of dateRange not already',
+                                                children: response.error.message,
                                             })
                                         }
                                         setIsLoading(false)
@@ -474,7 +474,6 @@ export default function ApplyLeaveHR() {
                 setLeaveErorr('trước 5 ngày vs đơn từ 3-7 ngày')
             } else {
                 for (let i = 0; i < daysToAdd; i++) {
-             
                     newDate.push({
                         title: dateArray[i],
                         type:
@@ -514,9 +513,9 @@ export default function ApplyLeaveHR() {
         UpdateIsSeenToTrueForEmployee(data)
         if (data.status != 0) {
             SetErrorEdit(true)
-            dispatch(GetLeaveTypeInfoAsyncApi({ employeeId: employeeId, LeaveTypeId:  data.leaveTypeId }))
+            dispatch(GetLeaveTypeInfoAsyncApi({ employeeId: employeeId, LeaveTypeId: data.leaveTypeId }))
         }
-     
+
         setStatusRequest(data.status)
         setReasonReject(data.reasonReject)
         setOpen(true)
@@ -542,7 +541,7 @@ export default function ApplyLeaveHR() {
             leaveReason: data.reason,
             leaveType: data.leaveTypeId,
             leaveDate: '',
-            substitute: data.supportEmployeeId ? data.supportEmployeeId : "",
+            substitute: data.supportEmployeeId ? data.supportEmployeeId : '',
         })
     }
     const handleChangeLeaveType = (formik, event) => {
@@ -792,7 +791,9 @@ export default function ApplyLeaveHR() {
                                 </div>
                                 <div className="grid grid-cols-2 my-1 ">
                                     <div className="text-left ">Standard Leave Days of Current Year</div>
-                                    <div className=" text-center ">{LeaveTypeInfo && LeaveTypeInfo.standardLeaveDays}</div>
+                                    <div className=" text-center ">
+                                        {LeaveTypeInfo && LeaveTypeInfo.standardLeaveDays}
+                                    </div>
                                 </div>
                                 <div className="grid grid-cols-2 my-1 ">
                                     <div className=" text-left">Standard Leave Days Transferred from Previous Year</div>
@@ -1091,7 +1092,6 @@ export default function ApplyLeaveHR() {
     const UserParseId = JSON.parse(userId)
 
     const handleDelete = async () => {
-     
         const db = getDatabase()
         const recordsRef = refRealtime(db, 'managerNoti')
         const snapshot = await get(recordsRef)
@@ -1100,10 +1100,8 @@ export default function ApplyLeaveHR() {
             if (record.requestId === idDelete) {
                 const recordRef = refRealtime(db, `managerNoti/${childSnapshot.key}`)
                 remove(recordRef)
-                    .then(() => {
-                    })
-                    .catch((error) => {
-                    })
+                    .then(() => {})
+                    .catch((error) => {})
             }
         })
         setLoadingButton(true)
@@ -1133,8 +1131,12 @@ export default function ApplyLeaveHR() {
     }
     return (
         <div>
-            <Navbar />
-            <PopupConfirm open={openConfirm} clickOpenFalse={clickOpenFalseConfirm} clickDelete={handleDelete} isLoading={loadingButton} />
+            <PopupConfirm
+                open={openConfirm}
+                clickOpenFalse={clickOpenFalseConfirm}
+                clickDelete={handleDelete}
+                isLoading={loadingButton}
+            />
             <PopupAlert open={openAlert} clickOpenFalse={clickOpenFalseAlert} />
             <PopupData
                 open={open}
@@ -1143,41 +1145,36 @@ export default function ApplyLeaveHR() {
                 viewContent={viewModalContent}
                 size="md"
             />
-            <div className="sm:ml-64 pt-12 h-screen bg-gray-50">
-                <div className="px-12 py-6">
-                    <h2 className="font-bold text-3xl mb-4"> Apply Leave List </h2>
-                    <div className="w-full mb-8 flex font-semibold items-center">
-                        <IconBreadcrumbs data={dataBreadcrumbs} />
-                        <div className="ml-auto uppercase">
-                            <Button
-                                onClick={handleClickOpenAdd}
-                                startIcon={<AddIcon />}
-                                variant="contained"
-                                color="primary"
-                                className=""
-                            >
-                                Add New
-                            </Button>
-                        </div>
-                    </div>
-                    <div className="bg-white p-4">
-                        <div>
-                            {loading == true ? (
-                                <TableLoadData columns={columns} tableHeight={480} />
-                            ) : (
-                                <TableData
-                                    tableHeight={470}
-                                    rowsPerPageOptions={[5, 25, 50]}
-                                    rows={rows}
-                                    columns={columns}
-                                    page={page}
-                                    rowsPerPage={rowsPerPage}
-                                    handleChangePage={handleChangePage}
-                                    handleChangeRowsPerPage={handleChangeRowsPerPage}
-                                />
-                            )}
-                        </div>
-                    </div>
+            <h2 className="font-bold text-3xl my-2 ml-3"> Request Leave </h2>
+            <div className="w-full mb-8 flex font-semibold items-center">
+                <div className="ml-auto uppercase">
+                    <Button
+                        onClick={handleClickOpenAdd}
+                        startIcon={<AddIcon />}
+                        variant="contained"
+                        color="primary"
+                        className=""
+                    >
+                        Add New
+                    </Button>
+                </div>
+            </div>
+            <div className="bg-white p-4">
+                <div>
+                    {loading == true ? (
+                        <TableLoadData columns={columns} tableHeight={480} />
+                    ) : (
+                        <TableData
+                            tableHeight={470}
+                            rowsPerPageOptions={[5, 25, 50]}
+                            rows={rows}
+                            columns={columns}
+                            page={page}
+                            rowsPerPage={rowsPerPage}
+                            handleChangePage={handleChangePage}
+                            handleChangeRowsPerPage={handleChangeRowsPerPage}
+                        />
+                    )}
                 </div>
             </div>
         </div>

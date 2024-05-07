@@ -323,7 +323,10 @@ export default function OvertimeHR() {
                             }
                             if (response.meta.requestStatus == 'reject') {
                                 setLoadingButton(false)
-                                
+                                showSnackbar({
+                                    severity: 'error',
+                                    children: response.error.message,
+                                })
                             }else{
                                 setLoadingButton(false)
                                 console.log("response", response)
@@ -775,7 +778,6 @@ export default function OvertimeHR() {
 
     return (
         <div>
-            <Navbar />
             <PopupConfirm open={openConfirm} clickOpenFalse={clickOpenFalseConfirm} clickDelete={handleDelete} isLoading={loadingButton} />
             <PopupAlert open={openAlert} clickOpenFalse={clickOpenFalseAlert} />
             <PopupData
@@ -785,25 +787,8 @@ export default function OvertimeHR() {
                 viewContent={viewModalContent}
                 size="sm"
             />
-            {/* {openPopover && (
-                <Popover
-                    id={id}
-                    open={openPopover}
-                    anchorEl={anchorEl}
-                    onClose={handleClose}
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                    }}
-                >
-                    
-                </Popover>
-            )} */}
-            <div className="sm:ml-64 pt-12 h-screen bg-gray-50">
-                <div className="px-12 py-6">
-                    <h2 className="font-bold text-3xl mb-4"> Request Overtime List </h2>
+               <h2 className="font-bold text-3xl my-2 ml-3"> Request Overtime </h2>
                     <div className="w-full mb-8 flex font-semibold items-center">
-                        <IconBreadcrumbs data={dataBreadcrumbs} />
                         <div className="ml-auto uppercase">
                             <Button
                                 onClick={handleClick}
@@ -835,7 +820,5 @@ export default function OvertimeHR() {
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
     )
 }

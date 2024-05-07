@@ -209,6 +209,7 @@ export default function ManageWorked() {
                         severity: 'success',
                         children: 'Approved request',
                     })
+                    setLoadingButtonIndex(null)
                 }
             })
             .catch((error) => {
@@ -243,6 +244,7 @@ export default function ManageWorked() {
                         severity: 'success',
                         children: 'Reject request',
                     })
+
                     setErrorReject(true)
                     setRejectReason('')
                     setOpen(false)
@@ -534,11 +536,15 @@ export default function ManageWorked() {
                     })
                     setErrorReject(true)
                     setRejectReason('')
+
+                    setOpen(false)
+                }else{
                     setOpen(false)
                 }
             })
             .catch((error) => {
                 setLoadingRJButton(false)
+                setOpen(false)
             })
     }
     const handleChangeReasonRejectInput = (e) => {

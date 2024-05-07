@@ -89,10 +89,9 @@ const authSlice = createSlice({
         builder
             .addCase(PostOvertimeAsyncApi.pending, (state) => {})
             .addCase(PostOvertimeAsyncApi.fulfilled, (state, action) => {
-                 console.log("res full", action)
             })
             .addCase(PostOvertimeAsyncApi.rejected, (state, action) => {
-                console.log("res reject", action.error.message)
+            
             })
         builder
             .addCase(PutOvertimeAsyncApi.pending, (state) => {})
@@ -125,7 +124,7 @@ export const getOvertimeAsyncApi = createAsyncThunk(
         } catch (error) {
             const json = error.response.data
             const errors = json[''].errors
-            throw errors[0].errorMessage
+            throw error.response.datas[0].errorMessage
         }
     }
 )
@@ -139,7 +138,7 @@ export const GetWorkDateSettingByIdAsyncApi = createAsyncThunk(
         } catch (error) {
             const json = error.response.data
             const errors = json[''].errors
-            throw errors[0].errorMessage
+            throw error.response.datas[0].errorMessage
         }
     }
 )
@@ -148,7 +147,7 @@ export const GetOvertimeTypeAsyncApi = createAsyncThunk('OvertimeReducer/GetOver
         const response = await GetOvertimeTypeApi()
         return response
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 export const GetTotalTimeOvertimeAsyncApi = createAsyncThunk('OvertimeReducer/GetTotalTimeOvertimeApi', async (id) => {
@@ -156,7 +155,7 @@ export const GetTotalTimeOvertimeAsyncApi = createAsyncThunk('OvertimeReducer/Ge
         const response = await GetTotalTimeOvertimeApi(id)
         return response
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 export const GetOvertimeByRequestIdAsyncApi = createAsyncThunk(
@@ -168,7 +167,7 @@ export const GetOvertimeByRequestIdAsyncApi = createAsyncThunk(
         } catch (error) {
             const json = error.response.data
             const errors = json[''].errors
-            throw errors[0].errorMessage
+            throw error.response.datas[0].errorMessage
         }
     }
 )
@@ -177,7 +176,7 @@ export const getOvertimeByIdAsyncApi = createAsyncThunk('OvertimeReducer/GetOver
         const response = await GetOvertimeByIdApi(id)
         return response
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 export const PostOvertimeAsyncApi = createAsyncThunk('OvertimeReducer/postAsyncApi', async ({ id, body }) => {
@@ -185,8 +184,8 @@ export const PostOvertimeAsyncApi = createAsyncThunk('OvertimeReducer/postAsyncA
         const response = await PostOvertimeApi(id, body)
         return response
     } catch (error) {
-        console.log("response async", error)
-        throw error
+        console.log("res loi", error.response.data)
+        throw error.response.data.response.data
     }
 })
 export const PutOvertimeAsyncApi = createAsyncThunk('OvertimeReducer/putAsyncApi', async ({ id, body }) => {
@@ -194,7 +193,7 @@ export const PutOvertimeAsyncApi = createAsyncThunk('OvertimeReducer/putAsyncApi
         const response = await PutOvertimeApi(id, body)
         return response.data // Trả về dữ liệu từ response nếu thành công
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 
@@ -203,7 +202,7 @@ export const CancelOvertimeAsyncApi = createAsyncThunk('OvertimeReducer/cancelAs
         const response = await CancelOvertimeApi(body)
         return response.data // Trả về dữ liệu từ response nếu thành công
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 
@@ -212,7 +211,7 @@ export const RejectOvertimeAsyncApi = createAsyncThunk('OvertimeReducer/RejectOv
         const response = await RejectOvertimeApi(body)
         return response.data // Trả về dữ liệu từ response nếu thành công
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
 
@@ -221,6 +220,6 @@ export const DeleteOvertimeAsyncApi = createAsyncThunk('OvertimeReducer/deleteAs
         const response = await DeleteOvertimeApi(data.idDelete, data.employeeId)
         return response
     } catch (error) {
-        throw error
+        throw error.response.data
     }
 })
