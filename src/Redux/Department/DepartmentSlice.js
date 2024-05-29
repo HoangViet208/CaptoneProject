@@ -10,6 +10,7 @@ import GetDepartmentApi, {
 } from '../../Api/DepartmentApi'
 
 const initialState = {
+    isLoading: false,
     DepartmentList: [],
     DepartmentWithoutList: [],
     DepartmentDetail: [],
@@ -31,7 +32,7 @@ const authSlice = createSlice({
         builder
             .addCase(getDepartmentAsyncApi.pending, (state) => {})
             .addCase(getDepartmentAsyncApi.fulfilled, (state, action) => {
-                const userId  = localStorage.getItem('employeeId')
+                const userId = localStorage.getItem('employeeId')
                 const IdUser = JSON.parse(userId)
                 const userRole = localStorage.getItem('role')
                 const RoleUser = JSON.parse(userRole)
@@ -44,11 +45,16 @@ const authSlice = createSlice({
             })
             .addCase(getDepartmentAsyncApi.rejected, (state, action) => {})
         builder
-            .addCase(GetALLEmployeeInDepartmentAsyncApi.pending, (state) => {})
+            .addCase(GetALLEmployeeInDepartmentAsyncApi.pending, (state) => {
+                state.isLoading = true
+            })
             .addCase(GetALLEmployeeInDepartmentAsyncApi.fulfilled, (state, action) => {
                 state.AllEmployeeInDepartment = action.payload
+                state.isLoading = false
             })
-            .addCase(GetALLEmployeeInDepartmentAsyncApi.rejected, (state, action) => {})
+            .addCase(GetALLEmployeeInDepartmentAsyncApi.rejected, (state, action) => {
+                state.isLoading = false
+            })
         builder
             .addCase(GetDepartmentWithoutAsyncApi.pending, (state) => {})
             .addCase(GetDepartmentWithoutAsyncApi.fulfilled, (state, action) => {

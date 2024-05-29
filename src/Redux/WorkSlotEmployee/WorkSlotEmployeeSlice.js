@@ -42,19 +42,17 @@ const authSlice = createSlice({
             })
         builder
             .addCase(GetWorkedSlotByIdDepartmentAsyncApi.pending, (state, action) => {
-                console.log("state", state.loading)
-                if (state.loading == true) {
-                    state.loading = true
-                }
+                console.log('state', state.loading)
+
+                state.loading = true
             })
             .addCase(GetWorkedSlotByIdDepartmentAsyncApi.fulfilled, (state, action) => {
-                    state.loading = false
-                    state.WorkSlotByDepartment = action.payload
-                    
+                state.loading = false
+                state.WorkSlotByDepartment = action.payload
             })
             .addCase(GetWorkedSlotByIdDepartmentAsyncApi.rejected, (state, action) => {
-                    state.loading = false
-                    state.currentRequestId = undefined
+                state.loading = false
+                state.currentRequestId = undefined
             })
         builder
             .addCase(GetWorkedSlotExcelAsyncApi.pending, (state) => {

@@ -28,6 +28,8 @@ import {
     RadioGroup,
     FormControlLabel,
     Grid,
+    OutlinedInput,
+    InputAdornment,
 } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
 //Icon
@@ -57,6 +59,7 @@ import {
 } from '../../../Redux/Employee/employeeSlice'
 import { PostAccountAsyncApi, getRoleAsyncApi } from '../../../Redux/Account/AccountSlice'
 import { GetDepartmentWithoutAsyncApi, getDepartmentAsyncApi } from '../../../Redux/Department/DepartmentSlice'
+import { Visibility, VisibilityOff } from '@mui/icons-material'
 
 const columns = [
     { id: 'number', label: 'Number', minWidth: 50, align: 'center' },
@@ -78,7 +81,23 @@ const breadcrumbIcons = () => {
 }
 
 const dataBreadcrumbs = breadcrumbIcons()
+export function generatePassword(length) {
+    const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz'
+    const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    const numberChars = '0123456789'
+    const specialChars = '!@#$'
 
+    const allChars = lowercaseChars + uppercaseChars + numberChars + specialChars
+
+    let password = ''
+
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * allChars.length)
+        password += allChars[randomIndex]
+    }
+
+    return password
+}
 export default function EmployeeAdmin() {
     const showSnackbar = useSnackbar()
     const [page, setPage] = useState(0)
@@ -92,6 +111,7 @@ export default function EmployeeAdmin() {
     const [loadingButton, setLoadingButton] = useState(false)
     const [selectedImage, setSelectedImage] = useState()
     const [click, SetClick] = useState(false)
+    const [showPassword, setShowPassword] = useState(false)
     const [arrTeam, setArrTeam] = useState([{ id: 1, email: '', team: [{ name: '', role: '' }] }])
     //setting redux
 
@@ -119,17 +139,18 @@ export default function EmployeeAdmin() {
         roleID: '',
         departmentID: '',
     }
+
     const formik = useFormik({
         initialValues: initialValues,
         validationSchema: Yup.object({
             // password: Yup.string().required(),
             username: Yup.string().required('Username is required').email('Invalid email address'),
-            firstName: Yup.string().min(2, 'Too Short!').max(4000, 'Too Long!').required(),
-            lastName: Yup.string().min(2, 'Too Short!').max(4000, 'Too Long!').required(),
-            gender: Yup.string().required(),
-            phoneNumber: Yup.string().required(),
-            address: Yup.string().required(),
-            roleID: Yup.string().required(),
+            firstName: Yup.string().min(2, 'Too Short!').max(4000, 'Too Long!').required('First Name is required'),
+            lastName: Yup.string().min(2, 'Too Short!').max(4000, 'Too Long!').required('Last Name is required'),
+            gender: Yup.string().required('Gender is required'),
+            phoneNumber: Yup.string().required('Phone Number is required'),
+            address: Yup.string().required('Address is required'),
+            roleID: Yup.string().required('Role is required'),
         }),
         onSubmit: (values) => {
             if (isAction == 1) {
@@ -177,16 +198,15 @@ export default function EmployeeAdmin() {
                                 employeesClassification: '',
                             })
                             dispatch(getEmployeeAsyncApi({ roleId: '', departmentId: '', name: search }))
-                        }if (response.meta.requestStatus == 'rejected') {
+                        }
+                        if (response.meta.requestStatus == 'rejected') {
                             setLoadingButton(false)
-                            console.log("errror", response)
+                            console.log('errror', response)
                             showSnackbar({
                                 severity: 'error',
                                 children: response.error.message,
                             })
-                        
-                        }
-                        else{
+                        } else {
                             setLoadingButton(false)
                         }
                     })
@@ -247,6 +267,7 @@ export default function EmployeeAdmin() {
             }
         },
     })
+    console.log('tesst', formik.values.password)
 
     const handleChangePage = (newPage) => {
         setPage(newPage)
@@ -261,6 +282,18 @@ export default function EmployeeAdmin() {
     const handleClickOpenAdd = () => {
         setOpen(true)
         setIsAction(1)
+        formik.setValues({
+            id: '',
+            username: '',
+            password: generatePassword(8),
+            firstName: '',
+            lastName: '',
+            gender: '',
+            address: '',
+            phoneNumber: '',
+            roleID: '',
+            departmentID: '',
+        })
     }
     const handleClickOpenAddTeam = () => {
         setOpenTeam(true)
@@ -287,7 +320,7 @@ export default function EmployeeAdmin() {
     const clickOpenFalse = (event) => {
         setOpen(false)
         setIsAction(0)
-
+        showPassword(false)
         formik.setTouched({})
         formik.setErrors({})
         formik.setValues({
@@ -349,6 +382,11 @@ export default function EmployeeAdmin() {
                 setLoadingButton(false)
             })
     }
+    const handleClickShowPassword = () => setShowPassword((show) => !show)
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault()
+    }
+
     const viewModalContent = (
         <Fragment>
             <form onSubmit={formik.handleSubmit}>
@@ -375,24 +413,40 @@ export default function EmployeeAdmin() {
                         )}
                     </div>
                     <div className="my-2">
-                        <TextField
-                            id="outlined-basic"
-                            size="small"
-                            type="password"
-                            disabled={isAction == 2 ? true : false}
+                        <FormControl
                             error={formik.touched.password && formik.errors.password ? true : undefined}
                             className="w-full"
-                            value={formik.values.password}
-                            name="password"
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            label={
-                                <div className="mb-1 flex gap-1">
-                                    <p className=" text-gray-500">Password</p> <i className="text-red-500">*</i>
-                                </div>
-                            }
                             variant="outlined"
-                        />
+                        >
+                            <InputLabel size="small" htmlFor="outlined-adornment-password">
+                                Password
+                            </InputLabel>
+                            <OutlinedInput
+                                size="small"
+                                id="outlined-basic"
+                                error={formik.touched.password && formik.errors.password ? true : undefined}
+                                className="w-full"
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                value={formik.values.password}
+                                name="password"
+                                label="password"
+                                readOnly
+                                type={showPassword ? 'text' : 'password'}
+                                endAdornment={
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            onClick={handleClickShowPassword}
+                                            onMouseDown={handleMouseDownPassword}
+                                            edge="end"
+                                        >
+                                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                }
+                            />
+                        </FormControl>
                         {formik.errors.password && formik.touched.password && (
                             <div className="text mt-1 text-red-600 font-semibold">{formik.errors.password}</div>
                         )}
@@ -410,7 +464,7 @@ export default function EmployeeAdmin() {
                                 onBlur={formik.handleBlur}
                                 label={
                                     <div className="mb-1 flex gap-1">
-                                        <p className=" text-gray-500">Frist Name</p> <i className="text-red-500">*</i>
+                                        <p className=" text-gray-500">First name</p> <i className="text-red-500">*</i>
                                     </div>
                                 }
                                 variant="outlined"
@@ -832,7 +886,7 @@ export default function EmployeeAdmin() {
                                 color="primary"
                                 className=""
                             >
-                                Add New Employee
+                                Add Employee
                             </Button>
                         </div>
                     </div>

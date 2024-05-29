@@ -69,7 +69,6 @@ export default function TrackSettings() {
         thursday: true,
         friday: true,
         saturday: false,
-        sunday: false,
     }
     const Permissions = [
         "Hide the admin's tracking data from the team head view",
@@ -210,7 +209,7 @@ export default function TrackSettings() {
 
         return () => {}
     }, [Department])
-   
+
     const handleClickChangeDate = () => {
         const body = {
             id: dateSetting.id,
@@ -272,7 +271,7 @@ export default function TrackSettings() {
             fromHourAfternoon: FormatDateToTime(selectedStartTimeAfternoon),
             toHourAfternoon: FormatDateToTime(selectedEndTimeAfternoon),
         }
-        
+
         if (valid >= 0) {
             dispatch(putTimeSettingAsyncApi(body)).then((res) => {
                 if (res.meta.requestStatus == 'fulfilled') {
@@ -280,7 +279,7 @@ export default function TrackSettings() {
                         severity: 'success',
                         children: 'Change Date Setting successfully',
                     })
-    
+
                     dispatch(getDateSettingAsyncApi(Department)).then((resDate) => {
                         setDateStatus(resDate.payload.dateStatus)
                     })
@@ -289,7 +288,7 @@ export default function TrackSettings() {
         } else {
             showSnackbar({
                 severity: 'error',
-                children: 'Total Time Working < 8',
+                children: 'Total Working Time Less Than 8',
             })
         }
     }

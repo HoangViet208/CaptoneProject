@@ -294,42 +294,66 @@ export default function WorkSlot() {
     const showSnackbar = useSnackbar()
     const handleClickOpenAdd = () => {
         setLoadingButton(true)
-        // dispatch(PostWorkEmployeeByDepartmentAsyncApi({ id: Department, body: '1' }))
 
-        dispatch(
-            PostWorkedSlotAsyncApi({
-                departmentId: Department,
-                month: currentMonth,
-            })
-        )
-            .then((response) => {
-                if (response.meta.requestStatus == 'fulfilled') {
-                    dispatch(
-                        PostWorkedSlotEmployeeAsyncApi({
-                            departmentId: Department,
-                            month: currentMonth,
-                        })
-                    ).then((res) => {
-                        dispatch(getDepartmentAsyncApi()).then((res) => {
-                            setLoadingButton(false)
-                            dispatch(
-                                GetWorkedSlotAsyncApi({
-                                    id: Department,
-                                    month: formatDateExact(currentMonth),
-                                })
-                            )
-                            showSnackbar({
-                                severity: 'success',
-                                children: 'Create Work Slot Department successfully',
+        // Extract year from currentMonth
+        const date = new Date(currentMonth)
+        const year = date.getFullYear()
+
+        // Tạo một mảng các promise cho các tháng trong năm
+        const monthPromises = []
+        for (let month = 1; month <= 12; month++) {
+            // Format month to YYYY/MM/DD
+            const formattedMonth = `${year}/${String(month).padStart(2, '0')}/01`
+
+            monthPromises.push(
+                dispatch(
+                    PostWorkedSlotAsyncApi({
+                        departmentId: Department,
+                        month: formattedMonth,
+                    })
+                )
+            )
+        }
+
+        Promise.all(monthPromises).then((responses) => {
+            // Kiểm tra tất cả các response để đảm bảo chúng đều fulfilled
+            const allFulfilled = responses.every((response) => response.meta.requestStatus === 'fulfilled')
+            if (allFulfilled) {
+                const employeePromises = []
+                for (let month = 1; month <= 12; month++) {
+                    // Format month to YYYY/MM/DD
+                    const formattedMonth = `${year}/${String(month).padStart(2, '0')}/01`
+
+                    employeePromises.push(
+                        dispatch(
+                            PostWorkedSlotEmployeeAsyncApi({
+                                departmentId: Department,
+                                month: formattedMonth,
                             })
+                        )
+                    )
+                }
+
+                return Promise.all(employeePromises).then((res) => {
+                    dispatch(getDepartmentAsyncApi()).then((res) => {
+                        setLoadingButton(false)
+                        dispatch(
+                            GetWorkedSlotAsyncApi({
+                                id: Department,
+                                month: formatDateExact(currentMonth),
+                            })
+                        )
+                        showSnackbar({
+                            severity: 'success',
+                            children: 'Create Work Slot Department successfully',
                         })
                     })
-                }
-            })
-            .catch((error) => {
-                setLoadingButton(false)
-            })
+                })
+            } else {
+            }
+        })
     }
+
     const [userRole, setUserRole] = useState(() => {
         const userString = localStorage.getItem('role')
         const userObject = JSON.parse(userString)

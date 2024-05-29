@@ -17,6 +17,7 @@ import {
     Popover,
     FormControlLabel,
     Checkbox,
+    CircularProgress,
 } from '@mui/material'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
@@ -160,29 +161,30 @@ export default function TimeSheet() {
         // const employeeId = JSON.parse(userStringEmployeeName)
         // const response = await dispatch(getEmployeeByIdAsyncApi(employeeId))
         const { format } = require('date-fns')
-            try {
-                const downloadResponse = await axios.get(
-                    `https://timekeepingsystem.azurewebsites.net/api/WorkSlotEmployee/export-excel-file?departmentId=${Department == 'AllTeam' ? `00000000-0000-0000-0000-000000000000` : Department}&month=${format(selectedDateRange.startDate, 'yyyy/MM/dd')}`,
-                    {
-                        responseType: 'blob', // Set the response type to blob
-                    }
-                )
-
-                if (downloadResponse.status === 200) {
-                    const blob = new Blob([downloadResponse.data], { type: downloadResponse.headers['content-type'] })
-                    const url = window.URL.createObjectURL(blob)
-                    const link = document.createElement('a')
-                    link.href = url
-                    link.download = 'WorkSlotEmployeeReport.xlsx' // Specify the desired file name
-                    link.click()
-                    window.URL.revokeObjectURL(url)
-                } else {
-                    console.error('Failed to download file')
+        try {
+            const downloadResponse = await axios.get(
+                `https://timekeepingsystem.azurewebsites.net/api/WorkSlotEmployee/export-excel-file?departmentId=${
+                    Department == 'AllTeam' ? `00000000-0000-0000-0000-000000000000` : Department
+                }&month=${format(selectedDateRange.startDate, 'yyyy/MM/dd')}`,
+                {
+                    responseType: 'blob', // Set the response type to blob
                 }
-            } catch (error) {
-                console.error('Error:', error)
+            )
+
+            if (downloadResponse.status === 200) {
+                const blob = new Blob([downloadResponse.data], { type: downloadResponse.headers['content-type'] })
+                const url = window.URL.createObjectURL(blob)
+                const link = document.createElement('a')
+                link.href = url
+                link.download = 'WorkSlotEmployeeReport.xlsx' // Specify the desired file name
+                link.click()
+                window.URL.revokeObjectURL(url)
+            } else {
+                console.error('Failed to download file')
             }
-        
+        } catch (error) {
+            console.error('Error:', error)
+        }
     }
     const clickOpenFalse = (event) => {
         setOpen(false)
@@ -197,14 +199,12 @@ export default function TimeSheet() {
         isOut: true,
         isWork: true,
         isOvertime: true,
-        isCoefficient: true,
     }
     const labels = {
         isIn: 'Check In',
         isOut: 'Check Out',
         isWork: 'Active',
         isOvertime: 'Overtime',
-        isCoefficient: 'Coefficient',
     }
 
     const [viewStatus, setViewStatus] = useState(initialViewStatus)
@@ -323,11 +323,12 @@ export default function TimeSheet() {
                                         className="bg-white"
                                         labelId="demo-simple-select-label"
                                         id="demo-simple-select"
-                                        value={Department} 
+                                        value={Department}
                                         label="Team"
                                         onChange={handleChangeDepartment}
+                                        disabled={loading}
                                     >
-                                      <MenuItem value={'AllTeam'}>All Team</MenuItem>
+                                        <MenuItem value={'AllTeam'}>All Team</MenuItem>
                                         {DepartmentList.map((item, index) => {
                                             return (
                                                 <MenuItem key={index} value={item.id}>
@@ -374,89 +375,102 @@ export default function TimeSheet() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {WorkSlotByDepartment.map((item, index) => {
-                                        return (
-                                            <tr key={index}>
-                                                <td className="py-5 border-r-2 px-2">
-                                                    <div className="flex flex-col gap-2 items-center ">
-                                                        <Avatar
-                                                            src={item.avatar}
-                                                            alt={item.name}
-                                                            sx={{ width: 40, height: 40 }}
-                                                        />
-                                                        <p className="text-center">
-                                                            {item.name} ({item.teamName})
-                                                        </p>
-                                                        <p>{item.employeeNumber} </p>
-                                                    </div>
-                                                </td>
-                                                <td id="scroll" className="py-5 px-2 border-r-2">
-                                                    <div className="scrollbar pb-5 overflow-x-auto">
-                                                        <div className="flex gap-5">
-                                                            {item.working.map((working, index) => {
-                                                                return (
-                                                                    <div
-                                                                        key={index}
-                                                                        id="cha"
-                                                                        className="min-w-[190px] border-[2px] border-red-300 border-dashed truncate"
-                                                                    >
-                                                                         <div className="mx-2 font-bold text-center mt-[1px] font-serif">
-                                                                            <div>{working.isOvertime == true ? "Overtime" : "Working" }</div>
-                                                                        </div>
-                                                                        <div className="flex  mx-2">
-                                                                            <div>{getDayOfWeek(working.date)}</div>
-                                                                            <div className="text-gray-400 ml-auto">
-                                                                                {getDateToMonth(working.date)}
-                                                                            </div>
-                                                                        </div>
-                                                                       
-                                                                        <div className="transition ease-in-out hover:scale-110 m-2 delay-150 py-1 px-2 bg-red-100">
-                                                                            {viewStatus.isIn == true ? (
-                                                                                <div className="flex items-center">
-                                                                                    <div className="text-gray-400 font-medium">
-                                                                                        {working.in}
-                                                                                    </div>
-                                                                                    <div
-                                                                                        id="in"
-                                                                                        className="uppercase text-xs text-gray-400 ml-auto"
-                                                                                    >
-                                                                                        in
-                                                                                    </div>
-                                                                                </div>
-                                                                            ) : (
-                                                                                ''
-                                                                            )}
-                                                                            {viewStatus.isOut == true ? (
-                                                                                <div className="flex items-center">
-                                                                                    <div className="text-gray-400 font-medium">
-                                                                                        {working.out}
-                                                                                    </div>
-                                                                                    <div
-                                                                                        id="out"
-                                                                                        className="uppercase text-xs text-gray-400 ml-auto"
-                                                                                    >
-                                                                                        out
-                                                                                    </div>
-                                                                                </div>
-                                                                            ) : (
-                                                                                ''
-                                                                            )}
-                                                                            {viewStatus.isWork == true ? (
-                                                                            <div className="flex items-center">
-                                                                                <div className="text-gray-400 font-medium">
-                                                                                    {working.duration}
-                                                                                </div>
-                                                                                <div
-                                                                                    id="work"
-                                                                                    className="uppercase text-xs text-gray-400 ml-auto"
-                                                                                >
-                                                                                    Work
+                                    {loading == true ? (
+                                        <tr className="">
+                                            <td></td>
+                                            <td className="h-[450px] w-full flex items-center justify-center">
+                                                <CircularProgress size={80} />
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                    ) : (
+                                        WorkSlotByDepartment.map((item, index) => {
+                                            return (
+                                                <tr key={index}>
+                                                    <td className="py-5 border-r-2 px-2">
+                                                        <div className="flex flex-col gap-2 items-center ">
+                                                            <Avatar
+                                                                src={item.avatar}
+                                                                alt={item.name}
+                                                                sx={{ width: 40, height: 40 }}
+                                                            />
+                                                            <p className="text-center">
+                                                                {item.name} ({item.teamName})
+                                                            </p>
+                                                            <p>{item.employeeNumber} </p>
+                                                        </div>
+                                                    </td>
+                                                    <td id="scroll" className="py-5 px-2 border-r-2">
+                                                        <div className="scrollbar pb-5 overflow-x-auto">
+                                                            <div className="flex gap-5">
+                                                                {item.working.map((working, index) => {
+                                                                    return (
+                                                                        <div
+                                                                            key={index}
+                                                                            id="cha"
+                                                                            className="min-w-[190px] border-[2px] border-red-300 border-dashed truncate"
+                                                                        >
+                                                                            <div className="mx-2 font-bold text-center mt-[1px] font-serif">
+                                                                                <div>
+                                                                                    {working.isOvertime == true
+                                                                                        ? 'Overtime'
+                                                                                        : 'Working'}
                                                                                 </div>
                                                                             </div>
-                                                                            ) : (
-                                                                                ''
-                                                                            )}
-                                                                            {viewStatus.isCoefficient == true ? (
+                                                                            <div className="flex  mx-2">
+                                                                                <div>{getDayOfWeek(working.date)}</div>
+                                                                                <div className="text-gray-400 ml-auto">
+                                                                                    {getDateToMonth(working.date)}
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div className="transition ease-in-out hover:scale-110 m-2 delay-150 py-1 px-2 bg-red-100">
+                                                                                {viewStatus.isIn == true ? (
+                                                                                    <div className="flex items-center">
+                                                                                        <div className="text-gray-400 font-medium">
+                                                                                            {working.in}
+                                                                                        </div>
+                                                                                        <div
+                                                                                            id="in"
+                                                                                            className="uppercase text-xs text-gray-400 ml-auto"
+                                                                                        >
+                                                                                            in
+                                                                                        </div>
+                                                                                    </div>
+                                                                                ) : (
+                                                                                    ''
+                                                                                )}
+                                                                                {viewStatus.isOut == true ? (
+                                                                                    <div className="flex items-center">
+                                                                                        <div className="text-gray-400 font-medium">
+                                                                                            {working.out}
+                                                                                        </div>
+                                                                                        <div
+                                                                                            id="out"
+                                                                                            className="uppercase text-xs text-gray-400 ml-auto"
+                                                                                        >
+                                                                                            out
+                                                                                        </div>
+                                                                                    </div>
+                                                                                ) : (
+                                                                                    ''
+                                                                                )}
+                                                                                {viewStatus.isWork == true ? (
+                                                                                    <div className="flex items-center">
+                                                                                        <div className="text-gray-400 font-medium">
+                                                                                            {working.duration}
+                                                                                        </div>
+                                                                                        <div
+                                                                                            id="work"
+                                                                                            className="uppercase text-xs text-gray-400 ml-auto"
+                                                                                        >
+                                                                                            Work
+                                                                                        </div>
+                                                                                    </div>
+                                                                                ) : (
+                                                                                    ''
+                                                                                )}
+                                                                                {/* {viewStatus.isCoefficient == true ? (
                                                                                 <div className="flex items-center">
                                                                                 <div className="text-gray-400 font-medium">
                                                                                     x1
@@ -470,47 +484,47 @@ export default function TimeSheet() {
                                                                             </div>
                                                                             ) : (
                                                                                 ''
-                                                                            )}
-                                                                            
+                                                                            )} */}
+                                                                            </div>
                                                                         </div>
-                                                                    </div>
-                                                                )
-                                                            })}
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td className="py-5 px-2 min-w-[300px]">
-                                                    <div
-                                                        id="total"
-                                                        className="transition ease-in-out hover:scale-110 m-2 w-[200px] delay-150 py-1 px-2 bg-yellow-100"
-                                                    >
-                                                        <div className="flex items-center">
-                                                            <div className="text-gray-400 font-medium">
-                                                                {item.totalWorkedHours}
-                                                            </div>
-                                                            <div
-                                                                id="out"
-                                                                className="uppercase text-xs text-gray-400 ml-auto"
-                                                            >
-                                                                Worked hour
+                                                                    )
+                                                                })}
                                                             </div>
                                                         </div>
-                                                        <div className="flex items-center">
-                                                            <div className="text-gray-400 font-medium">
-                                                                {item.totalOvertime}
+                                                    </td>
+                                                    <td className="py-5 px-2 min-w-[300px]">
+                                                        <div
+                                                            id="total"
+                                                            className="transition ease-in-out hover:scale-110 m-2 w-[200px] delay-150 py-1 px-2 bg-yellow-100"
+                                                        >
+                                                            <div className="flex items-center">
+                                                                <div className="text-gray-400 font-medium">
+                                                                    {item.totalWorkedHours}
+                                                                </div>
+                                                                <div
+                                                                    id="out"
+                                                                    className="uppercase text-xs text-gray-400 ml-auto"
+                                                                >
+                                                                    Worked hour
+                                                                </div>
                                                             </div>
-                                                            <div
-                                                                id="in"
-                                                                className="uppercase text-xs text-gray-400 ml-auto"
-                                                            >
-                                                                Over time
+                                                            <div className="flex items-center">
+                                                                <div className="text-gray-400 font-medium">
+                                                                    {item.totalOvertime}
+                                                                </div>
+                                                                <div
+                                                                    id="in"
+                                                                    className="uppercase text-xs text-gray-400 ml-auto"
+                                                                >
+                                                                    Over time
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        )
-                                    })}
+                                                    </td>
+                                                </tr>
+                                            )
+                                        })
+                                    )}
                                 </tbody>
                             </table>
                         </div>

@@ -336,7 +336,7 @@ export default function Team() {
     }
 
     const handleClickAddMemberInTeam = () => {
-        const isNewExists = teamData.some((item) => item.id == "")
+        const isNewExists = teamData.some((item) => item.id == '')
         const hasTrueIsNew = teamData.some((obj) => obj.isNew === true)
         if (!isNewExists) {
             if (hasTrueIsNew) {
@@ -368,13 +368,13 @@ export default function Team() {
         //     // Kiểm tra xem trường email của nhân viên có tồn tại trong teamData không
         //     return !teamData.some(teamMember => teamMember.email === employee.email);
         // });
-        return teamData.map((item, index) => ( {
+        return teamData.map((item, index) => ({
             ...item,
-     
+
             info: (
                 <div className="flex gap-2 items-center ">
                     {' '}
-                    {console.log("item", item)}
+                    {console.log('item', item)}
                     {/* Added the class 'align-center' for centering */}
                     <p className="font-bold">{item.firstName + ' ' + item.lastName}</p>
                 </div>
@@ -406,24 +406,27 @@ export default function Team() {
                     </FormControl>
                 ),
             number: index + 1,
-            role: formik.values.name == "Team HR" ? item.roleName : (
-                <FormControl fullWidth>
-                    <InputLabel size="small" id="demo-simple-select-label">
-                        Role Name
-                    </InputLabel>
-                    <Select
-                        size="small"
-                        className="w-full"
-                        value={item.roleName}
-                        label="Role Name"
-                        onChange={(e) => handleChangeRoleMemberInTeam(index, e.target.value)}
-                        variant="outlined"
-                    >
-                        <MenuItem value="Manager">Manager</MenuItem>
-                        <MenuItem value="Employee">Employee</MenuItem>
-                    </Select>
-                </FormControl>
-            ),
+            role:
+                formik.values.name == 'Team HR' ? (
+                    item.roleName
+                ) : (
+                    <FormControl fullWidth>
+                        <InputLabel size="small" id="demo-simple-select-label">
+                            Role Name
+                        </InputLabel>
+                        <Select
+                            size="small"
+                            className="w-full"
+                            value={item.roleName}
+                            label="Role Name"
+                            onChange={(e) => handleChangeRoleMemberInTeam(index, e.target.value)}
+                            variant="outlined"
+                        >
+                            <MenuItem value="Manager">Manager</MenuItem>
+                            <MenuItem value="Employee">Employee</MenuItem>
+                        </Select>
+                    </FormControl>
+                ),
             action: (
                 <div className="flex gap-2 justify-center">
                     <Tooltip onClick={() => handleClickDeleteMemberInTeam(item.id, index)} title="Delete">
@@ -441,9 +444,9 @@ export default function Team() {
         <Fragment>
             <form onSubmit={formik.handleSubmit}>
                 <div className=" gap-5 py-4 px-8 mb-5 lg:my-0">
-                    {isAction == 2 && formik.values.name !== "Team HR" && (
+                    {isAction == 2 && formik.values.name !== 'Team HR' && (
                         <Button onClick={handleClickAddMemberInTeam} variant="contained" color="success">
-                            Add new Employee
+                            Add Employee
                         </Button>
                     )}
                     <div className="mb-2 mt-4">
@@ -572,7 +575,12 @@ export default function Team() {
     return (
         <div>
             <Navbar />
-            <PopupConfirm open={openConfirm} clickOpenFalse={clickOpenFalseConfirm} clickDelete={handleDelete} isLoading={loadingButton} />
+            <PopupConfirm
+                open={openConfirm}
+                clickOpenFalse={clickOpenFalseConfirm}
+                clickDelete={handleDelete}
+                isLoading={loadingButton}
+            />
             <PopupData
                 open={open}
                 clickOpenFalse={clickOpenFalse}

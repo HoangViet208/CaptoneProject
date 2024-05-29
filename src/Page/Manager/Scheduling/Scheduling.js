@@ -11,7 +11,6 @@ import Box from '@mui/material/Box'
 //icon
 
 //component
-import Navbar from '../Navbar'
 import { formatDateExact } from '../../../Hook/useFormatDate'
 
 //style
@@ -19,6 +18,8 @@ import { formatDateExact } from '../../../Hook/useFormatDate'
 import './Style.css'
 import { useDispatch, useSelector } from 'react-redux'
 import { GetWorkedSlotForPersonalAsyncApi } from '../../../Redux/WorkSlotEmployee/WorkSlotEmployeeSlice'
+import NavbarAdmin from '../../Admin/Navbar'
+import NavbarHR from '../NavbarHR'
 
 export default function SchedulingHRandManagament() {
     const [currentMonth, setCurrentMonth] = useState(null)
@@ -26,7 +27,25 @@ export default function SchedulingHRandManagament() {
 
     //setting redux
     const { WorkedSlot, loading, WorkslotForPersonal } = useSelector((state) => state.WorkSlotEmployee)
+    const [userRole, setUserRole] = useState(() => {
+        const userString = localStorage.getItem('role')
+        const userObject = JSON.parse(userString)
+        return userObject || 'defaultRole'
+    })
 
+    useEffect(() => {
+        const handleStorageChange = () => {
+            const userString = localStorage.getItem('role')
+            const userObject = JSON.parse(userString)
+            setUserRole(userObject || 'defaultRole')
+        }
+
+        window.addEventListener('storage', handleStorageChange)
+
+        return () => {
+            window.removeEventListener('storage', handleStorageChange)
+        }
+    }, [])
     const dispatch = useDispatch()
     const userStringEmployeeName = localStorage.getItem('employeeId')
     const employeeId = JSON.parse(userStringEmployeeName)
@@ -152,7 +171,7 @@ export default function SchedulingHRandManagament() {
     console.log('newEvents', newEvents, currentMonth, currentData)
     return (
         <div>
-            <Navbar />
+            {userRole === 'Manager' ? <NavbarAdmin /> : <NavbarHR />}
             <div className="text-xl mb-5 sm:ml-64  pt-20 ">
                 <div className="flex">
                     <div className="ml-4 flex  items-center gap-1">
@@ -204,4 +223,3 @@ export default function SchedulingHRandManagament() {
         </div>
     )
 }
-
