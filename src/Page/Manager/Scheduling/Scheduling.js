@@ -18,8 +18,8 @@ import { formatDateExact } from '../../../Hook/useFormatDate'
 import './Style.css'
 import { useDispatch, useSelector } from 'react-redux'
 import { GetWorkedSlotForPersonalAsyncApi } from '../../../Redux/WorkSlotEmployee/WorkSlotEmployeeSlice'
-import NavbarAdmin from '../../Admin/Navbar'
 import NavbarHR from '../NavbarHR'
+import Navbar from '../Navbar';
 
 export default function SchedulingHRandManagament() {
     const [currentMonth, setCurrentMonth] = useState(null)
@@ -74,7 +74,6 @@ export default function SchedulingHRandManagament() {
     const calendarRef = React.createRef()
 
     const handleChangeMonth = (info) => {
-        console.log('info', info)
         const startDate = info.view.currentStart
         const endDate = info.view.currentEnd
         const events = []
@@ -168,10 +167,10 @@ export default function SchedulingHRandManagament() {
             }
         }
     }
-    console.log('newEvents', newEvents, currentMonth, currentData)
+
     return (
         <div>
-            {userRole === 'Manager' ? <NavbarAdmin /> : <NavbarHR />}
+            {userRole === 'Manager' ? <Navbar /> : <NavbarHR />}
             <div className="text-xl mb-5 sm:ml-64  pt-20 ">
                 <div className="flex">
                     <div className="ml-4 flex  items-center gap-1">

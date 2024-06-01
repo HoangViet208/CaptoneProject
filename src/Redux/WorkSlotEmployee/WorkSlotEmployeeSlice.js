@@ -42,7 +42,6 @@ const authSlice = createSlice({
             })
         builder
             .addCase(GetWorkedSlotByIdDepartmentAsyncApi.pending, (state, action) => {
-                console.log('state', state.loading)
 
                 state.loading = true
             })

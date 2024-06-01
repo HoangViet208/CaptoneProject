@@ -221,7 +221,6 @@ export const PostApplyLeaveAsyncApi = createAsyncThunk('ApplyLeaveReducer/postAs
         const response = await PostApplyLeaveApi(id, body)
         return response
     } catch (error) {
-        console.log("loi ne", error)
         throw error.response.data
    
     }

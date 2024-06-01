@@ -63,8 +63,9 @@ export default function NavbarHR() {
 
     const employeeIdString = localStorage.getItem('employeeId')
     const employeeId = JSON.parse(employeeIdString)
-
+  
     useEffect(() => {
+     
         if (userObject && userObject == 'Manager') {
             history.push('/Manager/Employee')
         } else if (userObject && userObject == 'Employee') {

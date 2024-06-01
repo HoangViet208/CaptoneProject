@@ -201,7 +201,6 @@ export default function EmployeeAdmin() {
                         }
                         if (response.meta.requestStatus == 'rejected') {
                             setLoadingButton(false)
-                            console.log('errror', response)
                             showSnackbar({
                                 severity: 'error',
                                 children: response.error.message,
@@ -267,7 +266,6 @@ export default function EmployeeAdmin() {
             }
         },
     })
-    console.log('tesst', formik.values.password)
 
     const handleChangePage = (newPage) => {
         setPage(newPage)

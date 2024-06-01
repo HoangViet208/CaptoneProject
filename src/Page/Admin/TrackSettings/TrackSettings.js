@@ -69,6 +69,7 @@ export default function TrackSettings() {
         thursday: true,
         friday: true,
         saturday: false,
+        sunday: false
     }
     const Permissions = [
         "Hide the admin's tracking data from the team head view",
@@ -83,12 +84,26 @@ export default function TrackSettings() {
     const [checkedItems, setCheckedItems] = useState({})
     const [dateStatus, setDateStatus] = useState(initialDateStatus)
     const handleCheckboxChange = (event) => {
-        const { name, checked } = event.target
-        setDateStatus((prevDateStatus) => ({
-            ...prevDateStatus,
-            [name]: checked,
-        }))
-    }
+        const { name, checked } = event.target;
+        
+        // Count the number of currently checked items
+        const checkedCount = Object.values(dateStatus).filter(Boolean).length;
+
+        // If unchecking or if less than 5 items are checked, allow the change
+        if (!checked || checkedCount < 5) {
+            setDateStatus((prevDateStatus) => ({
+                ...prevDateStatus,
+                [name]: checked,
+            }));
+        } else {
+            // If trying to check more than 5 items, do nothing or show an alert
+            showSnackbar({
+                severity: 'error',
+                children: 'You can select up to 5 days only.',
+            })
+
+        }
+    };
     const [selectedStartTimeMorning, setSelectedStartTimeMorning] = useState(new Date())
     const handleChangeStartTimeMorning = (newTime) => {
         setSelectedStartTimeMorning(newTime)

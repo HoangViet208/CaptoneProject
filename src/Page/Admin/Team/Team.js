@@ -374,7 +374,6 @@ export default function Team() {
             info: (
                 <div className="flex gap-2 items-center ">
                     {' '}
-                    {console.log('item', item)}
                     {/* Added the class 'align-center' for centering */}
                     <p className="font-bold">{item.firstName + ' ' + item.lastName}</p>
                 </div>

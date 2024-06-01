@@ -148,7 +148,6 @@ export const PostAccountAsyncApi = createAsyncThunk('AccountReducer/postAsyncApi
         const response = await PostAccountApi(body)
         return response
     } catch (error) {
-        console.log("err async", error.response.data.message)
         throw error.response.data.response.data.message
     }
 })

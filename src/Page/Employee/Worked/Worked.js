@@ -327,7 +327,6 @@ export default function Worked() {
         setrequestId(data.requestId)
         setChosenFileName(data.linkFile)
         seterrorImport(true)
-        console.log('data', date)
         setOpen(true)
         setDate(data.dateOfWorkTime)
         setStartTime(data.slotStart)

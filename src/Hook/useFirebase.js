@@ -10,7 +10,6 @@ export default async function UpdateIsSeenToTrueForManager(newValue) {
             const record = childSnapshot.val();
             if (record.requestId === newValue.id) {
                 const recordRef = refRealtime(db, `managerNoti/${childSnapshot.key}`);
-                console.log("test 3", record.requestId, newValue.id, recordRef, record)
                 set(recordRef, { ...record, isSeen: true }) 
                     .then(() => {
                       
@@ -30,7 +29,6 @@ export  async function UpdateIsSeenToTrueForEmployee(newValue) {
             const record = childSnapshot.val();
             if (record.requestId === newValue.id) {
                 const recordRef = refRealtime(db, `employeeNoti/${childSnapshot.key}`);
-                console.log("test 3", record.requestId, newValue.id, recordRef, record)
                 set(recordRef, { ...record, isSeen: true }) 
                     .then(() => {
                       

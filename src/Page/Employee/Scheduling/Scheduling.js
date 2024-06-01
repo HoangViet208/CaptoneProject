@@ -55,7 +55,6 @@ export default function Scheduling() {
     const calendarRef = React.createRef()
 
     const handleChangeMonth = (info) => {
-        console.log('info', info)
         const startDate = info.view.currentStart
         const endDate = info.view.currentEnd
         const events = []
@@ -149,7 +148,6 @@ export default function Scheduling() {
             }
         }
     }
-    console.log('newEvents', newEvents, currentMonth, currentData)
     return (
         <div>
             <Navbar />

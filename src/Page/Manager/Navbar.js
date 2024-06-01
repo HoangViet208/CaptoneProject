@@ -63,7 +63,6 @@ export default function NavbarManager() {
     const userObject = JSON.parse(userString)
     const [isLoading, setIsLoading] = useState(false)
     const [dataNotification, setDataNotification] = useState([])
-
     const employeeIdString = localStorage.getItem('employeeId')
     const employeeId = JSON.parse(employeeIdString)
     const fetchDataFromDatabase = () => {
@@ -92,12 +91,13 @@ export default function NavbarManager() {
     function UpdateIsSeenToTrue(newValue) {
         const db = getDatabase() // Lấy tham chiếu đến database
         const recordRef = ref(db, `managerNoti/${newValue.id}`) // Tham chiếu đến bản ghi cụ thể bằng id
-        console.log('test ne1', newValue, db, recordRef)
         set(recordRef, { ...newValue, isSeen: true })
             .then(() => {})
             .catch((error) => {})
     }
     useEffect(() => {
+  
+        
         if (userObject && userObject == 'Manager') {
         } else if (userObject && userObject == 'Employee') {
             history.push('/Employee/Dashboard')
@@ -184,7 +184,7 @@ export default function NavbarManager() {
                         </li> */}
                         <li className="cursor-pointer p-2">
                             <Link
-                                to="/Manager/Scheduling"
+                                to="/Manager/WorkedTime"
                                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
                             >
                                 <TodayIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />

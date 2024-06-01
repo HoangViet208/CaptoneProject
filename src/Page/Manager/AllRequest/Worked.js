@@ -313,7 +313,6 @@ export default function WorkedHR() {
         setrequestId(data.requestId)
         setChosenFileName(data.linkFile)
         seterrorImport(true)
-        console.log('data', date)
         setOpen(true)
         setDate(data.date)
         setStartTime(data.slotStart)
