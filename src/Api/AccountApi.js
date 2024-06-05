@@ -59,6 +59,7 @@ export const PostAccountApi = async (body) => {
         const response = await axios.post(`${API_URL}/Account`, body)
         return response.data
     } catch (error) {
+        console.log("err api", error)
         throw error
     }
 }

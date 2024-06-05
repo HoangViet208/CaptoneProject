@@ -126,6 +126,9 @@ export default function EmployeeAdmin() {
         dispatch(getRoleAsyncApi())
         return () => {}
     }, [search])
+    
+   
+    const vietnamPhoneNumberRegex = /^(?:\+84|0)(?:3[2-9]|5[6|8|9]|7[0|6-9]|8[1-9]|9[0-9])[0-9]{7}$/;
 
     const initialValues = {
         id: '',
@@ -139,7 +142,6 @@ export default function EmployeeAdmin() {
         roleID: '',
         departmentID: '',
     }
-
     const formik = useFormik({
         initialValues: initialValues,
         validationSchema: Yup.object({
@@ -148,14 +150,23 @@ export default function EmployeeAdmin() {
             firstName: Yup.string().min(2, 'Too Short!').max(4000, 'Too Long!').required('First Name is required'),
             lastName: Yup.string().min(2, 'Too Short!').max(4000, 'Too Long!').required('Last Name is required'),
             gender: Yup.string().required('Gender is required'),
-            phoneNumber: Yup.string().required('Phone Number is required'),
+            phoneNumber: Yup.string().required('Phone Number is required').matches(vietnamPhoneNumberRegex, 'Invalid phone number'),
             address: Yup.string().required('Address is required'),
-            roleID: Yup.string().required('Role is required'),
+          
         }),
         onSubmit: (values) => {
             if (isAction == 1) {
                 setLoadingButton(true)
                 let today = new Date()
+                
+                if(values.roleID == 'c4345666-4d7b-11ee-be56-0242ac120002' && values.departmentID == ''  || values.roleID == 'c43450f8-4d7b-11ee-be56-0242ac120002' && values.departmentID == '' ){
+                    showSnackbar({
+                        severity: 'error',
+                        children: "Team is required",
+                    })
+                    setLoadingButton(false)
+                    return ;
+                }
                 if (values.roleID == 'c4345940-4d7b-11ee-be56-0242ac120002') {
                     values.departmentID = 'd4a6ec67-3d4e-4e5c-8fe3-64d631f27ab0'
                 }
@@ -201,6 +212,7 @@ export default function EmployeeAdmin() {
                         }
                         if (response.meta.requestStatus == 'rejected') {
                             setLoadingButton(false)
+                            console.log("res", response)
                             showSnackbar({
                                 severity: 'error',
                                 children: response.error.message,
@@ -266,6 +278,7 @@ export default function EmployeeAdmin() {
             }
         },
     })
+    console.log("role", formik.values.roleID,  formik.errors)
 
     const handleChangePage = (newPage) => {
         setPage(newPage)
