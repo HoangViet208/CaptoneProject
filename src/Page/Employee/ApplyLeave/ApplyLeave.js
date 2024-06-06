@@ -158,6 +158,7 @@ export default function ApplyLeave() {
     const [leaveDaysDate, setLeaveDaysDate] = useState([])
     const today = new Date()
     const threeDaysLater = addDays(today, 3)
+    const oneDaysLater = addDays(today, 1)
     const [RequestId, setRequestId] = useState()
     const userStringEmployeeName = localStorage.getItem('employeeId')
     const employeeId = JSON.parse(userStringEmployeeName)
@@ -222,6 +223,7 @@ export default function ApplyLeave() {
         return () => {}
     }, [])
     const minDate = startOfDay(threeDaysLater)
+    const minDateRea = startOfDay(oneDaysLater)
     const initialValues = {
         leaveReason: '',
         leaveType: '',
@@ -465,13 +467,13 @@ export default function ApplyLeave() {
             const daysToAdd = calculateDays(ranges.selection.startDate, ranges.selection.endDate)
             const dateArray = getDateRangeArray(ranges.selection.startDate, ranges.selection.endDate)
             const RuleDay = calculateDays(today, ranges.selection.startDate)
-            if (RuleDay > 2 && RuleDay < 5 && daysToAdd > 3) {
+            if (RuleDay > 2 && RuleDay < 5 && daysToAdd > 3 &&  formik.values.leaveType !== "790f2378-4cbd-11ee-be56-0242ac120002" ) {
                 setLeaveErorr('đăng ký trước 2 ngày với đơn nghỉ dưới 3 ngày')
             }
-            if (RuleDay > 3 && RuleDay < 7 && daysToAdd > 7) {
+            if (RuleDay > 3 && RuleDay < 7 && daysToAdd > 7 &&  formik.values.leaveType !== "790f2378-4cbd-11ee-be56-0242ac120002") {
                 setLeaveErorr('trước 5 ngày vs đơn từ 3-7 ngày')
             }
-            if (RuleDay < 10 && daysToAdd > 7) {
+            if (RuleDay < 10 && daysToAdd > 7 &&  formik.values.leaveType !== "790f2378-4cbd-11ee-be56-0242ac120002") {
                 setLeaveErorr('trước 7 ngày vs đơn từ 7 ngày trở lên')
             } else {
                 for (let i = 0; i < daysToAdd; i++) {
@@ -618,7 +620,7 @@ export default function ApplyLeave() {
         const leaveType = ApplyLeaveTypeList.find((item) => item.id === id)
         return leaveType ? leaveType.name : null
     }
-
+console.log("formik.values.leaveType", formik.values)
     const viewModalContent = (
         <Fragment>
             <form onSubmit={formik.handleSubmit}>
@@ -700,7 +702,7 @@ export default function ApplyLeave() {
                                             showSelectionPreview={false} // Ẩn chức năng filter
                                             editableDateInputs={true} // Cho phép người dùng nhập trực tiếp ngày
                                             moveRangeOnFirstSelection={false} // Không di chuyển khoảng ngày khi chọn ngày đầu tiên
-                                            minDate={minDate}
+                                            minDate={ formik.values.leaveType == "790f2378-4cbd-11ee-be56-0242ac120002" ? minDateRea : minDate }
                                         />
                                     </Popover>
                                 )}

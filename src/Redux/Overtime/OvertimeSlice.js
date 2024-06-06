@@ -184,7 +184,7 @@ export const PostOvertimeAsyncApi = createAsyncThunk('OvertimeReducer/postAsyncA
         const response = await PostOvertimeApi(id, body)
         return response
     } catch (error) {
-        throw error.response.data.response.data
+        throw error.response.data
     }
 })
 export const PutOvertimeAsyncApi = createAsyncThunk('OvertimeReducer/putAsyncApi', async ({ id, body }) => {

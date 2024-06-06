@@ -273,8 +273,12 @@ export default function TrackSettings() {
 
     const handleClickChangeTime = () => {
         const timeDifferenceMilliseconds =
-            selectedEndTimeMorning - selectedStartTimeMorning + (selectedEndTimeAfternoon - selectedStartTimeAfternoon)
-        const valid = timeDifferenceMilliseconds - 8 * 60 * 60 * 1000
+    (selectedEndTimeMorning - selectedStartTimeMorning) + (selectedEndTimeAfternoon - selectedStartTimeAfternoon);
+
+const maxWorkingTimeMilliseconds = 8 * 60 * 60 * 1000; // 8 hours in milliseconds
+
+const valid = timeDifferenceMilliseconds <= maxWorkingTimeMilliseconds;
+
         const newvalid = Math.floor(valid / (1000 * 60 * 60))
         const hours = Math.floor(timeDifferenceMilliseconds / (1000 * 60 * 60))
         const minutes = Math.floor((timeDifferenceMilliseconds % (1000 * 60 * 60)) / (1000 * 60))
@@ -286,8 +290,8 @@ export default function TrackSettings() {
             fromHourAfternoon: FormatDateToTime(selectedStartTimeAfternoon),
             toHourAfternoon: FormatDateToTime(selectedEndTimeAfternoon),
         }
-
-        if (valid >= 0) {
+        console.log("valid", maxWorkingTimeMilliseconds, timeDifferenceMilliseconds, valid)
+        if (valid ) {
             dispatch(putTimeSettingAsyncApi(body)).then((res) => {
                 if (res.meta.requestStatus == 'fulfilled') {
                     showSnackbar({
@@ -303,7 +307,7 @@ export default function TrackSettings() {
         } else {
             showSnackbar({
                 severity: 'error',
-                children: 'Total Working Time Less Than 8',
+                children: 'Total Working Time greater Than 8',
             })
         }
     }

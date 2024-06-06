@@ -323,9 +323,10 @@ export default function Overtime() {
                             }
                             if (response.meta.requestStatus == 'rejected') {
                                 setLoadingButton(false)
+                                const prefix = "The OT Request Time is Duplicate";
                                 showSnackbar({
                                     severity: 'error',
-                                    children: response.error.message,
+                                    children:  response.error.message.startsWith(prefix) ? prefix : response.error.message,
                                 })
                             }else{
                                 setLoadingButton(false)
