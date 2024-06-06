@@ -897,7 +897,7 @@ export default function EmployeeAdmin() {
                                 color="primary"
                                 className=""
                             >
-                                Add Employee
+                                Add New Employee
                             </Button>
                         </div>
                     </div>

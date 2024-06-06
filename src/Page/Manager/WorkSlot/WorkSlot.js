@@ -345,7 +345,7 @@ export default function WorkSlot() {
                         )
                         showSnackbar({
                             severity: 'success',
-                            children: 'Create Work Slot Department successfully',
+                            children: 'Create Work Slot successfully',
                         })
                     })
                 })
