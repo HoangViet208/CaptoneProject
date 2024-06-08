@@ -136,6 +136,7 @@ export default function Team() {
                 }
                 dispatch(PostDepartmentAsyncApi(body))
                     .then((response) => {
+                        console.log("f", response)
                         if (response.meta.requestStatus == 'fulfilled') {
                             setLoadingButton(false)
 
@@ -152,6 +153,12 @@ export default function Team() {
                             formik.setValues({
                                 name: '',
                                 managerName: '',
+                            })
+                        }else{
+                            setLoadingButton(false)
+                            showSnackbar({
+                                severity: 'error',
+                                children: response.error.message,
                             })
                         }
                     })

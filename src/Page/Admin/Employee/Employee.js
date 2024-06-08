@@ -60,6 +60,7 @@ import {
 import { PostAccountAsyncApi, getRoleAsyncApi } from '../../../Redux/Account/AccountSlice'
 import { GetDepartmentWithoutAsyncApi, getDepartmentAsyncApi } from '../../../Redux/Department/DepartmentSlice'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
+import { set } from 'date-fns';
 
 const columns = [
     { id: 'number', label: 'Number', minWidth: 50, align: 'center' },
@@ -141,6 +142,7 @@ export default function EmployeeAdmin() {
         phoneNumber: '',
         roleID: '',
         departmentID: '',
+        deviceSerialNumber: ""
     }
     const formik = useFormik({
         initialValues: initialValues,
@@ -152,7 +154,7 @@ export default function EmployeeAdmin() {
             gender: Yup.string().required('Gender is required'),
             phoneNumber: Yup.string().required('Phone Number is required').matches(vietnamPhoneNumberRegex, 'Invalid phone number'),
             address: Yup.string().required('Address is required'),
-          
+            deviceSerialNumber: Yup.string().required("Device Serial Number is required"),
         }),
         onSubmit: (values) => {
             if (isAction == 1) {
@@ -180,6 +182,7 @@ export default function EmployeeAdmin() {
                     phoneNumber: values.phoneNumber,
                     roleID: values.roleID,
                     departmentID: values.departmentID == '' ? null : values.departmentID,
+                    deviceSerialNumber: values.deviceSerialNumber
                 }
 
                 dispatch(PostAccountAsyncApi(newData))
@@ -234,6 +237,7 @@ export default function EmployeeAdmin() {
                     address: values.address,
                     phoneNumber: values.phoneNumber,
                     roleID: values.roleID,
+                    deviceSerialNumber: values.deviceSerialNumber,
                     departmentID:
                         values.roleID == 'c4345666-4d7b-11ee-be56-0242ac120002' ||
                         values.roleID == 'c43450f8-4d7b-11ee-be56-0242ac120002'
@@ -278,7 +282,6 @@ export default function EmployeeAdmin() {
             }
         },
     })
-    console.log("role", formik.values.roleID,  formik.errors)
 
     const handleChangePage = (newPage) => {
         setPage(newPage)
@@ -304,6 +307,7 @@ export default function EmployeeAdmin() {
             phoneNumber: '',
             roleID: '',
             departmentID: '',
+            deviceSerialNumber: ''
         })
     }
     const handleClickOpenAddTeam = () => {
@@ -325,13 +329,14 @@ export default function EmployeeAdmin() {
             phoneNumber: data.phoneNumber,
             roleID: data.roleId,
             departmentID: data.departmentId,
+            deviceSerialNumber: data.deviceSerialNumber
         })
     }
 
     const clickOpenFalse = (event) => {
         setOpen(false)
         setIsAction(0)
-        showPassword(false)
+        setShowPassword(false)
         formik.setTouched({})
         formik.setErrors({})
         formik.setValues({
@@ -345,6 +350,7 @@ export default function EmployeeAdmin() {
             phoneNumber: '',
             roleID: '',
             departmentID: '',
+            deviceSerialNumber:""
         })
     }
     const clickOpenFalseTeam = (event) => {
@@ -397,7 +403,7 @@ export default function EmployeeAdmin() {
     const handleMouseDownPassword = (event) => {
         event.preventDefault()
     }
-
+ console.log("formik.errors.deviceSerialNumber", formik.errors.deviceSerialNumber)
     const viewModalContent = (
         <Fragment>
             <form onSubmit={formik.handleSubmit}>
@@ -461,6 +467,27 @@ export default function EmployeeAdmin() {
                         {formik.errors.password && formik.touched.password && (
                             <div className="text mt-1 text-red-600 font-semibold">{formik.errors.password}</div>
                         )}
+                    </div>
+                    <div className={`my-2`}>
+                    <TextField
+                                id="outlined-basic"
+                                size="small"
+                                error={formik.touched.deviceSerialNumber && formik.errors.deviceSerialNumber ? true : undefined}
+                                className="w-full"
+                                value={formik.values.deviceSerialNumber}
+                                name="deviceSerialNumber"
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                label={
+                                    <div className="mb-1 flex gap-1">
+                                        <p className=" text-gray-500">Device Serial Number</p> <i className="text-red-500">*</i>
+                                    </div>
+                                }
+                                variant="outlined"
+                            />
+                            {formik.errors.deviceSerialNumber && formik.touched.deviceSerialNumber && (
+                                <div className="text mt-1 text-red-600 font-semibold">{formik.errors.deviceSerialNumber}</div>
+                            )}
                     </div>
                     <div className="grid grid-cols-2 gap-2 my-2">
                         <div>

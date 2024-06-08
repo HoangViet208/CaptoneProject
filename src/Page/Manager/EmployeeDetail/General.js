@@ -79,17 +79,16 @@ export default function General() {
         roleID: '',
         departmentID: '',
     }
+    const vietnamPhoneNumberRegex = /^(?:\+84|0)(?:3[2-9]|5[6|8|9]|7[0|6-9]|8[1-9]|9[0-9])[0-9]{7}$/;
+
     const formik = useFormik({
         initialValues: initialValues,
         validationSchema: Yup.object({
-            username: Yup.string().required('Username is required').email('Invalid email address'),
             firstName: Yup.string().min(2, 'Too Short!').max(4000, 'Too Long!').required(),
             lastName: Yup.string().min(2, 'Too Short!').max(4000, 'Too Long!').required(),
-            gender: Yup.string().required(),
-            phoneNumber: Yup.string().required(),
-            address: Yup.string().required(),
-            roleID: Yup.string().required(),
-            departmentID: Yup.string().required(),
+            gender: Yup.string().required('Gender is required'),
+            phoneNumber: Yup.string().required('Phone Number is required').matches(vietnamPhoneNumberRegex, 'Invalid phone number'),
+            address: Yup.string().required('Address is required'),
         }),
         onSubmit: (values) => {
             setLoadingButton(true)
@@ -209,7 +208,13 @@ export default function General() {
                                 <div className="text mt-1 text-red-600 font-semibold">{formik.errors.roleID}</div>
                             )}
                         </div>
-                        <div className="my-2">
+                        <div className={` ${
+                            formik.values.roleID == 'c43450f8-4d7b-11ee-be56-0242ac120002'
+                                ? `my-2`
+                                : formik.values.roleID == 'c4345666-4d7b-11ee-be56-0242ac120002'
+                                ? `my-2`
+                                : `hidden invisible`
+                        }`}>
                             <FormControl fullWidth>
                                 <InputLabel size="small" id="demo-simple-select-label">
                                     Team
@@ -226,6 +231,7 @@ export default function General() {
                                     onBlur={formik.handleBlur}
                                     label="Department"
                                     variant="outlined"
+                                   
                                 >
                                     {DepartmentList.map((item, index) => {
                                         return (
