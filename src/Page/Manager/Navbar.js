@@ -24,11 +24,12 @@ import app from '../../Config/FirebaseConfig'
 import TodayIcon from '@mui/icons-material/Today'
 import EventNoteIcon from '@mui/icons-material/EventNote'
 import TuneIcon from '@mui/icons-material/Tune'
+import GeneralModal from './EmployeeDetail/GeneralModal'
 const tabsData = [
     {
         label: 'General',
         icon: <AccountBoxIcon />,
-        view: <General />,
+        view: <GeneralModal />,
     },
     {
         label: 'Change Password',

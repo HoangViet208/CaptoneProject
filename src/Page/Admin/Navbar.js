@@ -18,11 +18,12 @@ import General from '../Manager/EmployeeDetail/General'
 import ChangePassword from '../Manager/Profile/ChangePassword'
 import TabsData from '../../Components/Tabs'
 import PopupData from '../../Components/Popup'
+import GeneralModal from '../Manager/EmployeeDetail/GeneralModal'
 const tabsData = [
     {
         label: 'General',
         icon: <AccountBoxIcon />,
-        view: <General />,
+        view: <GeneralModal />,
     },
     {
         label: 'Change Password',

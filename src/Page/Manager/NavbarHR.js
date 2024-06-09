@@ -24,11 +24,12 @@ import TopicIcon from '@mui/icons-material/Topic';
 import { getDatabase, ref, onValue, set } from 'firebase/database'
 import app from '../../Config/FirebaseConfig'
 import NotificationComponent from '../../Components/Notification'
+import GeneralModal from './EmployeeDetail/GeneralModal'
 const tabsData = [
     {
         label: 'General',
         icon: <AccountBoxIcon />,
-        view: <General />,
+        view: <GeneralModal />,
     },
     {
         label: 'Change Password',

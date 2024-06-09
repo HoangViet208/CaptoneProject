@@ -22,12 +22,13 @@ import { getDatabase, ref, onValue, set } from 'firebase/database'
 import app from '../../Config/FirebaseConfig'
 import NotificationComponent from '../../Components/Notification'
 import TodayIcon from '@mui/icons-material/Today';
+import GeneralModal from '../Manager/EmployeeDetail/GeneralModal'
 
 const tabsData = [
     {
         label: 'General',
         icon: <AccountBoxIcon />,
-        view: <General />,
+        view: <GeneralModal />,
     },
     {
         label: 'Change Password',
