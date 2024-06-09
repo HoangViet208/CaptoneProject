@@ -48,7 +48,7 @@ export default function General() {
     useEffect(() => {
         dispatch(getDepartmentAsyncApi())
         dispatch(getRoleAsyncApi())
-        dispatch(getEmployeeByIdAsyncApi(UserParseId))
+        dispatch(getEmployeeByIdAsyncApi(param.id))
             .then((response) => {
                 if (response.meta.requestStatus == 'fulfilled') {
                     formik.setValues({
