@@ -154,7 +154,7 @@ export default function EmployeeAdmin() {
             gender: Yup.string().required('Gender is required'),
             phoneNumber: Yup.string().required('Phone Number is required').matches(vietnamPhoneNumberRegex, 'Invalid phone number'),
             address: Yup.string().required('Address is required'),
-            deviceSerialNumber: Yup.string().required("Device Serial Number is required"),
+          
         }),
         onSubmit: (values) => {
             if (isAction == 1) {
@@ -480,7 +480,7 @@ export default function EmployeeAdmin() {
                                 onBlur={formik.handleBlur}
                                 label={
                                     <div className="mb-1 flex gap-1">
-                                        <p className=" text-gray-500">Device Serial Number</p> <i className="text-red-500">*</i>
+                                        <p className=" text-gray-500">Firebase Installation ID</p> <i className="text-red-500">*</i>
                                     </div>
                                 }
                                 variant="outlined"
