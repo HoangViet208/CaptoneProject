@@ -524,7 +524,6 @@ export default function Team() {
                             Cancel
                         </Button>
                         <LoadingButton
-                            startIcon={<AddIcon />}
                             type="submit"
                             loading={loadingButton}
                             loadingPosition="start"

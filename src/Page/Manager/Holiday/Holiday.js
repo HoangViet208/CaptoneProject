@@ -569,7 +569,6 @@ export default function Holiday() {
                         </Button>
                         <LoadingButton
                             //disabled={!errorSelect}
-                            startIcon={<AddIcon />}
                             type="submit"
                             loading={loadingButton}
                             loadingPosition="start"

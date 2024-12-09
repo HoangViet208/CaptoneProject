@@ -38,7 +38,7 @@ const columns = [
     { id: 'number', label: 'Number', minWidth: 50, maxWidth: 50, align: 'center' },
     { id: 'title', label: 'Title', minWidth: 100, maxWidth: 200, align: 'left' },
     { id: 'rule', label: 'Bssid', minWidth: 100, maxWidth: 200, align: 'left' },
-    { id: 'public', label: 'Public', minWidth: 100, maxWidth: 200, align: 'left' },
+    { id: 'status', label: 'Status', minWidth: 100, maxWidth: 200, align: 'left' },
     { id: 'action', label: 'Actions', minWidth: 50, maxWidth: 200, align: 'center' },
 ]
 
@@ -252,7 +252,7 @@ export default function Wifi() {
             number: index + 1,
             title: item.name,
             rule: item.bssid,
-            public:
+            status:
                 item.status == false ? (
                     <Tooltip title="Active">
                         <IconButton>

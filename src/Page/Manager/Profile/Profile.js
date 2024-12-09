@@ -19,11 +19,11 @@ import NavbarManager from '../Navbar'
 import NavbarHR from '../NavbarHR'
 import NavbarAdmin from '../../Admin/Navbar'
 import Navbar from '../../Employee/Navbar'
+import GeneralModal from '../EmployeeDetail/GeneralModal'
 
 const breadcrumbIcons = () => {
     const data = [
-        { title: 'Dashboard', icon: <DashboardIcon />, url: '/', status: true },
-        { title: 'Accout Settings', icon: <BadgeIcon />, url: '/Profile', status: false },
+        { title: 'Account Settings', icon: <BadgeIcon />, url: '/Profile', status: false },
     ]
     return data
 }
@@ -34,37 +34,35 @@ const tabsData = [
     {
         label: 'General',
         icon: <AccountBoxIcon />,
-        view: <General />,
+        view: <GeneralModal />,
     },
     {
         label: 'Change Password',
         icon: <KeyIcon />,
         view: <ChangePassword />,
     },
-    // {
-    //     label: 'Time Entries',
-    //     icon: <EventNoteIcon />,
-    //     view: <TimeEntries />,
-    // },
 ]
 
 export default function Profile() {
-    const userStringRole = localStorage.getItem('role')
-    const role = JSON.parse(userStringRole)
-    let newNav = null
+    const [newNav, setNewNav] = useState(null)
+
     useEffect(() => {
+        const userStringRole = localStorage.getItem('role')
+        const role = JSON.parse(userStringRole)
+
         if (role) {
             if (role === 'Manager') {
-                newNav = <NavbarManager />
+                setNewNav(<NavbarManager />)
             } else if (role === 'User') {
-                newNav = <Navbar />
+                setNewNav(<Navbar />)
             } else if (role === 'HR') {
-                newNav = <NavbarHR />
+                setNewNav(<NavbarHR />)
             } else if (role === 'Admin') {
-                newNav = <NavbarAdmin />
+                setNewNav(<NavbarAdmin />)
             }
         }
-    }, [role])
+    }, [])
+
     return (
         <div>
             {newNav}

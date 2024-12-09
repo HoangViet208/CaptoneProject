@@ -33,7 +33,7 @@ import FileDownloadIcon from '@mui/icons-material/FileDownload'
 import IconBreadcrumbs from '../../../Components/Breadcrumbs'
 import Navbar from '../Navbar'
 import PopupData from '../../../Components/Popup'
-import { formatDateExact, formattedDate, getDateToMonth, getDayOfWeek } from '../../../Hook/useFormatDate'
+import { formatBasicDate, formatDateExact, formatDateToMonth, formattedDate, getDateToMonth, getDayOfWeek } from '../../../Hook/useFormatDate'
 
 //style
 import './Style.css'
@@ -164,7 +164,7 @@ export default function TimeSheet() {
         const { format } = require('date-fns')
         try {
             const downloadResponse = await axios.get(
-                `https://timekeepingsystem.somee.com/api/WorkSlotEmployee/export-excel-file?departmentId=${
+                `https://timekeepingsystem.runasp.net/api/WorkSlotEmployee/export-excel-file?departmentId=${
                     Department == 'AllTeam' ? `00000000-0000-0000-0000-000000000000` : Department
                 }&month=${format(selectedDateRange.startDate, 'yyyy/MM/dd')}`,
                 {
@@ -421,7 +421,7 @@ export default function TimeSheet() {
                                                                             <div className="flex  mx-2">
                                                                                 <div>{getDayOfWeek(working.date)}</div>
                                                                                 <div className="text-gray-400 ml-auto">
-                                                                                    {getDateToMonth(working.date)}
+                                                                                    {formatBasicDate(working.date)}
                                                                                 </div>
                                                                             </div>
 
@@ -435,7 +435,7 @@ export default function TimeSheet() {
                                                                                             id="in"
                                                                                             className="uppercase text-xs text-gray-400 ml-auto"
                                                                                         >
-                                                                                            in
+                                                                                            check in
                                                                                         </div>
                                                                                     </div>
                                                                                 ) : (
@@ -450,7 +450,7 @@ export default function TimeSheet() {
                                                                                             id="out"
                                                                                             className="uppercase text-xs text-gray-400 ml-auto"
                                                                                         >
-                                                                                            out
+                                                                                            check out
                                                                                         </div>
                                                                                     </div>
                                                                                 ) : (
@@ -465,7 +465,7 @@ export default function TimeSheet() {
                                                                                             id="work"
                                                                                             className="uppercase text-xs text-gray-400 ml-auto"
                                                                                         >
-                                                                                            Work
+                                                                                            time Working
                                                                                         </div>
                                                                                     </div>
                                                                                 ) : (

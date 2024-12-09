@@ -759,7 +759,6 @@ export default function Overtime() {
                             onClick={() =>
                                 isAction == 1 ? handleRequest() : isAction == 2 ? handleRequestUpdate() : null
                             }
-                            startIcon={<AddIcon />}
                             disabled={error || !errorImport || errorEdit}
                             loading={loadingButton}
                             loadingPosition="start"

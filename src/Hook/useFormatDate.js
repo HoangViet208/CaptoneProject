@@ -214,3 +214,11 @@ export function getTimeAgo(dateTime) {
         return `about a minute ago`;
     }
 }
+
+export const formatBasicDate = (data) =>{
+    const date = new Date(data);
+    const day = String(date.getDate()).padStart(2, "0");
+const month = String(date.getMonth() + 1).padStart(2, "0"); 
+const year = date.getFullYear();
+return `${day}/${month}/${year}`
+}

@@ -979,7 +979,6 @@ export default function ApplyLeaveHR() {
                         </Button>
                         {statusRequest == -1 || statusRequest == 0 ? (
                             <LoadingButton
-                                startIcon={<AddIcon />}
                                 disabled={error || !errorImport || errorEdit}
                                 type="submit"
                                 loading={isLoading}

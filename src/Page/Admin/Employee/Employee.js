@@ -700,7 +700,6 @@ export default function EmployeeAdmin() {
                             Cancel
                         </Button>
                         <LoadingButton
-                            startIcon={<AddIcon />}
                             type="submit"
                             loading={loadingButton}
                             loadingPosition="start"

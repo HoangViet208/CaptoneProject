@@ -355,7 +355,6 @@ export default function General() {
 
                     <LoadingButton
                         className=" right-8 float-right"
-                        startIcon={<AddIcon />}
                         type="submit"
                         loading={loadingButton}
                         loadingPosition="start"

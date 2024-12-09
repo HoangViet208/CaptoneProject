@@ -38,6 +38,7 @@ function App() {
         <Router history={history}>
             <Switch>
                 <Route path="/" exact component={Login} />
+
                 {/*Admin*/}
                 <Route path="/Admin/Team" exact component={Team} />
                 <Route path="/Admin/Employee" exact component={EmployeeAdmin} />

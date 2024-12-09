@@ -355,18 +355,17 @@ export default function GeneralModal() {
 
                     <LoadingButton
                         className=" right-8 float-right"
-                        startIcon={<AddIcon />}
                         type="submit"
                         loading={loadingButton}
                         loadingPosition="start"
-                        color="info"
+                        color="warning"
                         variant="contained"
                         sx={{
                             textAlign: 'center',
                         }}
                         autoFocus
                     >
-                        Save
+                        Update
                     </LoadingButton>
                 </form>
             </div>

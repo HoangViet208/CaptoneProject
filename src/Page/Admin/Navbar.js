@@ -41,8 +41,8 @@ export default function NavbarAdmin() {
     const clickOpenFalse = (event) => {
         setOpenModal(false)
     }
-    const handleClickOpenAdd = () => {
-        setOpenModal(true)
+ const handleClickOpenAdd = () => {
+        history.push("/Profile")
     }
     const [anchorEl, setAnchorEl] = useState(null)
     const [isModalOpen, setIsModalOpen] = useState(false)

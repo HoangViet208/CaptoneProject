@@ -752,7 +752,6 @@ export default function Worked() {
                             <hr />
                             <div className="my-2 float-right mr-4">
                                 <LoadingButton
-                                    startIcon={<AddIcon />}
                                     onClick={
                                         isAction == 1
                                             ? handleClickRequest
