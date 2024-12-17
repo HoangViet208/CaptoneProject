@@ -73,9 +73,9 @@ export default function TimeSheet() {
     const [open, setOpen] = useState()
     const [selectedDateRange, setSelectedDateRange] = useState({
         startDate: new Date(),
-        endDate: new Date(),
+        endDate: new Date(new Date().setDate(new Date().getDate() + 7)),
         key: 'selection',
-    })
+    });
     const [Department, setDepartment] = useState('AllTeam')
     //setting redux
     const { DepartmentList } = useSelector((state) => state.department)
