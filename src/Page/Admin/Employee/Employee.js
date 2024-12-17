@@ -480,7 +480,7 @@ export default function EmployeeAdmin() {
                                 onBlur={formik.handleBlur}
                                 label={
                                     <div className="mb-1 flex gap-1">
-                                        <p className=" text-gray-500">Firebase Installation ID</p> <i className="text-red-500">*</i>
+                                        <p className=" text-gray-500">Firebase Installation ID</p>
                                     </div>
                                 }
                                 variant="outlined"
