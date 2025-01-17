@@ -164,7 +164,7 @@ export default function TimeSheet() {
         const { format } = require('date-fns')
         try {
             const downloadResponse = await axios.get(
-                `https://timekeepingsystem.runasp.net/api/WorkSlotEmployee/export-excel-file?departmentId=${
+                `https://guma0504-001-site1.qtempurl.com/api/WorkSlotEmployee/export-excel-file?departmentId=${
                     Department == 'AllTeam' ? `00000000-0000-0000-0000-000000000000` : Department
                 }&month=${format(selectedDateRange.startDate, 'yyyy/MM/dd')}`,
                 {
