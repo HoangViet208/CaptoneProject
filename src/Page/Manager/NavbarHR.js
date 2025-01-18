@@ -6,6 +6,7 @@ import InsertChartOutlinedIcon from '@mui/icons-material/InsertChartOutlined'
 import AddToPhotosIcon from '@mui/icons-material/AddToPhotos'
 import { Avatar, Menu, MenuItem, ListItemIcon, Divider, IconButton, Tooltip } from '@mui/material'
 import Settings from '@mui/icons-material/Settings'
+
 import EventAvailableIcon from '@mui/icons-material/EventAvailable'
 import { Link, NavLink } from 'react-router-dom'
 import TuneIcon from '@mui/icons-material/Tune'
@@ -20,7 +21,7 @@ import TabsData from '../../Components/Tabs'
 import PopupData from '../../Components/Popup'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import TodayIcon from '@mui/icons-material/Today'
-import TopicIcon from '@mui/icons-material/Topic';
+import TopicIcon from '@mui/icons-material/Topic'
 import { getDatabase, ref, onValue, set } from 'firebase/database'
 import app from '../../Config/FirebaseConfig'
 import NotificationComponent from '../../Components/Notification'
@@ -47,8 +48,8 @@ export default function NavbarHR() {
     const clickOpenFalse = (event) => {
         setOpenModal(false)
     }
- const handleClickOpenAdd = () => {
-        history.push("/Profile")
+    const handleClickOpenAdd = () => {
+        history.push('/Profile')
     }
     const [anchorEl, setAnchorEl] = useState(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -64,9 +65,8 @@ export default function NavbarHR() {
 
     const employeeIdString = localStorage.getItem('employeeId')
     const employeeId = JSON.parse(employeeIdString)
-  
+
     useEffect(() => {
-     
         if (userObject && userObject == 'Manager') {
             history.push('/Manager/Employee')
         } else if (userObject && userObject == 'Employee') {
@@ -101,7 +101,6 @@ export default function NavbarHR() {
     const [isLoading, setIsLoading] = useState(false)
     const [dataNotification, setDataNotification] = useState([])
 
-
     const fetchDataFromDatabase = () => {
         setIsLoading(true)
         const db = getDatabase(app)
@@ -110,28 +109,27 @@ export default function NavbarHR() {
         onValue(dbRef, (snapshot) => {
             if (snapshot.exists()) {
                 setIsLoading(false)
-                const data = Object.entries(snapshot.val()).map(([id, value]) => {
-                   if (value.employeeSenderId == employeeId) {
-                        return { id, ...value };
-                    }
-                    return null; 
-                }).filter(item => item !== null);
+                const data = Object.entries(snapshot.val())
+                    .map(([id, value]) => {
+                        if (value.employeeSenderId == employeeId) {
+                            return { id, ...value }
+                        }
+                        return null
+                    })
+                    .filter((item) => item !== null)
                 setDataNotification(data)
             } else {
                 setIsLoading(false)
             }
         })
     }
-     function UpdateIsSeenToTrue(newValue) {
-
+    function UpdateIsSeenToTrue(newValue) {
         const db = getDatabase() // Lấy tham chiếu đến database
         const recordRef = ref(db, `employeeNoti/${newValue.id}`) // Tham chiếu đến bản ghi cụ thể bằng id
 
         set(recordRef, { ...newValue, isSeen: true })
-            .then(() => {
-            })
-            .catch((error) => {
-            })
+            .then(() => {})
+            .catch((error) => {})
     }
     const handleModalClose = () => {
         setIsModalOpen(false)
@@ -185,6 +183,15 @@ export default function NavbarHR() {
                             >
                                 <TopicIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
                                 <span className="flex-1 ml-3 whitespace-nowrap">All Request</span>
+                            </Link>
+                        </li>
+                        <li className="cursor-pointer p-2">
+                            <Link
+                                to="/Hr/RiskEmployee"
+                                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
+                            >
+                                <AssessmentIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                <span className="flex-1 ml-3 whitespace-nowrap">Risk Employee</span>
                             </Link>
                         </li>
                         <li className="cursor-pointer p-2">
@@ -341,7 +348,7 @@ export default function NavbarHR() {
                         </div>
 
                         <div className="flex items-center ">
-                        <NotificationComponent
+                            <NotificationComponent
                                 role={userObject}
                                 isLoading={isLoading}
                                 dataNotification={dataNotification}
@@ -469,6 +476,18 @@ export default function NavbarHR() {
                             >
                                 <TopicIcon className="ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
                                 <span className="ml-3">All Request</span>
+                            </NavLink>
+                        </li>
+                        <li className="cursor-pointer text-center mx-auto justify-center items-center">
+                            <NavLink
+                                to="/Hr/RiskEmployee"
+                                className="flex items-center gap-2 p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-gray-700 group"
+                                activeStyle={{
+                                    background: '#dbeafe',
+                                }}
+                            >
+                                <AssessmentIcon className="ml-7 flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 " />
+                                <span className="ml-3">Risk Employee</span>
                             </NavLink>
                         </li>
                         <li className="cursor-pointer text-center mx-auto justify-center items-center">

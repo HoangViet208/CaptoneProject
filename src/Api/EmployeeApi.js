@@ -56,4 +56,13 @@ export const GetALLEmployeeNotIncludeInAnyTeamApi = async () => {
     }
 }
 
+export const GetEmployeeRisk = async (month, year) => {
+    try {
+        const response = await axios.get(`${API_URL}/RiskPerformanceEmployee?month=${month}&year=${year}`)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
 export default GetEmployeeApi

@@ -60,7 +60,7 @@ function App() {
                 <Route path="/Manager/Workslot" exact component={WorkSlot} />
                 <Route path="/Manager/TrackSettings" exact component={TrackSettings} />
                 {/*HR*/}
-                
+
                 <Route path="/Hr/AllRequest" exact component={AllRequestForHR} />
                 <Route path="/Hr/WorkedTime" exact component={SchedulingHRandManagament} />
                 <Route path="/Hr/Employee" exact component={Employee} />
@@ -72,18 +72,18 @@ function App() {
                 <Route path="/Hr/ManageWorked" exact component={ManageWorked} />
                 <Route path="/Hr/TimeSheet" exact component={TimeSheet} />
                 <Route path="/Hr/TrackSettings" exact component={TrackSettings} />
+                <Route path="/Hr/RiskEmployee" exact component={RiskEmployee} />
                 {/*Employee*/}
                 <Route path="/Employee/WorkedTime" exact component={Scheduling} />
                 <Route path="/Employee/Dashboard" exact component={DashboardEmployee} />
                 <Route path="/Employee/ApplyLeave" exact component={ApplyLeave} />
                 <Route path="/Employee/Overtime" exact component={Overtime} />
                 <Route path="/Employee/Worked" exact component={Worked} />
-                
+
                 {/* Data */}
                 <Route path="/Loading" exact component={Loading} />
                 <Route path="/GenerationData" exact component={GenerationData} />
                 <Route component={ErrorPage} />
-           
             </Switch>
         </Router>
     )

@@ -33,7 +33,9 @@ const authSlice = createSlice({
                 if (RoleUser == 'Admin') {
                     state.EmployeeList = action.payload
                 } else {
-                    const filteredEmployeeList = action.payload.filter((hr) => hr.id !== 'aa57b5fe-2ae8-4fcf-a16b-cb0597d92397')
+                    const filteredEmployeeList = action.payload.filter(
+                        (hr) => hr.id !== 'aa57b5fe-2ae8-4fcf-a16b-cb0597d92397'
+                    )
                     state.EmployeeList = filteredEmployeeList
                 }
             })
